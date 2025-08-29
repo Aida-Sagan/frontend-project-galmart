@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap');
+
+.qr-promo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #F5F5F5;
+    border-radius: 24px;
+    margin-top: 120px;
+    padding: 0 60px;
+    gap: 80px;
+    flex-wrap: wrap;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.qr-promo__left {
+    display: flex;
+    align-items: flex-end;
+}
+
+.phone-container {
+    position: relative;
+    margin-top: -100px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.qr-promo__phone {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0px 10px 25px rgba(0, 0, 0, 0.15));
+}
+
+.phone-content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 20px;
+}
+
+.qr-code {
+    width: 60%;
+    height: auto;
+    margin-top: 20%;
+}
+
+.qr-promo__caption {
+    margin-top: 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.2;
+    text-align: center;
+    color: #FBFBFB;
+}
+
+.qr-promo__right {
+    max-width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 40px 0;
+}
+
+.qr-promo__title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 47px;
+    color: #222222;
+    margin-bottom: 16px;
+}
+
+.qr-promo__description {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.2;
+    color: #4E4E4E;
+    margin: 0;
+}
+
+
+.qr-promo__apps {
+    display: flex;
+    gap: 16px;
+    margin-top: 11px;
+}
+
+.qr-promo__apps img {
+    height: 48px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.qr-promo__apps img:hover {
+    transform: scale(1.05);
+}

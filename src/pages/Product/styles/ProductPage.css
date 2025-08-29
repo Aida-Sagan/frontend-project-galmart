@@ -1,0 +1,103 @@
+.product-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 41px 0 0 0;
+    font-family: Montserrat, sans-serif;
+    font-weight: 400;
+
+}
+
+.breadcrumbs {
+    font-size: 12px;
+    color: #7A7A7A;
+    margin-bottom: 24px;
+}
+
+.breadcrumbs a {
+    color: #888;
+    text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+.product-main-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.product-info-wrapper h1 {
+    margin: 0 0 16px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 28px;
+    color: #222222;
+}
+
+.nutritional-facts {
+    margin: 24px 0;
+}
+
+.nutritional-facts h3 {
+    font-family: Montserrat, sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    margin-bottom: 16px;
+    color: #222222;
+}
+
+.facts-grid {
+    display: flex;
+    gap: 12px;
+}
+
+.fact-item {
+    background-color: #f5f5f5;
+    border-radius: 50px;
+    width: 72px;
+    height: 50px;
+    padding: 12px;
+    text-align: center;
+    flex-grow: 1;
+    font-family: Montserrat, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    color:#7A7A7A ;
+}
+
+.fact-item .number {
+    display: block;
+    font-family: Montserrat, sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    text-align: center;
+    color: #222;
+    margin-bottom: 4px;
+}
+
+.details-toggle-button {
+    width: 100%;
+    padding: 16px;
+    font-weight: 600;
+    color: #FBFBFB;
+    background-color: #902067;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-family: Montserrat, sans-serif;
+    font-size: 18px;
+}
+
+.details-toggle-button:hover {
+    background-color: #7a1b58;
+}
+
+.loading-message, .error-message {
+    text-align: center;
+    font-size: 20px;
+    padding: 50px;
+}

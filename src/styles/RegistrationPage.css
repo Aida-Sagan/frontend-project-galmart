@@ -1,0 +1,27 @@
+.registration-wrapper {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    font-family: 'Inter', sans-serif;
+}
+
+.registration-form-block {
+    width: 50%;
+    background-color: #FBFBFB;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 3rem;
+}
+
+.registration-title {
+    margin-bottom: 1.5rem;
+    color: #292927;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 140%;
+    text-align: center;
+
+}

@@ -1,0 +1,58 @@
+.category-content-skeleton {
+    width: 100%;
+}
+
+.skeleton-banner,
+.skeleton-carousel-item,
+.skeleton-sort,
+.skeleton-product-card {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 12px;
+}
+
+.skeleton-banner {
+    height: 200px;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.skeleton-carousel {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.skeleton-carousel-item {
+    height: 100px;
+    width: 150px;
+    flex-shrink: 0;
+}
+
+.skeleton-sort {
+    height: 40px;
+    width: 200px;
+    margin-left: auto;
+    margin-bottom: 24px;
+}
+
+.skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.skeleton-product-card {
+    height: 300px;
+    width: 100%;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}

@@ -1,0 +1,80 @@
+.main-banner {
+    position: relative;
+    width: 99%;
+    cursor: pointer;
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.main-banner img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Стрелки навигации */
+.banner-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #FBFBFB61;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    z-index: 10;
+}
+.banner-arrow:hover {
+    background: #FBFBFB;
+}
+.banner-arrow-left {
+    left: 20px;
+}
+
+.banner-arrow-right {
+    right: 20px;
+}
+
+.banner-arrow svg {
+    width: 24px;
+    height: 39px;
+    fill: #000;
+    margin-right: 10px;
+}
+
+.main-banner:hover .banner-arrow {
+    opacity: 1;
+}
+
+.banner-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.banner-dot {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease, width 0.3s ease;
+}
+
+.banner-dot.active {
+    background-color: #902067;
+    width: 24px;
+    border-radius: 4px;
+}

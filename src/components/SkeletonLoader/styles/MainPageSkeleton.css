@@ -1,0 +1,36 @@
+.main-page-skeleton {
+    width: 100%;
+}
+
+.skeleton-banner {
+    height: 350px;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.skeleton-section {
+    margin-bottom: 40px;
+}
+
+.skeleton-title {
+    height: 32px;
+    width: 250px;
+    margin-bottom: 24px;
+}
+
+.skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.skeleton-slider {
+    display: flex;
+    gap: 20px;
+}
+
+.skeleton-slide {
+    height: 180px;
+    width: 33%;
+    border-radius: 12px;
+}

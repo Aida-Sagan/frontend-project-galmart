@@ -1,0 +1,190 @@
+.sale-description-card {
+    width: 100%;
+    height: auto;
+    background-color: #fff;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.section__grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: nowrap;
+
+}
+.sale-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 120%;
+    margin-bottom: 8px;
+    color: #222;
+}
+
+.sale-description {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    line-height: 140%;
+    color: #4E4E4E;
+    margin-bottom: 40px;
+}
+
+.watch-more-btn {
+    border-radius: 64px;
+    background: #902067;
+    border: none;
+    padding: 16px 24px;
+    color: #fff;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    align-self: flex-start;
+    font-size: 18px;
+}
+
+.watch-more-btn:hover {
+    background-color: #fff;
+    color: #902067;
+}
+
+@media (max-width: 1600px) {
+    .watch-more-btn{
+        font-size: 14px;
+    }
+
+    .sale-description {
+        font-size: 16px;
+    }
+
+    .sale-title {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 1440px) {
+    .sale-description-card {
+        padding: 0px;
+    }
+
+    .sale-title {
+        font-size: 20px;
+    }
+
+    .sale-description{
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 1304px) {
+    .watch-more-btn {
+        font-size: 75%;
+    }
+    .sale-description {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .watch-more-btn {
+        font-size: 70%;
+    }
+    .sale-description {
+        font-size: 11px;
+    }
+
+    .sale-title {
+        font-size: 15px;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .section-title {
+        font-size: 24px;
+    }
+
+    .filter-buttons {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 8px;
+        gap: 8px;
+    }
+
+    .filter-button {
+        padding: 12px 14px;
+        font-size: 14px;
+        flex-shrink: 0;
+        border-radius: 20px;
+    }
+
+    .section__grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .sale-description-card {
+        width: 100%;
+        padding: 24px;
+    }
+
+    .sale-title {
+        font-size: 20px;
+    }
+
+    .sale-description {
+        font-size: 16px;
+    }
+
+    .watch-more-btn {
+        font-size: 16px;
+    }
+
+    .watch-more-btn:hover {
+        background-color: #902067;
+        color: #fff;
+        border: none;
+    }
+
+    .filter-button:hover {
+        background-color: #F5F5F5;
+        color: #222;
+    }
+
+    .filter-button.active:hover {
+        background-color: #C6D600;
+        color: #000;
+    }
+}
+
+@media (max-width: 393px) {
+    .section-title {
+        font-size: 20px;
+    }
+
+    .sale-description-card {
+        padding: 20px;
+    }
+
+    .sale-title {
+        font-size: 18px;
+    }
+
+    .sale-description {
+        font-size: 14px;
+        margin-bottom: 24px;
+    }
+
+    .watch-more-btn {
+        font-size: 14px;
+        padding: 12px 20px;
+    }
+}

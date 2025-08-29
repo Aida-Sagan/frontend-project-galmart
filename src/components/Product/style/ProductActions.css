@@ -1,0 +1,171 @@
+.actions-container {
+    background-color: #F5F5F5;
+    border-radius: 20px;
+    padding: 24px 24px 10px 24px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 575px;
+    font-family: 'Montserrat', sans-serif;
+    color: #222222;
+    height: auto;
+}
+
+.price-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.old-price {
+    font-size: 14px;
+    color: #999;
+    text-decoration: line-through;
+    font-weight: 500;
+}
+
+.current-price {
+    font-family: Montserrat, sans-serif;
+    font-weight: 400;
+    color: #7A7A7A;
+    font-size: 20px;
+}
+
+.unit-label {
+    font-family: Montserrat, sans-serif;
+    font-weight: 400;
+    color: #7A7A7A;
+    font-size: 20px;
+}
+
+.controls-design {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.price-display-large {
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 1.2;
+    flex-grow: 1;
+    color: #222222;
+    width: 60%;
+}
+
+.add-to-cart-button-design {
+    background: #902067;
+    border: none;
+    border-radius: 35px;
+    width: 72px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.favorite-button-design {
+    background: #FFFFFF;
+    border-radius: 35px;
+    width: 72px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    outline: none;
+    border: none;
+}
+
+.info-message {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    color: #7A7A7A;
+    font-family: Montserrat, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.info-message::before {
+    content: '!';
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: #7A7A7A;
+    border: 2px solid #7A7A7A;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    text-align: center;
+    line-height: 29px;
+    font-size: 20px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+.add-to-cart-btn-item {
+    background: #902067;
+    border: none;
+    border-radius: 35px;
+    width: 72px;
+    height: 50px;
+    padding: 0;
+    transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.add-to-cart-btn-item.expanded {
+    width: 83%;
+    padding: 0 10px;
+    justify-content: space-between;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.add-to-cart-btn-item.expanded .minus,
+.add-to-cart-btn-item.expanded .plus {
+    font-size: 36px;
+    font-weight: 500;
+    color: white;
+    cursor: pointer;
+    padding: 0 10px;
+    user-select: none;
+}
+
+.add-to-cart-btn-item.expanded .cart-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.2;
+}
+
+.add-to-cart-btn-item.expanded .price-in-cart {
+    font-family: Montserrat, sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    color: #FBFBFB;
+
+}
+
+.add-to-cart-btn-item.expanded .quantity-in-cart {
+    font-family: Montserrat, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    text-align: center;
+    color: #FBFBFB;
+
+}
+.controls-design {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+}

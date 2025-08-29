@@ -1,0 +1,135 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { NavLink } from 'react-router-dom';
+import { fetchCatalogData, fetchSectionDetails } from '../../api/services/catalogService';
+import SkeletonLoader from '../SkeletonLoader/SkeletonLoader.jsx';
+import './style/Catalog.css';
+
+const CatalogDropdown = () => {
+    const [categories, setCategories] = useState([]);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [subCategoryCache, setSubCategoryCache] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
+    const [isContentLoading, setIsContentLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const activeCategory = categories.length > 0 ? categories[activeIndex] : null;
+
+    useEffect(() => {
+        const loadInitialData = async () => {
+            try {
+                const data = await fetchCatalogData();
+                setCategories(data);
+            } catch (err) {
+                setError(err.message || 'Failed to load initial data');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadInitialData();
+    }, []);
+
+    const loadAllSections = useCallback(async (sections) => {
+        const isDataMissing = sections.some(s => !subCategoryCache[s.id]);
+        if (!isDataMissing) {
+            return;
+        }
+
+        setIsContentLoading(true);
+        try {
+            const promises = sections
+                .filter(section => !subCategoryCache[section.id])
+                .map(section => fetchSectionDetails(section.id).then(data => ({ id: section.id, data })));
+
+            const results = await Promise.all(promises);
+
+            const newCacheEntries = results.reduce((acc, result) => {
+                if (result.data) {
+                    acc[result.id] = result.data;
+                }
+                return acc;
+            }, {});
+
+            setSubCategoryCache(prevCache => ({
+                ...prevCache,
+                ...newCacheEntries,
+            }));
+
+        } catch (err) {
+            console.error("Failed to load section details", err);
+        } finally {
+            setIsContentLoading(false);
+        }
+    }, [subCategoryCache]);
+
+    useEffect(() => {
+        if (activeCategory?.sections.length > 0) {
+            loadAllSections(activeCategory.sections);
+        }
+    }, [activeCategory, loadAllSections]);
+
+    if (isLoading) return <div className="catalog-dropdown-message"></div>;
+    if (error) return <div className="catalog-dropdown-message error">{error}</div>;
+    if (!activeCategory) return null;
+
+    return (
+        <div className="catalog-dropdown">
+            <div className="catalog-sidebar">
+                {categories.map((category, index) => (
+                    <div
+                        key={category.id}
+                        className={`catalog-sidebar-item ${index === activeIndex ? 'active' : ''}`}
+                        onMouseEnter={() => setActiveIndex(index)}
+                    >
+                        <NavLink to={`/catalog/${category.id}`} className="sidebar-link">
+                            {category.title}
+                        </NavLink>
+                        {index === activeIndex && (
+                            <svg className="arrow-icon" width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fillRule="evenodd" clipRule="evenodd" d="M0.46967 0.46967C0.176777 0.762563 0.176777 1.23744 0.46967 1.53033L5.93934 7L0.46967 12.4697C0.176777 12.7626 0.176777 13.2374 0.46967 13.5303C0.762563 13.8232 1.23744 13.8232 1.53033 13.5303L7.53033 7.53033C7.82322 7.23744 7.82322 6.76256 7.53033 6.46967L1.53033 0.46967C1.23744 0.176777 0.762563 0.176777 0.46967 0.46967Z" fill="#902067"/>
+                            </svg>
+                        )}
+                    </div>
+                ))}
+            </div>
+
+            <div className="catalog-content">
+                <NavLink to={`/catalog/${activeCategory.id}`} className="catalog-title-link">
+                    <h3 className="catalog-title">{activeCategory.title}</h3>
+                </NavLink>
+                {isContentLoading ? (
+                    <SkeletonLoader />
+                ) : (
+                    <div className="catalog-columns-wrapper">
+                        {activeCategory.sections.length > 0 ? (
+                            activeCategory.sections.map((section) => {
+                                const subCategoriesData = subCategoryCache[section.id];
+                                const subCategoriesList = subCategoriesData?.categories || [];
+
+                                return (
+                                    <div key={section.id} className="catalog-column">
+                                        <NavLink to={`/catalog/${activeCategory.id}/${section.id}`} className="catalog-subtitle-link">
+                                            <h4 className="catalog-subtitle">{section.title}</h4>
+                                        </NavLink>
+                                        <ul className="catalog-list">
+                                            {subCategoriesList.map((sub) => (
+                                                <li key={sub.id}>
+                                                    <NavLink to={`/catalog/${activeCategory.id}/${section.id}/${sub.id}`} className="catalog-list-item">
+                                                        {sub.title}
+                                                    </NavLink>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                );
+                            })
+                        ) : (
+                            <p>В этой категории нет разделов.</p>
+                        )}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default CatalogDropdown;

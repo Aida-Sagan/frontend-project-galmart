@@ -1,13 +1,8 @@
 .filterable-section {
     width: 100%;
+    font-family: 'Montserrat', sans-serif;
 }
 
-
-.section__grid {
-    display: flex;
-    gap: 20px;
-    flex-wrap: nowrap;
-}
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -38,54 +33,41 @@
     cursor: pointer;
     transition: background-color 0.2s ease;
     font-size: 16px;
+    white-space: nowrap;
 }
+
 .filter-button:hover {
     background-color: #C6D600;
-    color: #222222;
 }
 
 .filter-button.active {
     background-color: #C6D600;
-    color: #222222;
 }
 
-.product-list {
+.section__grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 24px;
-}
-.card-flip-wrapper {
-    width: 280px;
-    height: 100%;
-    perspective: 1000px;
+    gap: 20px;
 }
 
-.card-flip-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.6s ease;
-    transform-style: preserve-3d;
-}
-
-.card-flip-front,
-.card-flip-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    top: 0;
-    left: 0;
-}
-
-.card-flip-back {
-    background: #F5F5F5;
+.sale-description-card {
+    background: #f5f5f5;
     border-radius: 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 5px;
+    padding: 24px;
+    flex-grow: 1;
+    min-width: 164px;
+}
+
+.sale-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.sale-description {
+    font-size: 16px;
+    color: #7A7A7A;
+    margin-bottom: 24px;
 }
 
 .watch-more-btn {
@@ -95,22 +77,33 @@
     padding: 13px 26px;
     color: #fff;
     cursor: pointer;
-
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
+    transition: all 0.2s ease;
 }
-.watch-more-btn:hover{
+
+.watch-more-btn:hover {
     background-color: #fff;
     border: 2px solid #902067;
     color: #902067;
 }
 
+.view-all-mobile-btn {
+    display: none;
+}
 
-@media (max-width: 1440px) {
-    .sale-description-card {
-        padding: 32px;
-    }
-
+.product-card-placeholder {
+    border-radius: 24px;
+    background: #f5f5f5;
+    padding: 12px;
+    min-width: 280px;
+    flex-grow: 1;
+    text-align: center;
+}
+.product-card-placeholder img {
+    width: 100%;
+    border-radius: 16px;
+    margin-bottom: 8px;
 }
 
 @media (max-width: 1230px) {
@@ -118,21 +111,19 @@
         font-size: 12px;
         padding: 14px 16px;
     }
-
 }
 
 @media (max-width: 1000px) {
     .filter-button {
-       padding: 12px 16px;
+        padding: 12px 16px;
     }
-
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .section-header {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
         gap: 12px;
+        align-items: center;
     }
 
     .section-title {
@@ -141,9 +132,13 @@
 
     .filter-buttons {
         overflow-x: auto;
-        white-space: nowrap;
         padding-bottom: 8px;
         gap: 8px;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .filter-buttons::-webkit-scrollbar {
+        display: none;
     }
 
     .filter-button {
@@ -153,26 +148,23 @@
         border-radius: 20px;
     }
 
-    .section__grid {
-        flex-direction: column;
-        gap: 20px;
+    .sale-description-card .watch-more-btn {
+        display: none;
     }
 
-    .sale-description-card {
+    .view-all-mobile-btn {
+        display: block;
         width: 100%;
-        padding: 24px;
-    }
-
-    .sale-title {
-        font-size: 20px;
-    }
-
-    .sale-description {
+        margin-top: 20px;
+        padding: 16px;
         font-size: 16px;
-    }
-
-    .watch-more-btn {
-        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+        background-color: #902067;
+        border: none;
+        border-radius: 24px;
+        cursor: pointer;
+        text-align: center;
     }
 
     .watch-more-btn:hover {
@@ -192,26 +184,24 @@
     }
 }
 
-@media (max-width: 393px) {
+@media (max-width: 700px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
     .section-title {
         font-size: 20px;
     }
 
-    .sale-description-card {
-        padding: 20px;
+    .filter-buttons {
+        width: 100%;
     }
 
-    .sale-title {
-        font-size: 18px;
-    }
-
-    .sale-description {
-        font-size: 14px;
-        margin-bottom: 24px;
-    }
-
-    .watch-more-btn {
-        font-size: 14px;
-        padding: 12px 20px;
+    .view-all-mobile-btn {
+        font-size: 16px;
+        padding: 18px 20px;
     }
 }
+

@@ -30,6 +30,7 @@
     line-height: 140%;
     color: #4E4E4E;
     margin-bottom: 40px;
+    font-weight: 400;
 }
 
 .watch-more-btn {
@@ -102,11 +103,6 @@
 
 
 @media (max-width: 768px) {
-    .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-    }
 
     .section-title {
         font-size: 24px;
@@ -133,7 +129,7 @@
 
     .sale-description-card {
         width: 100%;
-        padding: 24px;
+        padding: 24px 24px 24px 7px;
     }
 
     .sale-title {
@@ -145,7 +141,8 @@
     }
 
     .watch-more-btn {
-        font-size: 16px;
+        font-size: 18px;
+        width: 222px;
     }
 
     .watch-more-btn:hover {
@@ -175,11 +172,11 @@
     }
 
     .sale-title {
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .sale-description {
-        font-size: 14px;
+        font-size: 12px;
         margin-bottom: 24px;
     }
 

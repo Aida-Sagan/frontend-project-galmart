@@ -272,6 +272,7 @@ span.price-in-cart {
     }
 }
 
+
 @media (max-width: 768px) {
     .product-card {
         padding: 8px;
@@ -280,16 +281,6 @@ span.price-in-cart {
 
     .image-container {
         height: 180px;
-    }
-
-    .product-name {
-        font-size: 14px;
-        margin-bottom: 0;
-        height: auto;
-    }
-
-    .product-price {
-        font-size: 18px;
     }
 
     .description-text {
@@ -301,10 +292,13 @@ span.price-in-cart {
 
     .add-to-cart-btn {
         height: 36px;
-        width: 48px;
+        width: 44px;
         padding: 16px;
         font-size: 12px;
         gap: 8px;
+    }
+    .add-icon-in-price {
+        height: 21px;
     }
 
     .add-to-cart-btn.expanded {
@@ -323,5 +317,47 @@ span.price-in-cart {
     .product-label svg {
         width: 30px;
         height: 30px;
+    }
+}
+
+@media (min-width: 394px) and (max-width: 768px) {
+    .product-card {
+        width: 212px;
+    }
+    .product-name {
+        font-size: 14px;
+        margin-bottom: 0;
+        height: auto;
+    }
+    .price-descr {
+        font-size: 14px;
+    }
+    .product-price{
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 393px) {
+    .product-card {
+        width: 164px;
+    }
+
+    .product-name {
+        font-size: 12px;
+        margin-bottom: 0;
+        height: auto;
+    }
+
+    .price-descr {
+        font-size: 12px;
+    }
+
+    .product-subprice {
+        margin-top: 0px;
+        margin-bottom: 14px;
+    }
+
+    .product-price{
+        font-size: 14px;
     }
 }

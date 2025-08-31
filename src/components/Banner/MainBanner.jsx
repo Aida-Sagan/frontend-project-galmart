@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './style/MainBanner.css';
+
 import { ReactComponent as ArrowLeft } from '../../assets/svg/nav-arrow-left.svg';
 import { ReactComponent as ArrowRight } from '../../assets/svg/nav-arrow-right.svg';
 import { fetchHomepageBanners } from '../../api/services/bannerService';
+
+import './style/MainBanner.css';
+
 
 const MainBanner = () => {
     const [banners, setBanners] = useState([]);

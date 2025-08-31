@@ -35,6 +35,10 @@ const SectionBlock = ({ title, products = [], sectionId, showMore = false, limit
                 {visibleProducts.map((item) => (
                     <ProductCard key={item.id} product={item} sectionId={sectionId} />
                 ))}
+                <a href="#" className="section__more-card">
+                    <div className="plus-icon">+</div>
+                    <span>Смотреть<br />больше</span>
+                </a>
             </div>
         </div>
     );

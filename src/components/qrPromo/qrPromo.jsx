@@ -1,9 +1,12 @@
 import React from 'react';
-import './style/qrPromo.css';
+
 import phoneImage from '../../assets/qr/mobile.png';
 import qr from '../../assets/qr/qr.png';
 import appStore from '../../assets/qr/appstore.png';
 import googlePlay from '../../assets/qr/google_pay.png';
+
+import './style/qrPromo.css';
+
 
 const QrPromo = () => {
     return (

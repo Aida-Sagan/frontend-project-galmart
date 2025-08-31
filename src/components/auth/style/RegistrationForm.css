@@ -104,6 +104,14 @@ input[type="text"] {
 
 }
 
+@media (max-width: 768px) {
+    input[type="text"] {
+        font-size: 12px;
+        padding: 0;
+    }
+
+}
+
 input:focus,
 .react-datepicker__input-container input:focus {
     border: 2px solid #902067;

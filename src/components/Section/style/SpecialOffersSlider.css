@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    position: relative;
 }
 
 .slider-header {
@@ -16,6 +17,7 @@
     font-weight: 500;
     font-size: 30px;
     line-height: 120%;
+    color: #222222;
 }
 
 .slider-controls {
@@ -47,19 +49,23 @@
     height: 20px;
 }
 
+.slider-container {
+    overflow: hidden;
+    position: relative;
+}
+
 .slider-track {
     display: flex;
-    overflow: hidden;
+    transition: transform 0.5s ease-in-out;
 }
 
 .slider-track > *:not(:last-child) {
     margin-right: 24px;
 }
 
-
 .slider-banner {
     flex-shrink: 0;
-    width: 33%;
+    width: calc(33.333% - 16px);
     height: 265px;
     border-radius: 32px;
     overflow: hidden;
@@ -69,13 +75,10 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    cursor: pointer;
 }
 
-@media (max-width: 1440px) {
-    .slider-banner {
-        width: 32%;
-    }
+.slider-dots {
+    display: none;
 }
 
 @media (max-width: 768px) {
@@ -83,20 +86,51 @@
         font-size: 24px;
     }
 
-    .slider-button {
-        width: 36px;
-        height: 36px;
+    .slider-controls {
+        display: none;
     }
 
-    .slider-icon {
-        width: 18px;
-        height: 18px;
+    .slider-track {
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        transform: none !important;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .slider-track::-webkit-scrollbar {
+        display: none;
     }
 
     .slider-banner {
-        width: 50%;
+        width: 85%;
         height: 200px;
         border-radius: 24px;
+        scroll-snap-align: start;
+    }
+
+    .slider-dots {
+        position: absolute;
+        bottom: 10px;
+        left: 32px;
+        display: flex;
+        gap: 8px;
+        z-index: 2;
+    }
+
+    .slider-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #902067;
+        opacity: 30%;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: background-color 0.3s ease;
+    }
+
+    .slider-dot.active {
+        background-color: #8B005D;
     }
 }
 
@@ -106,8 +140,13 @@
     }
 
     .slider-banner {
-        width: 80%;
+        width: 90%;
         height: 180px;
         border-radius: 16px;
     }
+
+    .slider-dots {
+        left: 20px;
+    }
 }
+

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './style/ProductCard.css';
+
 import { ReactComponent as HeartIcon } from '../../assets/svg/like.svg';
 import { ReactComponent as HeartLikedIcon } from '../../assets/svg/liked.svg';
 import { ReactComponent as PlusIcon } from '../../assets/svg/plus.svg';
@@ -7,6 +7,8 @@ import { ReactComponent as MinusIcon } from '../../assets/svg/minus.svg';
 import { ReactComponent as EcoIcon } from '../../assets/svg/eco.svg';
 import { ReactComponent as GalmIcon } from '../../assets/svg/galm_icon.svg';
 import { ReactComponent as BonusIcon } from '../../assets/svg/2_1.svg';
+
+import './style/ProductCard.css';
 
 const ProductCard = ({ product }) => {
     const {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import Container from '../Container/Container';
@@ -23,7 +23,16 @@ const Header = () => {
     const [isCatalogOpen, setCatalogOpen] = useState(false);
     const [isSearchFocused, setSearchFocused] = useState(false);
     const [isMenuOpen, setMenuOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const closeMenu = () => setMenuOpen(false);
 
     return (
@@ -38,17 +47,23 @@ const Header = () => {
                             <div className="header__search-wrapper">
                                 <div
                                     className="header__catalog-wrapper"
-                                    onMouseEnter={() => setCatalogOpen(true)}
-                                    onMouseLeave={() => setCatalogOpen(false)}
+                                    {...(!isMobile && {
+                                        onMouseEnter: () => setCatalogOpen(true),
+                                        onMouseLeave: () => setCatalogOpen(false),
+                                    })}
                                 >
                                     <button
                                         className="header__catalog-btn"
-                                        onClick={() => navigate('/catalog')}
+                                        onClick={() => {
+                                            if (isMobile) {
+                                                navigate('/catalog');
+                                            }
+                                        }}
                                     >
                                         <img src={catalogIcon} alt="Каталог" />
                                         <span>Каталог</span>
                                     </button>
-                                    {isCatalogOpen && <CatalogDropdown />}
+                                    {!isMobile && isCatalogOpen && <CatalogDropdown />}
                                 </div>
                                 <input
                                     type="text"

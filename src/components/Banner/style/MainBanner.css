@@ -78,3 +78,38 @@
     width: 24px;
     border-radius: 4px;
 }
+
+@media (max-width: 768px) {
+    .banner-arrow {
+        display: none;
+    }
+
+    .banner-dots {
+        position: static;
+        margin-top: 10px;
+        margin-left: 9px;
+        transform: none;
+        justify-content: flex-start;
+    }
+
+    .main-banner {
+        margin-bottom: 20px;
+    }
+
+    .banner-dot {
+        width: 8px;
+        height: 8px;
+        background-color: rgba(144, 32, 103, 0.3);
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background-color 0.3s ease, width 0.3s ease;
+    }
+
+    .banner-dot.active {
+        background-color: #902067;
+        width: 24px;
+        border-radius: 4px;
+    }
+
+}
+

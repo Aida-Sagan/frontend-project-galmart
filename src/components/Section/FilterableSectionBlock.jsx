@@ -55,6 +55,8 @@ const FilterableSectionBlock = ({ collections = [] }) => {
                     <ProductCard key={product.id} product={product} />
                 ))}
             </div>
+            <button className="view-all-mobile-btn">Смотреть больше</button>
+
         </section>
     );
 };

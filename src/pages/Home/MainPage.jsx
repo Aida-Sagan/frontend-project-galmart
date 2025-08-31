@@ -55,10 +55,10 @@ export default function MainPage() {
             <div className="home-container">
                 <MainBanner banners={pageData.banners} />
 
-                <div className="home-buttons">
-                    <Link to="/login" className="home-btn">Войти</Link>
-                    <Link to="/register" className="home-btn">Зарегистрироваться</Link>
-                </div>
+                {/*<div className="home-buttons">*/}
+                {/*    <Link to="/login" className="home-btn">Войти</Link>*/}
+                {/*    <Link to="/register" className="home-btn">Зарегистрироваться</Link>*/}
+                {/*</div>*/}
 
                 {regularProductOffers.map(category => (
                     <SectionBlock

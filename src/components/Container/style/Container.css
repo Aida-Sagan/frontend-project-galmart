@@ -5,6 +5,13 @@
     box-sizing: border-box;
 }
 
+
+@media (min-width: 1930px) and (max-width: 3000px) {
+    .container {
+        max-width: 58%;
+    }
+}
+
 @media (max-width: 1600px) {
     .container {
         max-width: 87.5%;
@@ -25,7 +32,7 @@
 
 @media (max-width: 768px) {
     .container {
-        max-width: 92%;
+        max-width: 97%;
     }
 }
 

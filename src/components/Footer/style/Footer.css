@@ -15,6 +15,17 @@
     gap: 40px;
 }
 
+@media (min-width: 1930px) and (max-width: 3000px) {
+    .footer__container {
+        max-width: 58%;
+    }
+
+    .footer__bottom {
+        max-width: 58% !important;
+
+    }
+}
+
 .footer__col {
     flex: 1;
     min-width: 220px;

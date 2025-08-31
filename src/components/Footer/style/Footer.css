@@ -127,3 +127,32 @@
     font-size: 14px;
     color: #7A7A7A;
 }
+
+
+@media (max-width: 480px) {
+    .footer{
+        padding: 24px 12px;
+    }
+
+    .footer__col p{
+        font-size: 10px;
+        width: 177px;
+    }
+    .footer__col--brand {
+        gap: 11px;
+    }
+    .footer__col h4{
+        font-size: 10px;
+    }
+    .footer__col ul{
+        gap: 11px;
+        width: 177px;
+    }
+    .footer__col ul li{
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 992px) {}
+
+@media (max-width: 1200px) {}

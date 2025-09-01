@@ -1,4 +1,6 @@
 import '../../styles/LoginPage.css';
+import './styles/EnterCode.css';
+
 import EnterCodePromo from "@/components/auth/EnterCodePromo.jsx";
 import EnterCodeForm from "@/components/auth/EnterCodeForm.jsx";
 
@@ -11,7 +13,7 @@ export default function EnterCode() {
                 <div className="block-login">
                     <h2 className="registration-title">Введите код</h2>
                     <div className="block-registration-description">
-                        <p className="registration-description">
+                        <p className="sent-number-text">
                            Отправили на номер +7 (ХХХ) ХХХ-ХХ-ХХ
                         </p>
                     </div>

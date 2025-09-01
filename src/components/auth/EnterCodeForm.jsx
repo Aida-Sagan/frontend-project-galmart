@@ -92,20 +92,24 @@ export default function EnterCodeForm() {
                 <p className="code-error">Код неверный, попробуйте снова</p>
             )}
 
-            <button
-                className="btn-get-code"
-                onClick={handleResend}
-                disabled={timer > 0}
-            >
-                {timer > 0 ? `Новый код через 0:${timer.toString().padStart(2, '0')}` : 'Получить новый код'}
-            </button>
+            <div className="btn-group">
+                <button
+                    className="btn-get-code"
+                    onClick={handleResend}
+                    disabled={timer > 0}
+                >
+                    {timer > 0 ? `Новый код через 0:${timer.toString().padStart(2, '0')}` : 'Получить новый код'}
+                </button>
 
-            <button
-                className="btn-back-to-home"
-                onClick={() => navigate('/')}
-            >
-                Вернуться на сайт
-            </button>
+                <button
+                    className="btn-back-to-home"
+                    onClick={() => navigate('/')}
+                >
+                    Вернуться на сайт
+                </button>
+            </div>
+
+
         </div>
     );
 }

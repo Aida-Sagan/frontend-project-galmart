@@ -55,9 +55,7 @@ const Header = () => {
                                     <button
                                         className="header__catalog-btn"
                                         onClick={() => {
-                                            if (isMobile) {
                                                 navigate('/catalog');
-                                            }
                                         }}
                                     >
                                         <img src={catalogIcon} alt="Каталог" />

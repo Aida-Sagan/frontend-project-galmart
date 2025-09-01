@@ -28,7 +28,8 @@ input::placeholder {
     line-height: 120%;
     color: #7A7A7A;
     width: 326px;
-    margin-left: 35px;
+    margin-left: 20px;
+    margin-top: -5px;
 }
 .date-picker-wrapper {
     position: relative;
@@ -51,7 +52,7 @@ input::placeholder {
 .btn-register {
     width: 100%;
     padding: 16px;
-    margin-top: 24px;
+    margin-top: 16px;
     height: 64px;
     border-radius: 64px;
     border: none;

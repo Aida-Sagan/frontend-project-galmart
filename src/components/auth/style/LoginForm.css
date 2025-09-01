@@ -2,10 +2,9 @@ form {
     display: flex;
     flex-direction: column;
     gap: 12px;
-
 }
 
-input{
+input {
     background: #F5F5F5;
     height: 63px;
     border-radius: 32px;
@@ -28,15 +27,19 @@ input::placeholder {
     line-height: 120%;
     color: #7A7A7A;
     width: 326px;
-    margin-left: 35px;
+    margin-left: 20px;
+    margin-top: -5px;
 }
+
 .date-picker-wrapper {
     position: relative;
     width: 100%;
 }
+
 .custom-date-input {
     padding: 16px 48px 16px 16px;
 }
+
 .calendar-icon {
     position: absolute;
     right: 16px;
@@ -48,20 +51,19 @@ input::placeholder {
     cursor: pointer;
     z-index: 22222 !important;
 }
+
 .btn-get-code {
     width: 100%;
     padding: 16px;
-    margin-top: 24px;
-    height: 64px;
+    margin-top: 14px;
+    height: 60px;
     border-radius: 64px;
     border: none;
     cursor: pointer;
-
     font-family: Montserrat, sans-serif;
     font-weight: 600;
     font-size: 18px;
     line-height: 120%;
-
     background: #DBDBDB;
     color: #A0A0A0;
     transition: background 0.3s ease, color 0.3s ease;
@@ -69,7 +71,7 @@ input::placeholder {
 
 .btn-get-code:not(:disabled) {
     background: #902067;
-    opacity: 80%;
+    /*opacity: 80%;*/
     color: #FBFBFB;
     cursor: pointer;
 }
@@ -78,13 +80,11 @@ input::placeholder {
     background: #7d1c5d;
 }
 
-
 .btn-back-to-home {
     height: 64px;
     border-radius: 64px;
     border: 2px solid #902067;
     background: #ffffff;
-
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     font-size: 18px;
@@ -97,6 +97,7 @@ input::placeholder {
     background: #902067;
     color: #ffffff;
 }
+
 .login-form-container input:focus,
 .login-form-container .react-datepicker__input-container input:focus {
     border: 2px solid #902067 !important;
@@ -109,9 +110,11 @@ input::placeholder {
     line-height: 120%;
     vertical-align: middle;
     color: #222222;
-    padding: 0 0 0 20px;
+    padding: 0 48px 0 20px;
+    width: 100%;
+    border: 2px solid #F5F5F5;
+    box-sizing: border-box;
 }
-
 
 .error-text {
     color: #FF6A6A;
@@ -119,3 +122,31 @@ input::placeholder {
     margin-top: 4px;
     margin-left: 12px;
 }
+
+.field-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.clear-btn {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #E9E9E9;
+    color: #7A7A7A;
+    border: none;
+    border-radius: 35px;
+    width: 44px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.clear-btn:hover {
+    background-color: #cccccc;
+}
+

@@ -1,7 +1,9 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, ErrorMessage } from 'formik';
-import { IMaskInput } from 'react-imask';
-import './style/LoginForm.css';
+import { IMaskInput } from 'react-imask'; // Возвращаем IMaskInput для маски
+import { X } from 'lucide-react';
+import './style/LoginForm.css'; // Подключаем внешний файл стилей
 
 export default function LoginForm({ agreeTerms }) {
     const navigate = useNavigate();
@@ -12,14 +14,12 @@ export default function LoginForm({ agreeTerms }) {
                 initialValues={{ phone: '' }}
                 validate={(values) => {
                     const errors = {};
-                    const kzPhoneRegex = /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/;
-
+                    const unmaskedValue = values.phone.replace(/\D/g, '');
                     if (!values.phone) {
                         errors.phone = 'Введите номер телефона';
-                    } else if (!kzPhoneRegex.test(values.phone.trim())) {
-                        errors.phone = 'Неверный формат.';
+                    } else if (!/^7\d{10}$/.test(unmaskedValue)) {
+                        errors.phone = 'Неверный формат. Введите 10 цифр после +7.';
                     }
-
                     return errors;
                 }}
                 validateOnMount
@@ -29,24 +29,35 @@ export default function LoginForm({ agreeTerms }) {
                 }}
             >
                 {({ isValid, setFieldValue, values }) => (
-                    <Form className="w-full max-w-sm space-y-4">
+                    <Form className="login-form">
                         <div className="field-wrapper">
                             <IMaskInput
                                 name="phone"
                                 mask="+7 (000) 000-00-00"
                                 value={values.phone}
                                 onAccept={(value) => setFieldValue('phone', value)}
-                                placeholder="+7 (000) 000-00-00"
+                                placeholder="+7 (___) ___-__-__"
                                 className="custom-input"
                                 inputMode="numeric"
                             />
-                            <ErrorMessage name="phone" component="div" className="error-text" />
+                            {values.phone && (
+                                <button
+                                    type="button"
+                                    className="clear-btn"
+                                    onClick={() => setFieldValue('phone', '')}
+                                    aria-label="Очистить поле"
+                                >
+                                    <X size={18} />
+                                </button>
+                            )}
                         </div>
+                        <ErrorMessage name="phone" component="div" className="error-text" />
 
                         <button
                             type="submit"
                             disabled={!isValid || !agreeTerms}
                             className="btn-get-code"
+                            onClick={() => navigate('/verify')}
                         >
                             Получить код по SMS
                         </button>
@@ -64,3 +75,4 @@ export default function LoginForm({ agreeTerms }) {
         </div>
     );
 }
+

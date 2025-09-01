@@ -18,6 +18,7 @@
     align-items: end;
     justify-content: center;
     z-index: 2;
+    bottom: 2%;
 }
 
 
@@ -44,7 +45,6 @@
 
 }
 .registration-overlay-content .subtext {
-    margin-top: 0.5rem;
     font-size: 20px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
@@ -52,5 +52,6 @@
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+    margin-top: -26px;
 
 }

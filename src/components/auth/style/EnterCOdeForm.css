@@ -31,7 +31,10 @@
     outline: none;
     font-family: 'Montserrat', sans-serif;
     color: #222;
+    line-height: 70px;
+    padding: 0;
 }
+
 .code-box input:focus  {
     border-radius:20px;
 }
@@ -41,4 +44,11 @@
     font-size: 18px;
     letter-spacing: 2px;
     font-weight: 500;
+}
+
+.btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
 }

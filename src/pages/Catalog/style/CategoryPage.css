@@ -58,7 +58,7 @@
 
 .carousel-arrow {
     position: absolute;
-    top: 40%;
+    top: 36%;
     transform: translateY(-50%);
     z-index: 10;
     background: white;

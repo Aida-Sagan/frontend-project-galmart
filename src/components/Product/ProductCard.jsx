@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { Link } from 'react-router-dom';
 import { ReactComponent as HeartIcon } from '../../assets/svg/like.svg';
 import { ReactComponent as HeartLikedIcon } from '../../assets/svg/liked.svg';
 import { ReactComponent as PlusIcon } from '../../assets/svg/plus.svg';
@@ -12,6 +12,7 @@ import './style/ProductCard.css';
 
 const ProductCard = ({ product }) => {
     const {
+        id,
         title,
         unit_price = 0,
         old_unit_price = 0,
@@ -34,22 +35,27 @@ const ProductCard = ({ product }) => {
     const hasBonus = flags.includes('bonus');
 
     const toggleFavorite = (e) => {
+        e.preventDefault();
         e.stopPropagation();
         setIsFavorite(prev => !prev);
     };
 
-    const handleAddToCart = () => {
+    const handleAddToCart = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         if (quantity === 0) {
             setQuantity(1);
         }
     };
 
     const handleIncrement = (e) => {
+        e.preventDefault();
         e.stopPropagation();
         setQuantity(prev => (prev < inventory ? prev + 1 : prev));
     };
 
     const handleDecrement = (e) => {
+        e.preventDefault();
         e.stopPropagation();
         setQuantity(prev => (prev > 0 ? prev - 1 : 0));
     };
@@ -59,9 +65,10 @@ const ProductCard = ({ product }) => {
     };
 
     const imageUrl = photos.length > 0 ? photos[0] : 'https://via.placeholder.com/200';
+    const productUrl = `/product/${id}`;
 
     return (
-        <div className="product-card">
+        <Link to={productUrl} className="product-card">
             <div className="product-labels">
                 {isGalmart && <span className="product-label galmart"><GalmIcon /></span>}
                 {isEco && <span className="product-label eco"><EcoIcon /></span>}
@@ -107,14 +114,13 @@ const ProductCard = ({ product }) => {
                             <div className="add-icon-in-price">
                                 <PlusIcon />
                             </div>
-
                         )}
                     </button>
                 </div>
-
             </div>
-        </div>
+        </Link>
     );
 };
 
 export default ProductCard;
+

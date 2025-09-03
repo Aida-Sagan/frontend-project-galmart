@@ -30,7 +30,7 @@ function AppContent() {
                     <Route path="/catalog/:categoryId" element={<CategoryPage />} />
                     <Route path="/catalog/:categoryId/:subcategoryId" element={<CategoryPage />} />
                     <Route path="/favorites" element={<FavoritesPage />} />
-                    <Route path="/product/:sectionId/:productId" element={<ProductPage />} />
+                    <Route path="/product/:productId" element={<ProductPage />} />
                 </Routes>
             </main>
             {!shouldHideHeader &&  <Footer />}

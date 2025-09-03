@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { fetchSectionDetails } from '../../api/services/catalogService.js';
+import { fetchProductDetails } from '../../api/services/catalogService.js';
 import ProductGallery from '../../components/Product/Detail/ProductGallery.jsx';
 import ProductActions from '../../components/Product/Detail/ProductActions';
 import ProductDetails from '../../components/Product/Detail/ProductDetails';
@@ -8,7 +8,7 @@ import RecommendedProducts from '../../components/Product/Detail/RecommendedProd
 import './styles/ProductPage.css';
 
 const ProductPage = () => {
-    const { sectionId, productId } = useParams();
+    const { productId } = useParams();
     const [product, setProduct] = useState(null);
     const [recommended, setRecommended] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -17,40 +17,35 @@ const ProductPage = () => {
 
     useEffect(() => {
         const loadProductData = async () => {
+            // Сбрасываем состояние перед каждой загрузкой
             setIsLoading(true);
             setError(null);
+            setProduct(null);
 
             try {
-                const sectionData = await fetchSectionDetails(sectionId);
+                // Вызываем правильную функцию с правильным ID
+                const currentProduct = await fetchProductDetails(productId);
+                setProduct(currentProduct);
 
-                if (sectionData && sectionData.goods) {
-                    const currentProduct = sectionData.goods.find(p => p.id === parseInt(productId));
+                // Логика для рекомендованных товаров пока отключена,
+                // так как у нас нет sectionId для их загрузки.
+                // setRecommended(...)
 
-                    if (currentProduct) {
-                        setProduct(currentProduct);
-                        const otherProducts = sectionData.goods.filter(p => p.id !== parseInt(productId));
-                        setRecommended(otherProducts.slice(0, 5));
-                    } else {
-                        setError('Товар не найден в данной секции.');
-                    }
-                } else {
-                    setError('Не удалось загрузить данные категории.');
-                }
             } catch (err) {
-                setError('Произошла ошибка при загрузке.');
+                setError('Произошла ошибка при загрузке товара.');
                 console.error(err);
             } finally {
                 setIsLoading(false);
             }
         };
 
-        if (sectionId && productId) {
+        if (productId) {
             loadProductData();
         }
-    }, [sectionId, productId]);
+    }, [productId]); // Зависимость только от productId
 
     if (isLoading) {
-        return <div className="loading-message"></div>;
+        return <div className="loading-message">Загрузка...</div>;
     }
 
     if (error) {
@@ -62,10 +57,10 @@ const ProductPage = () => {
     }
 
     const nutritionalInfo = {
-        calories: product.calories || 59,
-        protein: product.protein || 2.9,
-        fat: product.fat || 3.2,
-        carbohydrates: product.carbohydrates || 4.7,
+        calories: product.calories || 0,
+        protein: product.protein || 0,
+        fat: product.fat || 0,
+        carbohydrates: product.carbohydrates || 0,
     };
 
     return (
@@ -100,9 +95,10 @@ const ProductPage = () => {
                 </div>
             </main>
 
-            <RecommendedProducts items={recommended} currentSectionId={sectionId} />
+            <RecommendedProducts items={recommended} />
         </div>
     );
 };
 
 export default ProductPage;
+

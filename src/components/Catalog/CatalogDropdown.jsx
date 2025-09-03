@@ -113,9 +113,13 @@ const CatalogDropdown = () => {
                                         <ul className="catalog-list">
                                             {subCategoriesList.map((sub) => (
                                                 <li key={sub.id}>
-                                                    <NavLink to={`/catalog/${activeCategory.id}/${section.id}/${sub.id}`} className="catalog-list-item">
+                                                    <div className="catalog-list-item">
                                                         {sub.title}
-                                                    </NavLink>
+                                                    </div>
+
+                                                    {/*<NavLink to={`/catalog/${activeCategory.id}/${section.id}/${sub.id}`} className="catalog-list-item">*/}
+                                                    {/*    {sub.title}*/}
+                                                    {/*</NavLink>*/}
                                                 </li>
                                             ))}
                                         </ul>

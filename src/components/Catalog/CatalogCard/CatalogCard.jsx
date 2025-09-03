@@ -3,11 +3,10 @@ import { Link } from 'react-router-dom';
 import '../style/Catalog.css';
 
 const CatalogCard = ({ category }) => {
-    const slug = category.id;
 
     return (
         <Link
-            to={`/catalog/${slug}`}
+            to={`/catalog/${category.id}`}
             className="catalog-page__card"
             style={{
                 backgroundColor: category.color,

@@ -1,15 +1,19 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { sendLoginCode } from '../../api/services/authService.js';
 import './style/EnterCOdeForm.css';
 
 export default function EnterCodeForm() {
+    const { login, loginPhone } = useAuth();
+
     const navigate = useNavigate();
+
     const [code, setCode] = useState(['', '', '', '']);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(false);
     const [timer, setTimer] = useState(60);
     const inputsRef = useRef([]);
-
-    const correctCode = '1234';
 
     useEffect(() => {
         if (timer > 0) {
@@ -18,7 +22,7 @@ export default function EnterCodeForm() {
         }
     }, [timer]);
 
-    const handleChange = (e, index) => {
+    const handleChange = async (e, index) => {
         const value = e.target.value.replace(/\D/, '');
 
         const newCode = [...code];
@@ -30,12 +34,15 @@ export default function EnterCodeForm() {
         }
 
         if (index === 3 && newCode.every((digit) => digit !== '')) {
-            const joined = newCode.join('');
-            if (joined === correctCode) {
-                navigate('/profile');
-            } else {
-                setError(true);
-                setTimer(60);
+            const joinedCode = newCode.join('');
+            setIsLoading(true);
+            setError('');
+            try {
+                const unmaskedPhone = loginPhone.replace(/\D/g, '');
+                await login(unmaskedPhone, joinedCode);
+            } catch (err) {
+                setError('Код неверный, попробуйте снова', err);
+                setIsLoading(false);
             }
         }
     };
@@ -59,18 +66,25 @@ export default function EnterCodeForm() {
     };
 
 
-    const handleResend = () => {
+    const handleResend = async () => {
         if (timer === 0) {
-            setCode(['', '', '', '']);
-            setError(false);
-            setTimer(60);
-            inputsRef.current[0]?.focus();
+            try {
+                await sendLoginCode(loginPhone.replace(/\D/g, ''));
+                setCode(['', '', '', '']);
+                setError('');
+                setTimer(60);
+                inputsRef.current[0]?.focus();
+            } catch (err) {
+                setError('Не удалось отправить код повторно', err);
+            }
         }
     };
 
     return (
         <div className="code-wrapper">
             <div className={`code-inputs ${error ? 'error' : ''}`}>
+
+
                 {code.map((digit, idx) => (
                     <div className="code-box" key={idx}>
                         <input

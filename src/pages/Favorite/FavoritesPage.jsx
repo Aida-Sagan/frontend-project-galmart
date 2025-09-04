@@ -1,28 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { useFavorites } from '../../context/FavoritesContext.jsx';
-import { fetchHomePageData } from '../../api/services/homepageService';
 import ProductCard from '../../components/Product/ProductCard';
 import Container from '../../components/Container/Container';
+import { fetchFavorites, clearAllFavorites } from '../../api/services/authService';
 import './styles/FavoritesPage.css';
 
 const FavoritesPage = () => {
-    const { favoriteIds } = useFavorites();
-    const [allProducts, setAllProducts] = useState([]);
+    const [favoriteProducts, setFavoriteProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const loadProducts = async () => {
-            const data = await fetchHomePageData();
-            if (data && data.product_offers) {
-                const products = data.product_offers.flatMap(offer => offer.goods);
-                setAllProducts(products);
+        const loadFavorites = async () => {
+            setLoading(true);
+            try {
+                const response = await fetchFavorites({ ordering: 'popular' });
+                setFavoriteProducts(response.data || []);
+            } catch (error) {
+                console.error("Не удалось загрузить избранные товары:", error);
+                setFavoriteProducts([]);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
-        loadProducts();
+
+        loadFavorites();
     }, []);
 
-    const favoriteProducts = allProducts.filter(product => favoriteIds.includes(product.id));
+    const handleClearFavorites = async () => {
+        try {
+            await clearAllFavorites();
+            setFavoriteProducts([]);
+        } catch (error) {
+            console.error("Ошибка при очистке избранного:", error);
+        }
+    };
 
     if (loading) {
         return <Container><div>Загрузка...</div></Container>;
@@ -33,7 +43,14 @@ const FavoritesPage = () => {
             <div className="favorites-page">
                 <div className="favorites-header">
                     <h1>Избранное</h1>
-                    <button className="clear-favorites-btn">Очистить</button>
+                    {favoriteProducts.length > 0 && (
+                        <button
+                            onClick={handleClearFavorites}
+                            className="clear-favorites-btn"
+                        >
+                            Очистить
+                        </button>
+                    )}
                 </div>
 
                 {favoriteProducts.length > 0 ? (

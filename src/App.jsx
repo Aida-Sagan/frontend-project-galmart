@@ -11,6 +11,9 @@ import CategoryPage from './pages/Catalog/CategoryPage.jsx';
 import FavoritesPage from './pages/Favorite/FavoritesPage.jsx';
 import ProductPage from './pages/Product/ProductPage';
 
+import { AuthProvider } from './context/AuthContext';
+import { FavoritesProvider } from './context/FavoritesContext.jsx';
+
 
 function AppContent() {
     const location = useLocation();
@@ -41,7 +44,11 @@ function AppContent() {
 function App() {
     return (
         <Router>
-            <AppContent />
+            <AuthProvider>
+                <FavoritesProvider>
+                    <AppContent />
+                </FavoritesProvider>
+            </AuthProvider>
         </Router>
     );
 }

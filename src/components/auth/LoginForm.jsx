@@ -1,13 +1,17 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, ErrorMessage } from 'formik';
-import { IMaskInput } from 'react-imask'; // Возвращаем IMaskInput для маски
+import { IMaskInput } from 'react-imask';
 import { X } from 'lucide-react';
-import './style/LoginForm.css'; // Подключаем внешний файл стилей
+import { sendLoginCode } from '../../api/services/authService.js';
+import { useAuth } from '../../context/AuthContext';
+
+import './style/LoginForm.css';
 
 export default function LoginForm({ agreeTerms }) {
     const navigate = useNavigate();
 
+    const { setLoginPhone } = useAuth();
     return (
         <div className="login-form-container">
             <Formik
@@ -23,13 +27,21 @@ export default function LoginForm({ agreeTerms }) {
                     return errors;
                 }}
                 validateOnMount
-                onSubmit={(values) => {
-                    console.log('Отправка номера:', values.phone);
-                    // navigate('/profile');
+                onSubmit={async (values, { setSubmitting, setFieldError }) => {
+                    try {
+                        const unmaskedValue = values.phone.replace(/\D/g, '');
+                        await sendLoginCode(unmaskedValue); // Вызываем API
+
+                        setLoginPhone(values.phone);
+                        navigate('/verify');
+                    } catch (error) {
+                        setFieldError('phone', 'Не удалось отправить код. Попробуйте позже.', error);
+                    } finally {
+                        setSubmitting(false);
+                    }
                 }}
             >
-                {({ isValid, setFieldValue, values }) => (
-                    <Form className="login-form">
+                {({ isValid, setFieldValue, values, isSubmitting }) => (                    <Form className="login-form">
                         <div className="field-wrapper">
                             <IMaskInput
                                 name="phone"
@@ -55,11 +67,10 @@ export default function LoginForm({ agreeTerms }) {
 
                         <button
                             type="submit"
-                            disabled={!isValid || !agreeTerms}
+                            disabled={!isValid || !agreeTerms || isSubmitting}
                             className="btn-get-code"
-                            onClick={() => navigate('/verify')}
                         >
-                            Получить код по SMS
+                            {isSubmitting ? 'Отправка...' : 'Получить код по SMS'}
                         </button>
 
                         <button

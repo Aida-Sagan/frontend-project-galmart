@@ -17,13 +17,11 @@ const ProductPage = () => {
 
     useEffect(() => {
         const loadProductData = async () => {
-            // Сбрасываем состояние перед каждой загрузкой
             setIsLoading(true);
             setError(null);
             setProduct(null);
 
             try {
-                // Вызываем правильную функцию с правильным ID
                 const currentProduct = await fetchProductDetails(productId);
                 setProduct(currentProduct);
 
@@ -42,7 +40,7 @@ const ProductPage = () => {
         if (productId) {
             loadProductData();
         }
-    }, [productId]); // Зависимость только от productId
+    }, [productId]);
 
     if (isLoading) {
         return <div className="loading-message">Загрузка...</div>;

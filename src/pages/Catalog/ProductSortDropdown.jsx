@@ -31,7 +31,7 @@ const ProductSortDropdown = ({ sortOption, setSortOption }) => {
                 className="sort-dropdown-button"
                 onClick={() => setIsOpen(prev => !prev)}
             >
-                Сортировка: {options.find(opt => opt.value === sortOption)?.label}
+                {options.find(opt => opt.value === sortOption)?.label}
                 <span className="arrow">    {isOpen ? <ArrowUpIcon /> : <ArrowDownIcon />}</span>
             </button>
 

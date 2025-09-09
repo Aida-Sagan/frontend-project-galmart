@@ -9,12 +9,15 @@ import QrPromo from '../../components/qrPromo/qrPromo';
 import { fetchHomePageData } from '../../api/services/homepageService';
 import Loader from '../../components/Loader/Loader.jsx';
 import ScrollToTopButton from '../../components/ScrollToTopButton/ScrollToTopButton';
+import CitySelectionModal from '../../components/AddressModal/CitySelectionModal.jsx';
 
 import './styles/MainPage.css';
 
 export default function MainPage() {
     const [pageData, setPageData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [city, setCity] = useState(localStorage.getItem('userCity'));
+    const [showCityModal, setShowCityModal] = useState(false);
 
     useEffect(() => {
         const loadPageData = async () => {

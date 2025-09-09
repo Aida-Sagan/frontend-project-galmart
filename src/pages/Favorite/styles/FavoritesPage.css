@@ -142,6 +142,11 @@
     margin-bottom: 24px;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
 .clear-favorites-btn {
     background-color: #F5F5F5;

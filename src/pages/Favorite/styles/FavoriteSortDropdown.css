@@ -1,7 +1,7 @@
-.sort-dropdown-wrapper {
+.sort-dropdown-wrap {
     position: relative;
     z-index: 10;
-    margin: 0px 0px 0px 20px;
+    margin: 0px 0px 0px 0px;
 }
 
 .sort-dropdown-button {
@@ -17,6 +17,7 @@
     align-items: center;
     gap: 8px;
     transition: background-color 0.2s;
+    width: 100%;
 }
 
 .sort-dropdown-button:hover {

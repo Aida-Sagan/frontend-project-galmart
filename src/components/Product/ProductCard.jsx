@@ -122,30 +122,32 @@ const ProductCard = ({ product }) => {
                     </p>
                 </div>
                 <div className="price-btn">
-                    <p className="product-price">{unit_price.toLocaleString('ru-RU')} {currency}</p>
-                    <button
-                        className={`add-to-cart-btn ${addedToCart ? 'expanded' : ''}`}
-                        onClick={handleAddToCart}
-                    >
-                        {addedToCart ? (
-                            <>
-                                <span className="minus" onClick={handleDecrement}>
-                                    <div className="minus-icon-in-price">
-                                         <MinusIcon />
-                                    </div>
-                                   </span>
-                                <div className="cart-info">
-                                    <span className="price-in-cart">{getTotalPrice()} {currency}</span>
-                                    <span className="quantity-in-cart">{quantity} {unit}</span>
-                                </div>
-                                <span className="plus" onClick={handleIncrement}><PlusIcon /></span>
-                            </>
-                        ) : (
-                            <div className="add-icon-in-price">
-                                <PlusIcon />
-                            </div>
-                        )}
-                    </button>
+                    {inventory > 0 ? (
+                        <>
+                            <p className="product-price">{unit_price.toLocaleString('ru-RU')} {currency}</p>
+                            <button
+                                className={`add-to-cart-btn ${addedToCart ? 'expanded' : ''}`}
+                                onClick={handleAddToCart}
+                            >
+                                {addedToCart ? (
+                                    <>
+                                        <span className="minus" onClick={handleDecrement}><MinusIcon /></span>
+                                        <div className="cart-info">
+                                            <span className="price-in-cart">{getTotalPrice()} {currency}</span>
+                                            <span className="quantity-in-cart">{quantity} {unit}</span>
+                                        </div>
+                                        <span className="plus" onClick={handleIncrement}><PlusIcon /></span>
+                                    </>
+                                ) : (
+                                    <div className="add-icon-in-price"><PlusIcon /></div>
+                                )}
+                            </button>
+                        </>
+                    ) : (
+                        <button className="out-of-stock-btn" disabled>
+                            Нет в наличии
+                        </button>
+                    )}
                 </div>
             </div>
         </Link>

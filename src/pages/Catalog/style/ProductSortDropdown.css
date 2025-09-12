@@ -56,8 +56,9 @@
 
 .sort-dropdown-menu .label {
     font-size: 16px;
-    color: #333;
+    color: #222222;
     font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .radio {

@@ -37,7 +37,7 @@ const FavoritesPage = () => {
     const [favoriteProducts, setFavoriteProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [sortOption, setSortOption] = useState('popular');
+    const [sortOption, setSortOption] = useState('descending');
     const isMobile = useMediaQuery('(max-width: 768px)');
     const [isModalOpen, setIsModalOpen] = useState(false);
 

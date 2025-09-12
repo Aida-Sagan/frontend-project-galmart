@@ -23,6 +23,11 @@ const CategoryPage = () => {
     const isDeepLevelPage = !!subcategoryId;
 
     useEffect(() => {
+
+        console.log('Содержимое pageData:', pageData);
+    }, [pageData]);
+
+    useEffect(() => {
         const loadPageData = async () => {
             setIsLoading(true);
             setError(null);
@@ -136,7 +141,7 @@ const CategoryPage = () => {
                     <>
                         <CategoryBanner
                             title={pageData.banner.title}
-                            image={pageData.banner.image}
+                            image={pageData.banner.image_273x200}
                             bg={pageData.banner.color}
                         />
                         <SubcategoryCarousel

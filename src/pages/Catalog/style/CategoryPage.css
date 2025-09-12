@@ -92,9 +92,42 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    width: 130px;
     flex-shrink: 0;
 }
+
+@media (max-width: 1920px) {
+    .carousel-item-container {
+        width: 185px;
+    }
+}
+
+@media (max-width: 1600px) {
+    .carousel-item-container {
+        width: 169px;
+    }
+}
+
+@media (max-width: 1440px) {
+    .carousel-item-container {
+        width: 153px;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .carousel-item-container {
+        width: 153px;
+    }
+}
+
+
+@media (max-width: 393px) {
+    .carousel-item-container {
+        width: 128px;
+    }
+}
+
+
 
 .subcategory-card {
     display: block;

@@ -1,0 +1,82 @@
+.age-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 15px;
+}
+
+.age-modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.age-modal-content h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: #222;
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.age-modal-content p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #7A7A7A;
+    margin-bottom: 24px;
+}
+
+.age-modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #aaa;
+    line-height: 1;
+}
+
+.age-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.age-modal-btn {
+    padding: 16px 20px;
+    border-radius: 50px;
+    font-size: 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid;
+    transition: all 0.2s ease;
+}
+
+.age-modal-btn.primary {
+    background-color: #902067;
+    border-color: #902067;
+    color: white;
+}
+
+.age-modal-btn.secondary {
+    background-color: white;
+    border-color: #902067;
+    color: #902067;
+}

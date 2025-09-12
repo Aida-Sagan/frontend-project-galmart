@@ -19,7 +19,7 @@ export const FavoritesProvider = ({ children }) => {
         const loadFavoriteIds = async () => {
             setIsLoading(true);
             try {
-                const response = await fetchFavorites({ limit: 1000, ordering: 'popular' });
+                const response = await fetchFavorites({ limit: 1000, ordering: 'descending' });
                 const goods = response.data || [];
                 const ids = goods.map(item => item.id);
                 setFavoriteIds(new Set(ids));

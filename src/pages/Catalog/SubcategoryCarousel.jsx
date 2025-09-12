@@ -32,7 +32,7 @@ const SubcategoryCarousel = ({ subcategories, parentId, color }) => {
                             style={{ backgroundColor: color || '#EBF5FA' }}
                         >
                             <div className="subcategory-card-image">
-                                <img src={sub.image} alt={sub.title} />
+                                <img src={sub.image_185x86} alt={sub.title} />
                             </div>
                         </NavLink>
                         <div className="subcategory-card-title">{sub.title}</div>

@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { fetchCatalogData, fetchSectionDetails } from '../../api/services/catalogService';
 import SkeletonLoader from '../SkeletonLoader/SkeletonLoader.jsx';
+import AgeVerificationModal from '../../components/Modals/AgeVerificationModal';
 import './style/Catalog.css';
+
+const RESTRICTED_CATEGORY_TITLE = 'алкоголь';
 
 const CatalogDropdown = () => {
     const [categories, setCategories] = useState([]);
@@ -11,6 +14,10 @@ const CatalogDropdown = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isContentLoading, setIsContentLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const [isAgeModalOpen, setIsAgeModalOpen] = useState(false);
+    const [targetCategory, setTargetCategory] = useState(null);
+    const navigate = useNavigate();
 
     const activeCategory = categories.length > 0 ? categories[activeIndex] : null;
 
@@ -27,6 +34,7 @@ const CatalogDropdown = () => {
         };
         loadInitialData();
     }, []);
+
 
     const loadAllSections = useCallback(async (sections) => {
         const isDataMissing = sections.some(s => !subCategoryCache[s.id]);
@@ -67,6 +75,46 @@ const CatalogDropdown = () => {
         }
     }, [activeCategory, loadAllSections]);
 
+    const handleMouseEnter = (index) => {
+        const category = categories[index];
+        const isRestricted = category.title.toLowerCase().includes(RESTRICTED_CATEGORY_TITLE);
+        const isVerified = sessionStorage.getItem('isAgeVerified') === 'true';
+
+        if (isRestricted && !isVerified) {
+            return;
+        }
+
+        setActiveIndex(index);
+    };
+
+    const handleCategoryClick = (e, category) => {
+        const isRestricted = category.title.toLowerCase().includes(RESTRICTED_CATEGORY_TITLE);
+        const isVerified = sessionStorage.getItem('isAgeVerified') === 'true';
+
+        if (isRestricted && !isVerified) {
+            e.preventDefault();
+            setTargetCategory(category);
+            setIsAgeModalOpen(true);
+        }
+    };
+
+    const handleAgeConfirm = () => {
+        sessionStorage.setItem('isAgeVerified', 'true');
+        setIsAgeModalOpen(false);
+        if (targetCategory) {
+            const targetIndex = categories.findIndex(cat => cat.id === targetCategory.id);
+            if (targetIndex !== -1) {
+                setActiveIndex(targetIndex);
+            }
+            navigate(`/catalog/${targetCategory.id}`);
+        }
+    };
+
+    const handleAgeDecline = () => {
+        setIsAgeModalOpen(false);
+        setTargetCategory(null);
+    };
+
     if (isLoading) return <div className="catalog-dropdown-message"></div>;
     if (error) return <div className="catalog-dropdown-message error">{error}</div>;
     if (!activeCategory) return null;
@@ -78,7 +126,8 @@ const CatalogDropdown = () => {
                     <div
                         key={category.id}
                         className={`catalog-sidebar-item ${index === activeIndex ? 'active' : ''}`}
-                        onMouseEnter={() => setActiveIndex(index)}
+                        onMouseEnter={() => handleMouseEnter(index)}
+                        onClick={(e) => handleCategoryClick(e, category)}
                     >
                         <NavLink to={`/catalog/${category.id}`} className="sidebar-link">
                             {category.title}
@@ -132,6 +181,12 @@ const CatalogDropdown = () => {
                     </div>
                 )}
             </div>
+
+            <AgeVerificationModal
+                isOpen={isAgeModalOpen}
+                onConfirm={handleAgeConfirm}
+                onDecline={handleAgeDecline}
+            />
         </div>
     );
 };

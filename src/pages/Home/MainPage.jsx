@@ -68,6 +68,7 @@ export default function MainPage() {
                         key={category.id}
                         title={category.title}
                         products={category.goods}
+                        compilationId={category.id}
                         showMore
                     />
                 ))}

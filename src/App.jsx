@@ -10,6 +10,8 @@ import CatalogPage from './pages/Catalog/CatalogPage.jsx';
 import CategoryPage from './pages/Catalog/CategoryPage.jsx';
 import FavoritesPage from './pages/Favorite/FavoritesPage.jsx';
 import ProductPage from './pages/Product/ProductPage';
+import CompilationPage from './pages/DetailCompilationPage/CompilationPage.jsx';
+
 
 import { AuthProvider } from './context/AuthContext';
 import { FavoritesProvider } from './context/FavoritesContext.jsx';
@@ -34,6 +36,7 @@ function AppContent() {
                     <Route path="/catalog/:categoryId/:subcategoryId" element={<CategoryPage />} />
                     <Route path="/favorites" element={<FavoritesPage />} />
                     <Route path="/product/:productId" element={<ProductPage />} />
+                    <Route path="/compilations/:id" element={<CompilationPage />} />
                 </Routes>
             </main>
             {!shouldHideHeader &&  <Footer />}

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import ProductCard from '../Product/ProductCard';
 import './style/SectionBlock.css';
 
-const SectionBlock = ({ title, products = [], sectionId, showMore = false, limit = 5, categoryLink = "/" }) => {
+const SectionBlock = ({ title, products = [], compilationId, sectionId, showMore = false, limit = 5, categoryLink = "/" }) => {
     const visibleProducts = products.slice(0, limit);
 
     return (
@@ -11,7 +11,7 @@ const SectionBlock = ({ title, products = [], sectionId, showMore = false, limit
             <div className="section__header">
                 <h2 className="title_section_header">{title}</h2>
                 {showMore && (
-                    <Link to={categoryLink} className="section__more-link">
+                    <Link to={`/compilations/${compilationId}`} className="section__more-link">
                         Смотреть больше
                         <svg
                             width="8"

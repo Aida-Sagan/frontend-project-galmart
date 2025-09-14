@@ -55,3 +55,17 @@
     text-align: center;
 
 }
+
+
+/* --- АДАПТИВНОСТЬ --- */
+@media (max-width: 768px) {
+    .login-promo-block {
+        display: none;
+    }
+}
+
+@media (max-width: 393px) {
+    .login-promo-block {
+        display: none;
+    }
+}

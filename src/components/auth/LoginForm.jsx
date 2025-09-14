@@ -10,8 +10,8 @@ import './style/LoginForm.css';
 
 export default function LoginForm({ agreeTerms }) {
     const navigate = useNavigate();
-
     const { setLoginPhone } = useAuth();
+
     return (
         <div className="login-form-container">
             <Formik
@@ -30,10 +30,12 @@ export default function LoginForm({ agreeTerms }) {
                 onSubmit={async (values, { setSubmitting, setFieldError }) => {
                     try {
                         const unmaskedValue = values.phone.replace(/\D/g, '');
-                        await sendLoginCode(unmaskedValue); // Вызываем API
+                        await sendLoginCode(unmaskedValue);
 
                         setLoginPhone(values.phone);
-                        navigate('/verify');
+
+                        navigate('/verify', { state: { phoneNumber: values.phone } });
+
                     } catch (error) {
                         setFieldError('phone', 'Не удалось отправить код. Попробуйте позже.', error);
                     } finally {
@@ -41,7 +43,8 @@ export default function LoginForm({ agreeTerms }) {
                     }
                 }}
             >
-                {({ isValid, setFieldValue, values, isSubmitting }) => (                    <Form className="login-form">
+                {({ isValid, setFieldValue, values, isSubmitting }) => (
+                    <Form className="login-form">
                         <div className="field-wrapper">
                             <IMaskInput
                                 name="phone"
@@ -86,4 +89,3 @@ export default function LoginForm({ agreeTerms }) {
         </div>
     );
 }
-

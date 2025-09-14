@@ -5,10 +5,10 @@ import ArrowUpIcon from '../../components/CustomIcons/ArrowUpIcon.jsx';
 import './style/ProductSortDropdown.css';
 
 const options = [
-    { value: 'popularity', label: 'По популярности' },
-    { value: 'price-asc', label: 'Сначала дешевле' },
-    { value: 'price-desc', label: 'Сначала дороже' },
-    { value: 'name-asc', label: 'По алфавиту' },
+    { value: 'popular', label: 'По популярности' },
+    { value: 'ascending', label: 'Сначала дешевле' },
+    { value: 'descending', label: 'Сначала дороже' },
+    { value: 'alphabet', label: 'По алфавиту' },
 ];
 
 const ProductSortDropdown = ({ sortOption, setSortOption }) => {

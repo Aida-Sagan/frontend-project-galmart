@@ -92,7 +92,7 @@ const ProductCard = ({ product }) => {
         return (unit_price * quantity).toLocaleString('ru-RU');
     };
 
-    const imageUrl = photos.length > 0 ? photos[0] : 'https://via.placeholder.com/200';
+    const imageUrl = photos[0];
     const productUrl = `/product/${id}`;
 
 

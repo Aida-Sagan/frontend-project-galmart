@@ -14,9 +14,23 @@ export const fetchCatalogData = async () => {
     }
 };
 
-export const fetchSectionDetails = async (sectionId) => {
+
+const PAGE_SIZE = 10;
+
+export const fetchSectionDetails = async (sectionId, { page = 1, ordering = 'popular', categories = '' }) => {
+    const baseUrl = API_URLS.SECTION_DETAILS(sectionId);
+
+    const params = new URLSearchParams({
+        page: page,
+        limit: PAGE_SIZE,
+        ordering: ordering,
+    });
+    if (categories) {
+        params.append('categories', categories);
+    }
+
     try {
-        const response = await fetch(API_URLS.SECTION_DETAILS(sectionId));
+        const response = await fetch(`${baseUrl}?${params.toString()}`);
         if (!response.ok) {
             throw new Error(`Ошибка HTTP! Статус: ${response.status}`);
         }
@@ -27,7 +41,6 @@ export const fetchSectionDetails = async (sectionId) => {
         return null;
     }
 };
-
 
 export const fetchProductDetails = async (productId) => {
     try {

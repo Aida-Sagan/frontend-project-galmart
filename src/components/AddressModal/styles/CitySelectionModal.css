@@ -21,44 +21,71 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
+.icon-address-container {
+    display: flex;
+    justify-content: center;
+}
+
+@media screen and (max-width: 1440px) {
+
+    .modal-content{
+        max-width: 525px!important;
+    }
+    .icon-address-container svg{
+        width: 40px;
+    }
+}
+
 .modal-title {
-    font-size: 24px;
-    font-weight: 500;
-    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500!important;
+    font-size: 24px!important;
+    display: flex!important;
+    justify-content: center!important;
+    color: #222222!important;
+    margin: 16px 0 0 0!important;
 }
 
 .city-buttons {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 10px;
     margin-bottom: 20px;
+    margin-top: 18px;
 }
 
 .city-btn {
-    border: 1px solid #ccc;
+    border: 2px solid #902067;
     background-color: white;
+    font-size: 15px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
     padding: 12px 30px;
     border-radius: 25px;
     cursor: pointer;
-    font-size: 16px;
     transition: background-color 0.3s, color 0.3s;
+    width: 240px;
 }
 
-.city-btn.astana {
-    background-color: #8c2c6d;
-    color: white;
-    border-color: #8c2c6d;
+.city-btn.active {
+    background-color: #902067;
+    color: #FBFBFB;
+    border-color: #902067;
 }
 
-.city-btn.almaty {
-    color: #333;
-}
+.city-btn:hover:not(.active) {
+    border-color: #902067;
+    color: #FBFBFB;
+    background-color: #902067;
 
-.city-btn:hover {
-    opacity: 0.9;
 }
 
 .modal-description {
-    font-size: 14px;
-    color: #666;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500!important;
+    font-size: 13px!important;
+    color: #7A7A7A!important;
+    line-height: 150%!important;
+    display: flex!important;
+    justify-content: center!important;
 }

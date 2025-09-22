@@ -1,18 +1,47 @@
 import React from 'react';
+import {useState} from "react";
+
 import './styles/CitySelectionModal.css';
 
+
+const cities = [
+    { id: 1, name: 'Астана' },
+    { id: 2, name: 'Алматы' },
+];
+
+
+
 export default function CitySelectionModal({ onSelectCity }) {
+    const [activeCity, setActiveCity] = useState('');
+
+    const handleSelect = (cityObject) => {
+        setActiveCity(cityObject.name);
+        setTimeout(() => {
+            onSelectCity(cityObject);
+        }, 200);
+    };
+
     return (
         <div className="modal-overlay">
             <div className="modal-content">
+                <div className='icon-address-container'>
+                    <svg width="41" height="50" viewBox="0 0 41 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.5 0.8125C31.3731 0.8125 40.1875 9.62689 40.1875 20.5C40.1875 23.429 38.8861 26.6711 37.1582 29.7402C35.4047 32.8547 33.0885 36.0032 30.8066 38.7959C28.5196 41.5948 26.2367 44.0723 24.5283 45.8486C23.6733 46.7376 22.9602 47.4535 22.459 47.9482C22.2085 48.1955 22.0109 48.3882 21.875 48.5195L21.7178 48.6699L21.6768 48.71L21.665 48.7207L21.6621 48.7236L20.5 49.8252L19.3389 48.7246L19.3232 48.71L19.2822 48.6699L19.125 48.5195C18.9891 48.3882 18.7915 48.1955 18.541 47.9482C18.0398 47.4535 17.3267 46.7376 16.4717 45.8486C14.7633 44.0723 12.4804 41.5948 10.1934 38.7959C7.91152 36.0032 5.5953 32.8547 3.8418 29.7402C2.11386 26.6711 0.8125 23.429 0.8125 20.5C0.8125 9.62689 9.62689 0.8125 20.5 0.8125ZM20.5 4.1875C11.4909 4.1875 4.1875 11.4909 4.1875 20.5C4.1875 22.5414 5.13624 25.1597 6.7832 28.085C8.40467 30.9649 10.5886 33.9455 12.8066 36.6602C15.0196 39.3685 17.2367 41.7769 18.9033 43.5098C19.5222 44.1532 20.0643 44.7023 20.5 45.1377C20.9357 44.7023 21.4778 44.1532 22.0967 43.5098C23.7633 41.7769 25.9804 39.3685 28.1934 36.6602C30.4114 33.9455 32.5953 30.9649 34.2168 28.085C35.8638 25.1597 36.8125 22.5414 36.8125 20.5C36.8125 11.4909 29.5091 4.1875 20.5 4.1875ZM20.5 16.5625C22.6746 16.5625 24.4375 18.3254 24.4375 20.5C24.4375 22.6746 22.6746 24.4375 20.5 24.4375C18.3254 24.4375 16.5625 22.6746 16.5625 20.5C16.5625 18.3254 18.3254 16.5625 20.5 16.5625Z" fill="#902067"/>
+                    </svg>
+
+                </div>
                 <p className="modal-title">Выберите ваш город</p>
+
                 <div className="city-buttons">
-                    <button className="city-btn astana" onClick={() => onSelectCity('Астана')}>
-                        Астана
-                    </button>
-                    <button className="city-btn almaty" onClick={() => onSelectCity('Алматы')}>
-                        Алматы
-                    </button>
+                    {cities.map((city) => (
+                        <button
+                            key={city.id}
+                            className={`city-btn ${activeCity === city.name ? 'active' : ''}`}
+                            onClick={() => handleSelect(city)}
+                        >
+                            {city.name}
+                        </button>
+                    ))}
                 </div>
                 <p className="modal-description">
                     Выберите город, чтобы видеть актуальные цены и доступные остатки.

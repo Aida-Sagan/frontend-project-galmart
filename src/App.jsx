@@ -11,11 +11,11 @@ import CategoryPage from './pages/Catalog/CategoryPage.jsx';
 import FavoritesPage from './pages/Favorite/FavoritesPage.jsx';
 import ProductPage from './pages/Product/ProductPage';
 import CompilationPage from './pages/DetailCompilationPage/CompilationPage.jsx';
-
+import ProfilePage from './pages/Profile/ProfilePage';
 
 import { AuthProvider } from './context/AuthContext';
 import { FavoritesProvider } from './context/FavoritesContext.jsx';
-
+import { LocationProvider } from './context/LocationContext';
 
 function AppContent() {
     const location = useLocation();
@@ -31,6 +31,7 @@ function AppContent() {
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/verify" element={<EnterCode />} />
+                    <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/catalog" element={<CatalogPage />} />
                     <Route path="/catalog/:categoryId" element={<CategoryPage />} />
                     <Route path="/catalog/:categoryId/:subcategoryId" element={<CategoryPage />} />
@@ -49,7 +50,9 @@ function App() {
         <Router>
             <AuthProvider>
                 <FavoritesProvider>
-                    <AppContent />
+                    <LocationProvider>
+                        <AppContent />
+                    </LocationProvider>
                 </FavoritesProvider>
             </AuthProvider>
         </Router>

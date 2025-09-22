@@ -9,18 +9,29 @@ import QrPromo from '../../components/qrPromo/qrPromo';
 import { fetchHomePageData } from '../../api/services/homepageService';
 import Loader from '../../components/Loader/Loader.jsx';
 import ScrollToTopButton from '../../components/ScrollToTopButton/ScrollToTopButton';
-import CitySelectionModal from '../../components/AddressModal/CitySelectionModal.jsx';
-
+import { useLocation } from '../../context/LocationContext.jsx';
+import { useAuth } from '../../context/AuthContext.jsx';
+import LocationModal from '../../components/AddressModal/LocationModal.jsx';
 import './styles/MainPage.css';
 
 export default function MainPage() {
     const [pageData, setPageData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [city, setCity] = useState(localStorage.getItem('userCity'));
-    const [showCityModal, setShowCityModal] = useState(false);
+
+    const {
+        city,
+        selectCity,
+        isLoading: isLocationLoading,
+        isLocationModalOpen,
+        openLocationModal,
+        closeLocationModal
+    } = useLocation();
+
+    const { isAuthenticated } = useAuth();
 
     useEffect(() => {
         const loadPageData = async () => {
+            setLoading(true);
             try {
                 const data = await fetchHomePageData();
                 if (data) {
@@ -33,7 +44,21 @@ export default function MainPage() {
             }
         };
         loadPageData();
-    }, []);
+    }, [city]);
+
+    useEffect(() => {
+        // Показываем модальное окно, если:
+        // 1. Контексты загрузились
+        // 2. Город не выбран
+        // 3. Пользователь не авторизован
+        if (!isLocationLoading && !city && !isAuthenticated) {
+            openLocationModal();
+        }
+    }, [city, isLocationLoading, isAuthenticated, openLocationModal]);
+
+    const handleCitySelect = (selectedCity) => {
+        selectCity(selectedCity);
+    };
 
     if (loading) {
         return <Loader />;
@@ -44,24 +69,24 @@ export default function MainPage() {
     }
 
     const regularCategoryTitles = ['Вкусные новинки', 'Новинки'];
-
     const regularProductOffers = pageData.product_offers.filter(
         offer => regularCategoryTitles.includes(offer.title)
     );
-
     const filterableCollections = pageData.product_offers.filter(
         offer => !regularCategoryTitles.includes(offer.title)
     );
 
     return (
         <Container>
+            {isLocationModalOpen &&
+                <LocationModal
+                    onClose={closeLocationModal}
+                    onCitySelect={handleCitySelect}
+                />
+            }
+
             <div className="home-container">
                 <MainBanner banners={pageData.banners} />
-
-                {/*<div className="home-buttons">*/}
-                {/*    <Link to="/login" className="home-btn">Войти</Link>*/}
-                {/*    <Link to="/register" className="home-btn">Зарегистрироваться</Link>*/}
-                {/*</div>*/}
 
                 {regularProductOffers.map(category => (
                     <SectionBlock
@@ -78,7 +103,6 @@ export default function MainPage() {
                 )}
 
                 <FilterableSectionBlock collections={filterableCollections} />
-
                 <QrPromo />
             </div>
             <ScrollToTopButton />

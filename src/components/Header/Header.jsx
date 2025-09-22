@@ -1,10 +1,11 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import Container from '../Container/Container';
 import CatalogDropdown from '../Catalog/CatalogDropdown';
 import SearchHistoryDropdown from './SearchHistoryDropdown';
+
+import { useLocation } from '../../context/LocationContext';
 
 import catalogIcon from '../../assets/svg/catalog.svg';
 import searchIcon from '../../assets/svg/search.svg';
@@ -25,6 +26,8 @@ const Header = () => {
     const [isMenuOpen, setMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+    const { city, selectedAddress, openLocationModal } = useLocation();
+    console.log('2. Header получил город:', city);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -34,6 +37,7 @@ const Header = () => {
     }, []);
 
     const closeMenu = () => setMenuOpen(false);
+    const locationText = selectedAddress?.address || city?.name || 'Выберите город';
 
     return (
         <header className="header">
@@ -55,7 +59,7 @@ const Header = () => {
                                     <button
                                         className="header__catalog-btn"
                                         onClick={() => {
-                                                navigate('/catalog');
+                                            navigate('/catalog');
                                         }}
                                     >
                                         <img src={catalogIcon} alt="Каталог" />
@@ -79,8 +83,10 @@ const Header = () => {
                     </div>
                     <div className="header__right">
                         <div className="header__icon-button">
-                            <img src={locationIcon} alt="Город" />
-                            <span>Астана</span>
+                            <button className="header__icon-button header__location-btn" onClick={openLocationModal}>
+                                <img src={locationIcon} alt="Город" />
+                                <span className="location-text">{locationText}</span>
+                            </button>
                         </div>
                         <Link to="/favorites" className="header__icon-button header__icon-button--desktop">
                             <img src={likeIcon} alt="Избранное" />
@@ -142,4 +148,3 @@ const Header = () => {
 };
 
 export default Header;
-

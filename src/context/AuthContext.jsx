@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
             setTempAuthData(null);
         } else {
             localStorage.removeItem('authToken');
+            localStorage.removeItem('userCity');
         }
     }, [token]);
 

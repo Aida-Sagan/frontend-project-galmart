@@ -1,0 +1,85 @@
+.address-list-content {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-title {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.addresses {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.address-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.address-text {
+    font-size: 16px;
+    color: #333;
+}
+
+.address-item input[type="radio"] {
+    display: none;
+}
+
+.radio-custom {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    position: relative;
+    margin-left: 15px;
+}
+
+.address-item input[type="radio"]:checked + .radio-custom {
+    border-color: #902067;
+}
+
+.address-item input[type="radio"]:checked + .radio-custom::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #902067;
+}
+
+.btn-add-new-address {
+    padding: 16px;
+    background: #902067;
+    color: #fff;
+    border: none;
+    border-radius: 35px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-add-new-address:hover {
+    background: #7a1a59;
+}

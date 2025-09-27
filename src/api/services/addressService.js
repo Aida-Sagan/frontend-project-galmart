@@ -15,7 +15,6 @@ export const fetchAddresses = async (token) => {
         });
         if (!response.ok) throw new Error('Не удалось загрузить адреса');
         const result = await response.json();
-        console.log('RESULT FROM ADDRESS', result);
         return result.data;
     } catch (error) {
         console.error("Ошибка при получении адресов:", error);
@@ -42,8 +41,6 @@ export const saveAddress = async (addressData, token) => {
         });
         if (!response.ok) throw new Error('Не удалось сохранить адрес');
         const result = await response.json();
-        console.log('RESULT FROM saveAddress', result);
-
         return result.data;
     } catch (error) {
         console.error("Ошибка при сохранении адреса:", error);
@@ -119,6 +116,7 @@ export const getCityPolygons = async (token) => {
         });
         if (!response.ok) throw new Error('Не удалось загрузить зоны доставки');
         const result = await response.json();
+        console.log("Резульатыт полигонов: ",result.data);
         return result.data;
     } catch (error) {
         console.error("Ошибка при получении зон доставки:", error);

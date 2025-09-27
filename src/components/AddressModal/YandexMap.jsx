@@ -24,6 +24,7 @@ const YandexMap = ({ city, onAddressSelect }) => {
         const fetchPolygons = async () => {
             if (city?.id && token) {
                 const polygonsData = await getCityPolygons(token);
+                // Координаты уже в нужном формате [широта, долгота]
                 setDeliveryPolygons(polygonsData);
             } else {
                 setDeliveryPolygons([]);
@@ -63,12 +64,12 @@ const YandexMap = ({ city, onAddressSelect }) => {
                 <SearchControl options={{ float: 'right' }} onResultSelect={handleResultSelect} />
 
                 {deliveryPolygons.length > 0 &&
-                    deliveryPolygons.map((polygonCoords, index) => {
-                        if (!polygonCoords || polygonCoords.length === 0) return null;
+                    deliveryPolygons.map((polygon, index) => {
+                        if (!polygon || polygon.length === 0) return null;
                         return (
                             <Polygon
                                 key={index}
-                                geometry={polygonCoords}
+                                geometry={polygon}
                                 properties={{ hintContent: `Зона доставки ${index + 1}` }}
                                 options={{
                                     fillColor: '#902067',

@@ -4,9 +4,7 @@ import YandexMap from "./YandexMap";
 import "./styles/AddressModal.css";
 import { useLocation } from "../../context/LocationContext";
 import { useAuth } from "../../context/AuthContext";
-import { saveAddress } from "../../api/services/addressService.js";
-import { getCoordsByString, getCityPolygons, getAddressByCoords } from "../../api/services/addressService";
-
+import { saveAddress, getCoordsByString, getCityPolygons, getAddressByCoords } from "../../api/services/addressService";
 
 function useDebounce(value, delay) {
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -22,13 +20,17 @@ function useDebounce(value, delay) {
 }
 
 const isPointInAnyPolygon = (point, polygons) => {
+    // point - [latitude, longitude]
     const isPointInPolygon = (p, poly) => {
         const x = p[0], y = p[1];
         let inside = false;
         for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
             const xi = poly[i][0], yi = poly[i][1];
             const xj = poly[j][0], yj = poly[j][1];
-            const intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+
+            const intersect = ((yi > y) !== (yj > y)) &&
+                (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+
             if (intersect) inside = !inside;
         }
         return inside;
@@ -38,10 +40,12 @@ const isPointInAnyPolygon = (point, polygons) => {
 };
 
 export default function AddressModal({ isOpen, onClose, onSave }) {
-    const { city } = useLocation();
+    const { city, selectCity } = useLocation();
     const { token } = useAuth();
 
     const [addressString, setAddressString] = useState('');
+    const [street, setStreet] = useState('');
+    const [building, setBuilding] = useState('');
     const [coords, setCoords] = useState(null);
     const [apartment, setApartment] = useState("");
     const [entrance, setEntrance] = useState("");
@@ -50,8 +54,13 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
     const [isPrivateHouse, setIsPrivateHouse] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [deliveryPolygons, setDeliveryPolygons] = useState([]);
-
     const [isManualInput, setIsManualInput] = useState(false);
+    const [showCityDropdown, setShowCityDropdown] = useState(false);
+
+    const cities = [
+        { id: 1, name: 'Астана' },
+        { id: 2, name: 'Алматы' },
+    ];
 
     const debouncedAddressString = useDebounce(addressString, 500);
 
@@ -71,13 +80,23 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
         if (isManualInput && token && debouncedAddressString && debouncedAddressString.length > 3 && city?.id) {
             getCoordsByString(debouncedAddressString, city.id, token).then(result => {
                 if (result) {
-                    // мы получаем и адрес, и координаты из результата
                     setAddressString(result.title);
+                    setStreet(result.address);
+                    setBuilding(result.building);
                     setCoords([result.latitude, result.longitude]);
                 }
             });
         }
     }, [debouncedAddressString, city, token, isManualInput]);
+
+    const handleCitySelect = (selectedCity) => {
+        selectCity(selectedCity);
+        setShowCityDropdown(false);
+        setAddressString('');
+        setStreet('');
+        setBuilding('');
+        setCoords(null);
+    };
 
     const handleSubmit = async () => {
         if (!addressString || !coords) {
@@ -90,22 +109,21 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
             return;
         }
 
-        if (deliveryPolygons.length > 0 && !isPointInAnyPolygon(coords, deliveryPolygons)) {
+        const pointInPolygonCheck = isPointInAnyPolygon(coords, deliveryPolygons);
+        console.log('Проверка нахождения точки в полигоне:', pointInPolygonCheck);
+        console.log('Координаты:', coords);
+
+        if (deliveryPolygons.length > 0 && !pointInPolygonCheck) {
             alert("Извините, выбранный адрес находится вне зоны доставки.");
             return;
         }
 
         setIsLoading(true);
-        const streetAndBuilding = addressString.split(',').slice(0, 2).join(',').trim();
-
-        const buildingValue = isPrivateHouse
-            ? "-"
-            : (streetAndBuilding.split(' ').pop() || "");
 
         const addressData = {
             city: city.id,
-            address: streetAndBuilding,
-            building: buildingValue,
+            address: street,
+            building: isPrivateHouse ? "-" : building,
             latitude: coords[0],
             longitude: coords[1],
             apartment: isPrivateHouse ? "" : apartment,
@@ -139,7 +157,9 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
         const result = await getAddressByCoords(coords[0], coords[1], token);
         if (result) {
             setAddressString(result.title);
-            setCoords(coords);
+            setStreet(result.address);
+            setBuilding(result.building);
+            setCoords([result.latitude, result.longitude]);
         }
     };
 
@@ -160,9 +180,33 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
                         <button className="close-btn" onClick={onClose}> <X size={20} /> </button>
                     </div>
                     <div className="form-fields">
-                        <div className="form-group">
-                            <input readOnly value={city?.name || ''} className="form-input" />
-                            <label>Город</label>
+                        <div className="form-group dropdown-container">
+                            <label htmlFor="city-select" className={city?.name ? 'active' : ''}>Город</label>
+                            <input
+                                id="city-select"
+                                readOnly
+                                value={city?.name || ''}
+                                className="form-input dropdown-input"
+                                onClick={() => setShowCityDropdown(!showCityDropdown)}
+                            />
+                            <span className={`dropdown-arrow ${showCityDropdown ? 'open' : ''}`}>
+                                <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M0.46967 0.46967C0.762563 0.176777 1.23744 0.176777 1.53033 0.46967L7 5.93934L12.4697 0.46967C12.7626 0.176777 13.2374 0.176777 13.5303 0.46967C13.8232 0.762563 13.8232 1.23744 13.5303 1.53033L7.53033 7.53033C7.23744 7.82322 6.76256 7.82322 6.46967 7.53033L0.46967 1.53033C0.176777 1.23744 0.176777 0.762563 0.46967 0.46967Z" fill="#222222"/>
+                                </svg>
+                            </span>
+                            {showCityDropdown && (
+                                <ul className="city-dropdown-list">
+                                    {cities.map(c => (
+                                        <li
+                                            key={c.id}
+                                            className={`city-dropdown-item ${city?.id === c.id ? 'selected' : ''}`}
+                                            onClick={() => handleCitySelect(c)}
+                                        >
+                                            <span>{c.name}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                         <div className="form-group">
                             <input

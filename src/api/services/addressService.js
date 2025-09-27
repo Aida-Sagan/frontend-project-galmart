@@ -67,17 +67,16 @@ export const getCoordsByString = async (address, cityId, token) => {
                 'Authorization': `Bearer ${token}`,
                 ...getCityHeader()
             },
-            body: JSON.stringify({ search_string: address, city: cityId }),
+            body: JSON.stringify({ latitude: null, longitude: null, search_string: address, city: cityId }),
         });
         if (!response.ok) throw new Error('Ошибка геокодирования');
         const result = await response.json();
-        return result.data;
+        return result.data[0];
     } catch (error) {
         console.error("Ошибка при получении координат:", error);
         return null;
     }
 };
-
 /**
  * Получение адреса по координатам
  * @param {number} latitude - Широта
@@ -98,7 +97,7 @@ export const getAddressByCoords = async (latitude, longitude, token) => {
         });
         if (!response.ok) throw new Error('Ошибка обратного геокодирования');
         const result = await response.json();
-        return result.data;
+        return result.data[0];
     } catch (error) {
         console.error("Ошибка при получении адреса:", error);
         return null;
@@ -124,5 +123,54 @@ export const getCityPolygons = async (token) => {
     } catch (error) {
         console.error("Ошибка при получении зон доставки:", error);
         return [];
+    }
+};
+
+/**
+ * Удаление адреса по его ID
+ * @param {number} addressId - ID адреса, который нужно удалить
+ * @param {string} token - Токен авторизации
+ * @returns {Promise<boolean>} - true в случае успешного удаления, false - в противном случае
+ */
+export const deleteAddress = async (addressId, token) => {
+    try {
+        const response = await fetch(`${API_URLS.ADDRESS}${addressId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                ...getCityHeader()
+            },
+        });
+        if (!response.ok) throw new Error('Не удалось удалить адрес');
+        return true;
+    } catch (error) {
+        console.error("Ошибка при удалении адреса:", error);
+        return false;
+    }
+};
+
+
+/**
+ * Установка адреса как избранного
+ * @param {number} addressId - ID адреса, который нужно сделать избранным
+ * @param {string} token - Токен авторизации
+ * @returns {Promise<object>} - Обновленный объект адреса
+ */
+export const setAddressAsFavourite = async (addressId, token) => {
+    try {
+        const response = await fetch(`${API_URLS.ADDRESS}${addressId}/`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                ...getCityHeader()
+            },
+        });
+        if (!response.ok) throw new Error('Не удалось сделать адрес избранным');
+        const result = await response.json();
+        return result.data;
+    } catch (error) {
+        console.error("Ошибка при установке избранного адреса:", error);
+        throw error;
     }
 };

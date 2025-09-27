@@ -5,9 +5,9 @@ import "./styles/AddressModal.css";
 import { useLocation } from "../../context/LocationContext";
 import { useAuth } from "../../context/AuthContext";
 import { saveAddress } from "../../api/services/addressService.js";
-import { getCoordsByString, getCityPolygons } from "../../api/services/addressService";
+import { getCoordsByString, getCityPolygons, getAddressByCoords } from "../../api/services/addressService";
 
-// Hook for debouncing user input
+
 function useDebounce(value, delay) {
     const [debouncedValue, setDebouncedValue] = useState(value);
     useEffect(() => {
@@ -51,6 +51,8 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
     const [isLoading, setIsLoading] = useState(false);
     const [deliveryPolygons, setDeliveryPolygons] = useState([]);
 
+    const [isManualInput, setIsManualInput] = useState(false);
+
     const debouncedAddressString = useDebounce(addressString, 500);
 
     useEffect(() => {
@@ -66,14 +68,16 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
     }, [city, token]);
 
     useEffect(() => {
-        if (token && debouncedAddressString.length > 3 && city?.id) {
+        if (isManualInput && token && debouncedAddressString && debouncedAddressString.length > 3 && city?.id) {
             getCoordsByString(debouncedAddressString, city.id, token).then(result => {
                 if (result) {
+                    // мы получаем и адрес, и координаты из результата
+                    setAddressString(result.title);
                     setCoords([result.latitude, result.longitude]);
                 }
             });
         }
-    }, [debouncedAddressString, city, token]);
+    }, [debouncedAddressString, city, token, isManualInput]);
 
     const handleSubmit = async () => {
         if (!addressString || !coords) {
@@ -94,11 +98,14 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
         setIsLoading(true);
         const streetAndBuilding = addressString.split(',').slice(0, 2).join(',').trim();
 
+        const buildingValue = isPrivateHouse
+            ? "-"
+            : (streetAndBuilding.split(' ').pop() || "");
 
         const addressData = {
             city: city.id,
             address: streetAndBuilding,
-            building: isPrivateHouse ? "" : (streetAndBuilding.includes(' ') ? streetAndBuilding.split(' ').pop() : (building || " ")),
+            building: buildingValue,
             latitude: coords[0],
             longitude: coords[1],
             apartment: isPrivateHouse ? "" : apartment,
@@ -121,6 +128,21 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
         }
     };
 
+    const handleMapSelect = async ({ coords }) => {
+        if (!token) {
+            alert("Для выбора адреса на карте необходимо войти в аккаунт.");
+            return;
+        }
+
+        setIsManualInput(false);
+
+        const result = await getAddressByCoords(coords[0], coords[1], token);
+        if (result) {
+            setAddressString(result.title);
+            setCoords(coords);
+        }
+    };
+
     if (!isOpen) return null;
 
     return (
@@ -129,10 +151,7 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
                 <div className="modal-map">
                     <YandexMap
                         city={city}
-                        onAddressSelect={({ address, coords }) => {
-                            setAddressString(address);
-                            setCoords(coords);
-                        }}
+                        onAddressSelect={handleMapSelect}
                     />
                 </div>
                 <div className="modal-form">
@@ -147,9 +166,15 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
                         </div>
                         <div className="form-group">
                             <input
-                                id="address" type="text" value={addressString}
-                                onChange={(e) => setAddressString(e.target.value)}
-                                className="form-input" placeholder=" "
+                                id="address"
+                                type="text"
+                                value={addressString}
+                                onChange={(e) => {
+                                    setAddressString(e.target.value);
+                                    setIsManualInput(true);
+                                }}
+                                className="form-input"
+                                placeholder=" "
                             />
                             <label htmlFor="address">Улица, номер дома</label>
                         </div>

@@ -3,22 +3,17 @@ import {useState} from "react";
 
 import './styles/CitySelectionModal.css';
 
-
 const cities = [
     { id: 1, name: 'Астана' },
     { id: 2, name: 'Алматы' },
 ];
-
-
 
 export default function CitySelectionModal({ onSelectCity }) {
     const [activeCity, setActiveCity] = useState('');
 
     const handleSelect = (cityObject) => {
         setActiveCity(cityObject.name);
-        setTimeout(() => {
-            onSelectCity(cityObject);
-        }, 200);
+        onSelectCity(cityObject);
     };
 
     return (

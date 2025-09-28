@@ -11,6 +11,14 @@ import authRequiredIcon from '../../assets/is_exists.png';
 
 import './styles/FavoritesPage.css';
 
+const options = [
+    { value: 'popular', label: 'По популярности' },
+    { value: 'price', label: 'Сначала дешевле' },
+    { value: '-price', label: 'Сначала дороже' },
+    { value: 'name', label: 'По алфавиту' },
+];
+
+
 /// Компонент модального окна для подтверждения
 const ConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
     if (!isOpen) {
@@ -37,7 +45,7 @@ const FavoritesPage = () => {
     const [favoriteProducts, setFavoriteProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [sortOption, setSortOption] = useState('descending');
+    const [sortOption, setSortOption] = useState(options[0].value);
     const isMobile = useMediaQuery('(max-width: 768px)');
     const [isModalOpen, setIsModalOpen] = useState(false);
 

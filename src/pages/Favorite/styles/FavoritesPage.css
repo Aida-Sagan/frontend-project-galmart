@@ -111,22 +111,23 @@
         align-items: center;
     }
 
+    .clear-favorites-btn{
+        font-size: 14px!important;
+    }
+
 }
 
 
 @media (max-width: 480px) {
-    .favorites-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-    }
+    /*.favorites-grid {*/
+    /*    grid-template-columns: repeat(2, 1fr);*/
+    /*    gap: 16px;*/
+    /*}*/
     .favorites-header h1 {
         font-size: 18px!important;
     }
-    .clear-favorites-btn {
-        font-size: 14px;
-    }
 
-    }
+}
 
 .favorites-placeholder {
     display: flex;
@@ -182,7 +183,7 @@
 
     .favorites-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
+        gap: 11px;
     }
 }
 

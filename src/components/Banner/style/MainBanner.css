@@ -21,9 +21,9 @@
     transform: translateY(-50%);
     background: #FBFBFB61;
     border: none;
-    border-radius: 50%;
-    width: 48px;
-    height: 48px;
+    border-radius: 32px;
+    width: 70px;
+    height: 54px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -81,7 +81,7 @@
 
 @media (max-width: 768px) {
     .banner-arrow {
-        display: none;
+        display: none!important;
     }
 
     .banner-dots {

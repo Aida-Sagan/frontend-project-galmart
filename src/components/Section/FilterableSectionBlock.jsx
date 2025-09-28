@@ -49,7 +49,7 @@ const FilterableSectionBlock = ({ collections = [] }) => {
                 </div>
             </div>
 
-            <div className="section__grid">
+            <div className="section__grid_sales">
                 <SaleDescriptionCard collection={activeCollection} />
                 {activeCollection.goods.slice(0, 4).map((product) => (
                     <ProductCard key={product.id} product={product} />

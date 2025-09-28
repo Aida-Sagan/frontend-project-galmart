@@ -44,7 +44,7 @@
     background-color: #C6D600;
 }
 
-.section__grid {
+.section__grid_sales {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;

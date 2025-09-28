@@ -93,13 +93,9 @@
     align-items: center;
     gap: 8px;
     flex-shrink: 0;
+    width: 185px;
 }
 
-@media (max-width: 1920px) {
-    .carousel-item-container {
-        width: 185px;
-    }
-}
 
 @media (max-width: 1600px) {
     .carousel-item-container {

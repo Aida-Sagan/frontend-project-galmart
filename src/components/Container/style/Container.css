@@ -32,13 +32,13 @@
 
 @media (max-width: 768px) {
     .container {
-        max-width: 97%;
+        max-width: 100%;
     }
 }
 
 
 @media (max-width: 393px) {
     .container {
-        max-width: 93%;
+        max-width: 100%;
     }
 }

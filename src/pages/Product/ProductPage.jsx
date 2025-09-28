@@ -25,9 +25,6 @@ const ProductPage = () => {
                 const currentProduct = await fetchProductDetails(productId);
                 setProduct(currentProduct);
 
-                // Логика для рекомендованных товаров пока отключена,
-                // так как у нас нет sectionId для их загрузки.
-                // setRecommended(...)
 
             } catch (err) {
                 setError('Произошла ошибка при загрузке товара.');

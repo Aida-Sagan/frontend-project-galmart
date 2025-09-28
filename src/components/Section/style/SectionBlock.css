@@ -5,6 +5,12 @@
     margin-bottom: 24px;
 }
 
+@media (max-width: 768px) {
+    .section__header{
+        margin-bottom: 0;
+    }
+}
+
 .title_section_header {
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
@@ -44,8 +50,9 @@
 
 .section__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 20px;
+    flex-wrap: nowrap;
 }
 
 .section__more-card {
@@ -68,7 +75,10 @@
         display: none;
     }
 
-    .section__grid {
+    .section__grid_sales {
+        flex-wrap: wrap;
+    }
+    .section__grid_sales {
         gap: 14px!important;
         flex-direction: row!important;
 
@@ -78,36 +88,35 @@
         overflow-x: auto!important;
         -ms-overflow-style: none!important;
     }
-    .section__grid::-webkit-scrollbar {
+    .section__grid_sales::-webkit-scrollbar {
         display: none;
     }
 
-    .section__grid > .product-card {
+    .section__grid_sales > .product-card {
         flex-shrink: 0;
         width: 223px;
     }
 
     .section__more-card {
+        height: 100%;
+        width: 100%;
         display: flex;
         flex-direction: column;
-        align-items: center;
         justify-content: center;
-        background-color: #B54A92;
-        color: white;
+        align-items: center;
         text-align: center;
+        background-color: #F5F5F5;
+        border-radius: 32px;
         text-decoration: none;
-        border-radius: 16px;
-        font-size: 16px;
+        color: #902067;
         font-weight: 500;
-        gap: 8px;
-        flex-shrink: 0;
-        width: 212px;
+        box-sizing: border-box;
     }
 
     .section__more-card .plus-icon {
-        width: 48px;
-        height: 48px;
-        border: 1.5px solid white;
+        width: 37px;
+        height: 37px;
+        background: #FFFFFF;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -115,6 +124,7 @@
         font-size: 32px;
         line-height: 1;
     }
+
     .add-to-cart-btn{
         width: 54px;
         height: 44px;
@@ -139,46 +149,32 @@
         display: none;
     }
 
-    .section__grid {
-        gap: 14px!important;
-        flex-direction: row!important;
-
-        padding-bottom: 10px!important;
-        scrollbar-width: none!important;
-        display: flex!important;
-        overflow-x: auto!important;
-        -ms-overflow-style: none!important;
-    }
-    .section__grid::-webkit-scrollbar {
-        display: none;
-    }
 
     .section__grid > .product-card {
         flex-shrink: 0;
-        width: 164px;
+        /*width: 152px;*/
     }
 
     .section__more-card {
+        height: 100%;
+        width: 100%;
         display: flex;
         flex-direction: column;
-        align-items: center;
         justify-content: center;
-        background-color: #B54A92;
-        color: white;
+        align-items: center;
         text-align: center;
+        background-color: #F5F5F5;
+        border-radius: 32px;
         text-decoration: none;
-        border-radius: 16px;
-        font-size: 16px;
+        color: #902067;
         font-weight: 500;
-        gap: 8px;
-        flex-shrink: 0;
-        width: 212px;
+        box-sizing: border-box;
     }
 
     .section__more-card .plus-icon {
-        width: 48px;
-        height: 48px;
-        border: 1.5px solid white;
+        width: 37px;
+        height: 37px;
+        background: #FFFFFF;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -190,9 +186,6 @@
         font-size: 20px;
     }
 
-    .section__more-card {
-        width: 164px;
-    }
 
     .add-to-cart-btn{
         width: 44px;
@@ -201,6 +194,40 @@
     }
 
     .add-to-cart-btn.expanded{
-        padding: 20px 20px;
+        padding: 18px 11px;
+    }
+
+
+    .section__grid_sales {
+        flex-wrap: wrap;
+    }
+    .section__grid_sales {
+        gap: 12px!important;
+        flex-direction: row!important;
+
+        padding-bottom: 10px!important;
+        scrollbar-width: none!important;
+        display: flex!important;
+        overflow-x: auto!important;
+        -ms-overflow-style: none!important;
+    }
+    .section__grid_sales::-webkit-scrollbar {
+        display: none;
+    }
+
+    .section__grid_sales > .product-card {
+        flex-shrink: 0;
+        width: 145px;
+    }
+
+    .sale-description-card {
+        min-width: 149px;
     }
 }
+
+@media (min-width: 300px) and (max-width: 400px){
+    .section__grid > .product-card {
+        width: 152px;
+    }
+}
+

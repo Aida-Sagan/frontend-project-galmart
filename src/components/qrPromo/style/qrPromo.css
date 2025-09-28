@@ -148,7 +148,7 @@
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 767px) {
     .qr-promo {
         margin-top: 60px;
         padding: 0 15px 30px;
@@ -172,11 +172,16 @@
     }
 
     .qr-promo__description {
-        font-size: 14px;
+        font-size: 7px;
+        width: 203px;
     }
 
     .qr-promo__apps img {
-        height: 40px;
+        height: 33px;
+    }
+
+    .qr-promo__right {
+        gap: 5px;
     }
 }
 

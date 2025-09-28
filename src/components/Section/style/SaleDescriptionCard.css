@@ -1,4 +1,7 @@
 .sale-description-card {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+
     width: 100%;
     height: auto;
     background-color: #fff;
@@ -9,7 +12,7 @@
     box-sizing: border-box;
 }
 
-.section__grid {
+.section__grid_sales {
     display: flex;
     gap: 20px;
     flex-wrap: nowrap;
@@ -36,7 +39,6 @@
 .watch-more-btn {
     border-radius: 64px;
     background: #902067;
-    border: none;
     padding: 16px 24px;
     color: #fff;
     cursor: pointer;
@@ -44,6 +46,7 @@
     font-weight: 600;
     align-self: flex-start;
     font-size: 18px;
+    border: 2px solid #902067;
 }
 
 .watch-more-btn:hover {
@@ -129,7 +132,7 @@
 
     .sale-description-card {
         width: 100%;
-        padding: 24px 24px 24px 7px;
+        padding: 24px 0 24px 7px;
     }
 
     .sale-title {
@@ -165,10 +168,6 @@
 @media (max-width: 393px) {
     .section-title {
         font-size: 20px;
-    }
-
-    .sale-description-card {
-        padding: 20px;
     }
 
     .sale-title {

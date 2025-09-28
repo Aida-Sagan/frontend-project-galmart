@@ -157,3 +157,23 @@
     font-weight: 500;
     line-height: 1.3;
 }
+
+@media (max-width: 1024px) {
+    .category-page {
+        flex-direction: column;
+        padding: 16px;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .category-content {
+        width: 100%;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px; 
+    }
+}

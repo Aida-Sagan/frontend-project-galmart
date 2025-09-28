@@ -9,8 +9,9 @@ import ProductSortDropdown from './ProductSortDropdown.jsx';
 import Pagination from '../../components/Pagination/Pagination';
 import CategoryPageSkeleton from '../../components/SkeletonLoader/CategoryPageSkeleton.jsx';
 import { fetchCatalogData, fetchSectionDetails } from '../../api/services/catalogService';
+import MobileCategoryBar from './MobileCategoryBar.jsx';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import './style/CategoryPage.css';
-
 
 const CategoryPage = () => {
     const { categoryId, subcategoryId } = useParams();
@@ -26,6 +27,9 @@ const CategoryPage = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [loadingMore, setLoadingMore] = useState(false);
+
+    // Используем ваш хук. Убедитесь, что брейкпоинт (1024px) соответствует вашему CSS.
+    const isDesktop = useMediaQuery('(min-width: 1024px)');
 
     const pageFromUrl = parseInt(searchParams.get('page') || '1', 10);
     const isDeepLevelPage = !!subcategoryId;
@@ -69,8 +73,6 @@ const CategoryPage = () => {
 
                 setProducts(sectionDetails.goods || []);
                 setTotalPages(sectionDetails.total_pages || 1);
-                // setTotalPages(10);
-
             } catch (err) {
                 console.error(err);
                 setError('Произошла ошибка при загрузке данных.');
@@ -100,7 +102,6 @@ const CategoryPage = () => {
         setSearchParams({ page: '1' });
     };
 
-
     const handleLoadMore = async () => {
         if (loadingMore || currentPage >= totalPages) return;
 
@@ -120,7 +121,6 @@ const CategoryPage = () => {
         }
         setLoadingMore(false);
     };
-
 
     const renderContent = () => {
         if (isLoading) return <CategoryPageSkeleton />;
@@ -186,12 +186,20 @@ const CategoryPage = () => {
     };
 
     return (
-        <div className="category-page">
-            <Sidebar categories={sidebarData} />
-            <div className="category-content">
-                {renderContent()}
+        <>
+            {/* На мобильных устройствах рендерим MobileCategoryBar над основным контентом */}
+            {!isDesktop && <MobileCategoryBar categories={sidebarData} />}
+
+            <div className="category-page">
+                {/* На десктопе рендерим Sidebar слева */}
+                {isDesktop && <Sidebar categories={sidebarData} />}
+
+                {/* Основной контент страницы, который будет занимать оставшееся пространство */}
+                <div className="category-content">
+                    {renderContent()}
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

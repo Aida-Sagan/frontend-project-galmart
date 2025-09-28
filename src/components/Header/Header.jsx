@@ -27,7 +27,6 @@ const Header = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
     const { city, selectedAddress, openLocationModal } = useLocation();
-    console.log('2. Header получил город:', city);
     const navigate = useNavigate();
 
     useEffect(() => {

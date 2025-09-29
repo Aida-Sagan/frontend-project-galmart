@@ -60,19 +60,34 @@
 
 .modal-category-link {
     display: block;
-    padding: 15px 0;
-    border-bottom: 1px solid #eee;
+    /*padding: 15px 0;*/
     color: #333;
     text-decoration: none;
     font-size: 18px;
 }
-/* Новые стили для отображения первой категории */
+
+.modal-category-header  {
+    position: relative;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.modal-category-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-bottom: 1px solid #eee;
+}
+
+
 .mobile-category-item {
     background-color: #fff;
     border-radius: 20px;
     box-shadow: 0px 0px 8px 0px #0000001A;
     padding: 12px 10px;
-    margin-bottom: 20px; /* Отступ между блоком категории и кнопкой */
+    margin-bottom: 20px;
 }
 
 .mobile-category-header {
@@ -82,15 +97,17 @@
 }
 
 .mobile-category-link {
-    font-size: 16px;
-    font-weight: 600;
-    color: #222;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
     text-decoration: none;
+    color: #222222;
 }
 
 
 .arrow-icon.open {
     transform: rotate(180deg);
+    color: #902067;
 }
 
 .mobile-subcategory-list {
@@ -99,32 +116,42 @@
     margin-top: 8px;
 }
 
+
 .mobile-subcategory-link {
-    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 500;
-    color: #666;
-    text-decoration: none;
+    font-size: 14px;
+    color: #4E4E4E;
+    text-decoration: none!important;
     display: block;
     padding: 8px 0;
 }
 
-/* Подсветка активной подкатегории */
+.modal-subcategory-link,
+.modal-subcategory-list li {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #4E4E4E;
+    text-decoration: none!important;
+    display: block;
+    padding: 6px 0;
+}
+
 .mobile-subcategory-link.active,
 .modal-subcategory-link.active {
-    color: #902067; /* Фиолетовый цвет для активной ссылки */
+    color: #902067;
     font-weight: 600;
 }
 
-/* Подсветка активной категории */
 .modal-category-link.active {
     color: #902067;
     font-weight: 600;
 }
 
-/* Также, для ссылок в самом модальном окне, чтобы они не перекрывались div'ом */
 .modal-category-link,
 .modal-subcategory-link {
-    display: block; /* Ссылки должны занимать всю ширину */
+    display: block;
 }
 
 .modal-category-header {

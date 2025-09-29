@@ -9,11 +9,9 @@ const MobileCategoryBar = ({ categories }) => {
 
     useEffect(() => {
         if (isModalOpen) {
-            // При открытии модалки, раскрываем текущую категорию из URL
             if (categoryId) {
                 setOpenCategories({ [categoryId]: true });
             } else if (categories && categories.length > 0) {
-                // Если нет categoryId в URL, раскрываем первую
                 setOpenCategories({ [categories[0].id]: true });
             }
         }

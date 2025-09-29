@@ -1,19 +1,27 @@
 import { API_URLS } from '../api';
 
-export const fetchCompilationById = async (id, page = 1) => {
+export const fetchCompilationById = async (id, page = 1, ordering = 'popular') => {
     try {
         const baseUrl = API_URLS.COMPILATION_DETAILS(id);
 
-        // Указываем количество товаров на странице через page_size
-        const response = await fetch(`${baseUrl}?page=${page}&page_size=12`);
+        const params = new URLSearchParams({
+            page: page,
+            page_size: 12,
+            ordering: ordering,
+        });
 
+        const response = await fetch(`${baseUrl}?${params.toString()}`);
         if (!response.ok) {
-            throw new Error(`Ошибка сети: ${response.status}`);
+            const errorText = await response.text();
+            console.error('Server error response body:', errorText);
+            throw new Error(`HTTP error! Status: ${response.status}. Details: ${errorText}`);
         }
+
         const data = await response.json();
         return data.data;
+
     } catch (error) {
-        console.error(`Не удалось получить данные для подборки ${id}:`, error);
-        return null;
+        console.error(`Failed to get data for compilation ${id}:`, error);
+        throw error;
     }
 };

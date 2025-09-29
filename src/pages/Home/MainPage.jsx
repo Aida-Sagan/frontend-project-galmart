@@ -10,7 +10,6 @@ import { fetchHomePageData } from '../../api/services/homepageService';
 import Loader from '../../components/Loader/Loader.jsx';
 import ScrollToTopButton from '../../components/ScrollToTopButton/ScrollToTopButton';
 import { useLocation } from '../../context/LocationContext.jsx';
-import { useAuth } from '../../context/AuthContext.jsx';
 import LocationModal from '../../components/AddressModal/LocationModal.jsx';
 import './styles/MainPage.css';
 
@@ -26,8 +25,6 @@ export default function MainPage() {
         openLocationModal,
         closeLocationModal
     } = useLocation();
-
-    const { isAuthenticated } = useAuth();
 
     useEffect(() => {
         const loadPageData = async () => {

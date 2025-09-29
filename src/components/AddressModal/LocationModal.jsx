@@ -3,14 +3,20 @@ import CitySelectionModal from './CitySelectionModal';
 import AddressList from './AddressList';
 import AddressModal from './AddressModal';
 import { useLocation } from '../../context/LocationContext';
+import { useAuth } from '../../context/AuthContext';
 
 const LocationModal = ({ onClose, onCitySelect }) => {
     const { city, userAddresses, selectedAddress, selectAddress, addNewAddress } = useLocation();
-    const [view, setView] = useState(() => city ? 'addressList' : 'city');
+    const { isAuthenticated } = useAuth();
+    const [view, setView] = useState(() => city && isAuthenticated ? 'addressList' : 'city');
 
     const handleCitySelect = (selectedCity) => {
         onCitySelect(selectedCity);
-        setView('addressList');
+        if (!isAuthenticated) {
+            onClose();
+        } else {
+            setView('addressList');
+        }
     };
 
     const handleAddressSelect = (addressId) => {
@@ -21,7 +27,6 @@ const LocationModal = ({ onClose, onCitySelect }) => {
 
     const handleSaveNewAddress = async (addressData) => {
         try {
-            console.log("Вызов addNewAddress из контекста...");
             await addNewAddress(addressData);
             setView('addressList');
         } catch (error) {
@@ -30,11 +35,16 @@ const LocationModal = ({ onClose, onCitySelect }) => {
     };
 
     const renderContent = () => {
+        if (!isAuthenticated) {
+            return <CitySelectionModal onSelectCity={handleCitySelect} />;
+        }
+
         switch(view) {
             case 'city':
                 return <CitySelectionModal onSelectCity={handleCitySelect} />;
-            case 'addressList':
-                { const addressesForCity = userAddresses.filter(addr => addr.city === city?.id);
+
+            case 'addressList': {
+                const addressesForCity = userAddresses.filter(addr => addr.city === city?.id);
                 return (
                     <div className="modal-overlay">
                         <AddressList
@@ -44,7 +54,8 @@ const LocationModal = ({ onClose, onCitySelect }) => {
                             onAddNew={() => setView('newAddress')}
                         />
                     </div>
-                ); }
+                );
+            }
             case 'newAddress':
                 return (
                     <AddressModal
@@ -60,4 +71,5 @@ const LocationModal = ({ onClose, onCitySelect }) => {
 
     return renderContent();
 };
+
 export default LocationModal;

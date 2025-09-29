@@ -51,10 +51,11 @@ export default function MainPage() {
         // 1. Контексты загрузились
         // 2. Город не выбран
         // 3. Пользователь не авторизован
-        if (!isLocationLoading && !city && !isAuthenticated) {
+        if (!isLocationLoading && !city) {
             openLocationModal();
         }
-    }, [city, isLocationLoading, isAuthenticated, openLocationModal]);
+    }, [city, isLocationLoading, openLocationModal]);
+
 
     const handleCitySelect = (selectedCity) => {
         selectCity(selectedCity);

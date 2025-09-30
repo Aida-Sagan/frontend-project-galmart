@@ -35,33 +35,34 @@ const CatalogDropdown = () => {
         loadInitialData();
     }, []);
 
-
     const loadAllSections = useCallback(async (sections) => {
-        const isDataMissing = sections.some(s => !subCategoryCache[s.id]);
-        if (!isDataMissing) {
-            return;
-        }
-
         setIsContentLoading(true);
         try {
-            const promises = sections
-                .filter(section => !subCategoryCache[section.id])
-                .map(section => fetchSectionDetails(section.id).then(data => ({ id: section.id, data })));
+            const sectionsToLoad = sections.filter(section => !subCategoryCache[section.id]);
+
+            if (sectionsToLoad.length === 0) {
+                setIsContentLoading(false);
+                return;
+            }
+
+            const promises = sectionsToLoad.map(section =>
+                fetchSectionDetails(section.id).then(data => ({ id: section.id, data }))
+            );
 
             const results = await Promise.all(promises);
 
-            const newCacheEntries = results.reduce((acc, result) => {
-                if (result.data) {
-                    acc[result.id] = result.data;
-                }
-                return acc;
-            }, {});
-
-            setSubCategoryCache(prevCache => ({
-                ...prevCache,
-                ...newCacheEntries,
-            }));
-
+            setSubCategoryCache(prevCache => {
+                const newCacheEntries = results.reduce((acc, result) => {
+                    if (result.data) {
+                        acc[result.id] = result.data;
+                    }
+                    return acc;
+                }, {});
+                return {
+                    ...prevCache,
+                    ...newCacheEntries,
+                };
+            });
         } catch (err) {
             console.error("Failed to load section details", err);
         } finally {
@@ -152,7 +153,7 @@ const CatalogDropdown = () => {
                         {activeCategory.sections.length > 0 ? (
                             activeCategory.sections.map((section) => {
                                 const subCategoriesData = subCategoryCache[section.id];
-                                const subCategoriesList = subCategoriesData?.categories || [];
+                                const subCategoriesList = subCategoriesData?.data || [];
 
                                 return (
                                     <div key={section.id} className="catalog-column">
@@ -165,10 +166,6 @@ const CatalogDropdown = () => {
                                                     <div className="catalog-list-item">
                                                         {sub.title}
                                                     </div>
-
-                                                    {/*<NavLink to={`/catalog/${activeCategory.id}/${section.id}/${sub.id}`} className="catalog-list-item">*/}
-                                                    {/*    {sub.title}*/}
-                                                    {/*</NavLink>*/}
                                                 </li>
                                             ))}
                                         </ul>

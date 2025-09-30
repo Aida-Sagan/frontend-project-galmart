@@ -37,11 +37,24 @@
 @media (max-width: 1199px) {
     .title-banner-content{
         font-size: 20px;
+        width: 277px;
     }
+    .category-banner-image img{
+        display: none;
+    }
+
+    .product-sort-dropdown-wrapper{
+        width: 100%;
+    }
+    .sort-dropdown-wrapper{
+        width: 100%;
+    }
+
 }
 
 @media (max-width: 500px) {
     .title-banner-content{
         font-size: 18px;
+        width: 234px;
     }
 }

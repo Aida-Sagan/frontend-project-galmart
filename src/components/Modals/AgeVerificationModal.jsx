@@ -12,8 +12,8 @@ const AgeVerificationModal = ({ isOpen, onConfirm, onDecline }) => {
                 <button className="age-modal-close-btn" onClick={onDecline}>&times;</button>
                 <h2>Вам уже исполнился 21 год?</h2>
                 <p>
-                    В данном разделе размещены товары для лиц, достигших 21 года.
-                    Пожалуйста, подтвердите ваш возраст для продолжения просмотра.
+                    Просмотр раздела возможен только после подтверждения возраста.
+                    Алкогольная и табачная продукция обмену и возврату не подлежит.
                 </p>
                 <div className="age-modal-actions">
                     <button className="age-modal-btn primary" onClick={onConfirm}>

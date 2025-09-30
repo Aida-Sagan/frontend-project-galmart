@@ -33,3 +33,15 @@
     font-family: 'Montserrat', sans-serif;
     width: 65%;
 }
+
+@media (max-width: 1199px) {
+    .title-banner-content{
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 500px) {
+    .title-banner-content{
+        font-size: 18px;
+    }
+}

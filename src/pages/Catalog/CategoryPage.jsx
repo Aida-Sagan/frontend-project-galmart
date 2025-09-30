@@ -11,6 +11,8 @@ import CategoryPageSkeleton from '../../components/SkeletonLoader/CategoryPageSk
 import { fetchCatalogData, fetchSectionDetails } from '../../api/services/catalogService';
 import MobileCategoryBar from './MobileCategoryBar.jsx';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
+import Container from '../../components/Container/Container.jsx';
+
 import './style/CategoryPage.css';
 
 const CategoryPage = () => {
@@ -186,7 +188,7 @@ const CategoryPage = () => {
     };
 
     return (
-        <>
+        <Container>
             {/* На мобильных устройствах рендерим MobileCategoryBar над основным контентом */}
             {!isDesktop && <MobileCategoryBar categories={sidebarData} />}
 
@@ -199,7 +201,7 @@ const CategoryPage = () => {
                     {renderContent()}
                 </div>
             </div>
-        </>
+        </Container>
     );
 };
 

@@ -165,6 +165,16 @@
     }
 }
 
+@media (max-width: 500px) {
+    .sale-description{
+        font-size: 13px;
+    }
+
+    .sale-title{
+        font-size: 14px;
+    }
+}
+
 @media (max-width: 393px) {
     .section-title {
         font-size: 20px;

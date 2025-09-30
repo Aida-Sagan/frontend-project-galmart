@@ -3,6 +3,7 @@ import { fetchCatalogData } from '../../api/services/catalogService';
 import { catalogLayoutMap } from '../../config/catalogLayout';
 import CatalogCard from '../../components/Catalog/CatalogCard/CatalogCard';
 import CatalogCardSkeleton from '../../components/Catalog/CatalogCard/CatalogCardSkeleton';
+import Container from '../../components/Container/Container.jsx';
 
 import './style/CatalogPage.css';
 
@@ -44,20 +45,23 @@ const CatalogPage = () => {
     }
 
     return (
-        <div className="catalog-page">
-            <h1 className="catalog-page__title">Каталог товаров</h1>
-            <div className="catalog-page__grid">
-                {isLoading ? (
-                    skeletonLayout.map(item => (
-                        <CatalogCardSkeleton key={item.id} width={item.width} height={item.height} />
-                    ))
-                ) : (
-                    categories.map(category => (
-                        <CatalogCard key={category.id} category={category} />
-                    ))
-                )}
+        <Container>
+
+            <div className="catalog-page">
+                <h1 className="catalog-page__title">Каталог товаров</h1>
+                <div className="catalog-page__grid">
+                    {isLoading ? (
+                        skeletonLayout.map(item => (
+                            <CatalogCardSkeleton key={item.id} width={item.width} height={item.height} />
+                        ))
+                    ) : (
+                        categories.map(category => (
+                            <CatalogCard key={category.id} category={category} />
+                        ))
+                    )}
+                </div>
             </div>
-        </div>
+        </Container>
     );
 };
 

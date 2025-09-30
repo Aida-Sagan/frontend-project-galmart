@@ -1,5 +1,5 @@
 .catalog-page {
-    padding: 24px 77px;
+    /*padding: 24px 77px;*/
     font-family: 'Montserrat', sans-serif;
 }
 
@@ -60,9 +60,9 @@
 }
 
 @media (max-width: 1024px) {
-    .catalog-page {
-        padding: 24px 40px;
-    }
+    /*.catalog-page {*/
+    /*    padding: 24px 40px;*/
+    /*}*/
 
     .catalog-page__grid {
         grid-template-columns: repeat(3, 1fr);
@@ -78,9 +78,9 @@
 }
 
 @media (max-width: 768px) {
-    .catalog-page {
-        padding: 16px;
-    }
+    /*.catalog-page {*/
+    /*    padding: 16px;*/
+    /*}*/
 
     .catalog-page__title {
         font-size: 22px;
@@ -113,3 +113,9 @@
     }
 }
 
+@media (max-width: 500px) {
+    .catalog-page__card-title{
+        font-size: 14px;
+    }
+
+}

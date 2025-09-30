@@ -152,6 +152,7 @@
     .qr-promo {
         margin-top: 60px;
         padding: 0 15px 30px;
+        gap: 0;
     }
     .phone-container {
         margin-top: -60px;
@@ -183,5 +184,23 @@
     .qr-promo__right {
         gap: 5px;
     }
+    .qr-promo__phone {
+        width: 67%;
+    }
+
 }
 
+@media (max-width: 500px) {
+    .qr-promo__phone {
+        width: 67%;
+    }
+    .qr-promo__title {
+        font-size: 20px;
+    }
+    .qr-code {
+        width: 35%;
+    }
+    .qr-promo__caption {
+        font-size: 8px;
+    }
+}

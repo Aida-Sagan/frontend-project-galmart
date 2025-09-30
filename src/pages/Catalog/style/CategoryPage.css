@@ -97,10 +97,14 @@
 }
 
 
-@media (max-width: 1600px) {
+@media (max-width: 1700px) {
     .carousel-item-container {
         width: 169px;
     }
+    .category-page {
+        padding: 24px 102px;
+    }
+
 }
 
 @media (max-width: 1440px) {
@@ -173,7 +177,14 @@
     }
 
     .products-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 10px; 
+    }
+}
+
+@media (max-width: 500px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
     }
 }

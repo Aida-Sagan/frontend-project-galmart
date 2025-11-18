@@ -3,9 +3,10 @@ import {useState} from "react";
 
 import './styles/CitySelectionModal.css';
 
+// ИСПРАВЛЕНО: Инвертированы ID, чтобы соответствовать логике мобильного бэкенда (Астана=2, Алматы=1)
 const cities = [
-    { id: 1, name: 'Астана' },
-    { id: 2, name: 'Алматы' },
+    { id: 2, name: 'Астана' },
+    { id: 1, name: 'Алматы' },
 ];
 
 export default function CitySelectionModal({ onSelectCity }) {

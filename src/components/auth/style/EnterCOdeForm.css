@@ -52,3 +52,25 @@
     gap: 10px;
     width: 100%;
 }
+
+
+.code-error-message {
+    color: #ff4d4f;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+.code-box input.input-error-state {
+    border: 2px solid #ff4d4f;
+    box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.2);
+}
+
+.code-inputs.error-container .code-box {
+    background: #fff0f0;
+}
+
+.code-box input.input-error-state:focus {
+    border: 2px solid #ff4d4f;
+    box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.4);
+}

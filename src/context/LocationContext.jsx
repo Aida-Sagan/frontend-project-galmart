@@ -1,5 +1,3 @@
-// src/context/LocationContext.js
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { fetchAddresses, saveAddress as saveAddressApi } from '../api/services/addressService';
@@ -58,7 +56,6 @@ export const LocationProvider = ({ children }) => {
     const addNewAddress = async (addressData) => {
         if (!isAuthenticated) return;
         const newAddress = await saveAddressApi(addressData, token);
-        // Correct the city field to be an ID, matching the other addresses
         const formattedAddress = { ...newAddress, city: newAddress.city.id };
         setUserAddresses(prevAddresses => [...prevAddresses, formattedAddress]);
         setSelectedAddress(formattedAddress);

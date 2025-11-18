@@ -1,11 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { YMaps, Map, Placemark, SearchControl, Polygon } from '@pbe/react-yandex-maps';
 import customPinIcon from '../../assets/svg/vector.svg';
-import { useAuth } from "../../context/AuthContext";
 import { getCityPolygons } from '../../api/services/addressService';
 
-const YandexMap = ({ city, onAddressSelect }) => {
-    const { token } = useAuth();
+const YandexMap = ({ city, onAddressSelect, serviceToken }) => {
     const mapRef = useRef(null);
     const [pinCoords, setPinCoords] = useState(null);
     const [deliveryPolygons, setDeliveryPolygons] = useState([]);
@@ -22,16 +20,15 @@ const YandexMap = ({ city, onAddressSelect }) => {
 
     useEffect(() => {
         const fetchPolygons = async () => {
-            if (city?.id && token) {
-                const polygonsData = await getCityPolygons(token);
-                // Координаты уже в нужном формате [широта, долгота]
+            if (city?.id && serviceToken) {
+                const polygonsData = await getCityPolygons(serviceToken);
                 setDeliveryPolygons(polygonsData);
             } else {
                 setDeliveryPolygons([]);
             }
         };
         fetchPolygons();
-    }, [city, token]);
+    }, [city, serviceToken]);
 
     const handleResultSelect = (e) => {
         const newCoords = e.get('result').geometry.getCoordinates();

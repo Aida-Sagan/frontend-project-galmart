@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { X } from "lucide-react";
 import YandexMap from "./YandexMap";
 import "./styles/AddressModal.css";
@@ -20,13 +20,13 @@ function useDebounce(value, delay) {
 }
 
 const isPointInAnyPolygon = (point, polygons) => {
-    // point - [latitude, longitude]
     const isPointInPolygon = (p, poly) => {
-        const x = p[0], y = p[1];
+        const x = p[1], y = p[0];
         let inside = false;
+
         for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-            const xi = poly[i][0], yi = poly[i][1];
-            const xj = poly[j][0], yj = poly[j][1];
+            const xi = poly[i][1], yi = poly[i][0];
+            const xj = poly[j][1], yj = poly[j][0];
 
             const intersect = ((yi > y) !== (yj > y)) &&
                 (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
@@ -39,9 +39,16 @@ const isPointInAnyPolygon = (point, polygons) => {
     return polygons.some(polygon => isPointInPolygon(point, polygon));
 };
 
-export default function AddressModal({ isOpen, onClose, onSave }) {
+export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, isRegistrationMode = false }) {
     const { city, selectCity } = useLocation();
     const { token } = useAuth();
+
+    const serviceToken = isRegistrationMode ? tempAuthToken : token;
+
+    const cities = [
+        { id: 2, name: 'Астана' },
+        { id: 1, name: 'Алматы' },
+    ];
 
     const [addressString, setAddressString] = useState('');
     const [street, setStreet] = useState('');
@@ -57,28 +64,23 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
     const [isManualInput, setIsManualInput] = useState(false);
     const [showCityDropdown, setShowCityDropdown] = useState(false);
 
-    const cities = [
-        { id: 1, name: 'Астана' },
-        { id: 2, name: 'Алматы' },
-    ];
-
     const debouncedAddressString = useDebounce(addressString, 500);
 
     useEffect(() => {
         const fetchPolygons = async () => {
-            if (city?.id && token) {
-                const polygonsData = await getCityPolygons(token);
+            if (city?.id && serviceToken) {
+                const polygonsData = await getCityPolygons(serviceToken);
                 setDeliveryPolygons(polygonsData);
             } else {
                 setDeliveryPolygons([]);
             }
         };
         fetchPolygons();
-    }, [city, token]);
+    }, [city, serviceToken]);
 
     useEffect(() => {
-        if (isManualInput && token && debouncedAddressString && debouncedAddressString.length > 3 && city?.id) {
-            getCoordsByString(debouncedAddressString, city.id, token).then(result => {
+        if (isManualInput && serviceToken && debouncedAddressString && debouncedAddressString.length > 3 && city?.id) {
+            getCoordsByString(debouncedAddressString, city.id, serviceToken).then(result => {
                 if (result) {
                     setAddressString(result.title);
                     setStreet(result.address);
@@ -87,7 +89,7 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
                 }
             });
         }
-    }, [debouncedAddressString, city, token, isManualInput]);
+    }, [debouncedAddressString, city, serviceToken, isManualInput]);
 
     const handleCitySelect = (selectedCity) => {
         selectCity(selectedCity);
@@ -104,64 +106,99 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
             return;
         }
 
-        if (!token) {
-            alert("Для сохранения адреса необходимо войти в аккаунт.");
-            return;
-        }
-
         const pointInPolygonCheck = isPointInAnyPolygon(coords, deliveryPolygons);
-        console.log('Проверка нахождения точки в полигоне:', pointInPolygonCheck);
-        console.log('Координаты:', coords);
 
         if (deliveryPolygons.length > 0 && !pointInPolygonCheck) {
             alert("Извините, выбранный адрес находится вне зоны доставки.");
             return;
         }
 
+        if (isRegistrationMode) {
+            const regApartment = isPrivateHouse ? '' : apartment;
+            const regEntrance = isPrivateHouse ? '' : entrance;
+            const regFloor = isPrivateHouse ? '' : floor;
+
+            const fullAddressString = street +
+                (building ? `, д. ${building}` : '') +
+                (isPrivateHouse ? ' (Частный дом)' : '') +
+                (regApartment ? `, кв/офис ${regApartment}` : '') +
+                (regEntrance ? `, подъезд ${regEntrance}` : '') +
+                (regFloor ? `, этаж ${regFloor}` : '');
+
+            onSave(fullAddressString.trim().replace(/^,/, '').trim());
+            onClose();
+            return;
+        }
+
+        if (!serviceToken) {
+            alert("Для сохранения адреса необходимо войти в аккаунт.");
+            return;
+        }
+
         setIsLoading(true);
+
+        const finalBuilding = isPrivateHouse ? "" : building;
+        const finalApartment = isPrivateHouse ? "" : apartment;
+        const finalEntrance = isPrivateHouse ? "" : entrance;
+        const finalFloor = isPrivateHouse ? "" : floor;
 
         const addressData = {
             city: city.id,
             address: street,
-            building: isPrivateHouse ? "-" : building,
+            building: finalBuilding,
             latitude: coords[0],
             longitude: coords[1],
-            apartment: isPrivateHouse ? "" : apartment,
-            entrance: isPrivateHouse ? "" : entrance,
-            floor: isPrivateHouse ? "" : floor,
+            apartment: finalApartment,
+            entrance: finalEntrance,
+            floor: finalFloor,
             private_house: isPrivateHouse,
             comment: comment,
             name: "Мой новый адрес",
         };
 
         try {
-            const savedData = await saveAddress(addressData, token);
+            const savedData = await saveAddress(addressData, serviceToken);
             onSave(savedData);
             onClose();
         } catch (error) {
             console.error("Ошибка при сохранении адреса:", error);
-            alert("Не удалось сохранить адрес. Попробуйте снова.");
+
+            let alertMessage = "Не удалось сохранить адрес. Попробуйте снова.";
+
+            try {
+                const errorDetailsMatch = error.message.match(/\{'building': \[ErrorDetail\(string='(.+?)'/);
+
+                if (errorDetailsMatch && errorDetailsMatch[1]) {
+                    alertMessage = `Ошибка поля "Номер дома": ${errorDetailsMatch[1]}`;
+                }
+                else if (error.message.includes("на этот адрес не доставляем")) {
+                    alertMessage = "Извините, на этот адрес не доставляем.";
+                }
+            } catch (e) {
+                console.log(e.response);
+            }
+            alert(alertMessage);
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleMapSelect = async ({ coords }) => {
-        if (!token) {
-            alert("Для выбора адреса на карте необходимо войти в аккаунт.");
+    const handleMapSelect = useCallback(async ({ coords: mapCoords }) => {
+        setIsManualInput(false);
+
+        if (!city?.id) {
+            alert("Пожалуйста, сначала выберите город.");
             return;
         }
 
-        setIsManualInput(false);
-
-        const result = await getAddressByCoords(coords[0], coords[1], token);
+        const result = await getAddressByCoords(mapCoords[0], mapCoords[1], serviceToken);
         if (result) {
             setAddressString(result.title);
             setStreet(result.address);
             setBuilding(result.building);
             setCoords([result.latitude, result.longitude]);
         }
-    };
+    }, [city, serviceToken]);
 
     if (!isOpen) return null;
 
@@ -172,11 +209,12 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
                     <YandexMap
                         city={city}
                         onAddressSelect={handleMapSelect}
+                        serviceToken={serviceToken}
                     />
                 </div>
                 <div className="modal-form">
                     <div className="modal-header">
-                        <h2>Новый адрес</h2>
+                        <h2>{isRegistrationMode ? 'Выбор адреса' : 'Новый адрес'}</h2>
                         <button className="close-btn" onClick={onClose}> <X size={20} /> </button>
                     </div>
                     <div className="form-fields">
@@ -217,7 +255,7 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
                                     setAddressString(e.target.value);
                                     setIsManualInput(true);
                                 }}
-                                className="form-input"
+                                className="form-input address-text"
                                 placeholder=" "
                             />
                             <label htmlFor="address">Улица, номер дома</label>
@@ -248,7 +286,7 @@ export default function AddressModal({ isOpen, onClose, onSave }) {
                             <label htmlFor="comment">Комментарий для курьера</label>
                         </div>
                         <button onClick={handleSubmit} className="btn-submit" disabled={isLoading}>
-                            {isLoading ? 'Сохранение...' : 'Сохранить адрес'}
+                            {isLoading ? 'Загрузка...' : (isRegistrationMode ? 'Выбрать адрес' : 'Сохранить адрес')}
                         </button>
                     </div>
                 </div>

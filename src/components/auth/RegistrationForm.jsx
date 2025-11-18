@@ -1,20 +1,27 @@
+// src/components/RegistrationForm.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import DatePicker from 'react-datepicker';
-import { useNavigate } from 'react-router-dom';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { HiOutlineCalendar } from 'react-icons/hi';
 import 'react-datepicker/dist/react-datepicker.css';
 import './style/RegistrationForm.css';
 import AddressModal from '../AddressModal/AddressModal.jsx';
+import { ru } from 'date-fns/locale';
 
 import { useAuth } from '../../context/AuthContext';
 import { completeRegistrationApi } from '../../api/services/authService';
 
 export default function RegistrationForm() {
     const navigate = useNavigate();
+    const location = useLocation();
+
     const [isModalOpen, setModalOpen] = useState(false);
 
+    // tempAuthData содержит { phone, access_token, refresh_token }
     const { tempAuthData, completeRegistration } = useAuth();
+    registerLocale('ru', ru);
 
     useEffect(() => {
         if (!tempAuthData) {
@@ -39,7 +46,6 @@ export default function RegistrationForm() {
             }}
             validateOnMount
             onSubmit={async (values, { setSubmitting, setFieldError }) => {
-                // Если нет временных данных, прерываем выполнение
                 if (!tempAuthData) {
                     setFieldError('firstName', 'Ошибка аутентификации. Пожалуйста, начните сначала.');
                     setSubmitting(false);
@@ -47,24 +53,30 @@ export default function RegistrationForm() {
                 }
 
                 try {
-                    // Подготавливаем данные в формате, который ожидает API
                     const apiData = {
-                        first_name: values.firstName,
-                        last_name: values.lastName,
-                        // Форматируем дату в YYYY-MM-DD
-                        birth_date: values.birthDate ? values.birthDate.toISOString().split('T')[0] : null,
+                        first_name: values.name,
+                        last_name: values.lastname,
+                        birth_date: values.birthday ? values.birthday.toISOString().split('T')[0] : null,
                         address: values.address,
-                        phone: tempAuthData.phone, // Телефон берем из временных данных
+                        phone: tempAuthData.phone,
                     };
 
-                    // Вызываем API, передавая данные и временный токен
                     const response = await completeRegistrationApi(apiData, tempAuthData.access_token);
 
-                    // Завершаем процесс, передавая в контекст НОВЫЕ, постоянные токены из ответа
-                    completeRegistration(response.data.access, response.data.refresh);
+                    if (response.access && response.refresh) {
+                        completeRegistration(response.access, response.refresh);
+                    } else if (response.data && response.data.access && response.data.refresh) {
+                        completeRegistration(response.data.access, response.data.refresh);
+                    } else {
+                        console.warn("API не вернул постоянные токены. Перенаправление на вход.");
+
+                    }
+
+                    // Навигация на предыдущую страницу
+                    const previousPath = location.state?.from || '/';
+                    navigate(previousPath, { replace: true });
 
                 } catch (error) {
-                    // В случае ошибки от сервера, показываем ее пользователю
                     setFieldError('firstName', error.message || 'Произошла ошибка при регистрации');
                 } finally {
                     setSubmitting(false);
@@ -74,6 +86,7 @@ export default function RegistrationForm() {
             {({ values, setFieldValue, touched, errors, isValid, isSubmitting }) => (
                 <>
                     <Form className="w-full max-w-md space-y-4">
+                        {/* ... (поля формы без изменений) ... */}
                         <div className="field-wrapper">
                             <Field
                                 type="text"
@@ -116,6 +129,7 @@ export default function RegistrationForm() {
                                 maxDate={new Date()}
                                 showYearDropdown
                                 scrollableYearDropdown
+                                locale="ru"
                             />
                             <HiOutlineCalendar className="calendar-icon" />
                         </div>
@@ -148,14 +162,15 @@ export default function RegistrationForm() {
                     <AddressModal
                         isOpen={isModalOpen}
                         onClose={() => setModalOpen(false)}
-                        onSelectAddress={(selectedAddress) => {
+                        onSave={(selectedAddress) => {
                             setFieldValue('address', selectedAddress, true);
                             setModalOpen(false);
                         }}
+                        tempAuthToken={tempAuthData?.access_token}
+                        isRegistrationMode={true}
                     />
                 </>
             )}
         </Formik>
     );
 }
-

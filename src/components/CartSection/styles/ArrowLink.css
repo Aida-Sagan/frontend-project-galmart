@@ -1,0 +1,43 @@
+
+.arrow-link {
+    display: block;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.arrow-link:last-of-type {
+    border-bottom: none;
+}
+
+.arrow-link-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.link-title {
+    font-size: 14px;
+    color: #333;
+    flex-grow: 1;
+}
+
+.link-subtitle {
+    font-size: 14px;
+    color: #888;
+    margin-right: 15px;
+}
+
+.arrow-icon {
+    font-size: 18px;
+    color: #ccc;
+    font-weight: 600;
+}
+
+/* Стиль для "Время доставки не указано" */
+.link-subtitle span[style*="red"] {
+    color: #E91E63 !important;
+    font-weight: 500;
+}

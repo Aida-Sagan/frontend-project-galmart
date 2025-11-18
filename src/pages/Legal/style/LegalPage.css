@@ -1,0 +1,134 @@
+*{
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+}
+
+
+.legal-page-layout {
+    max-width: 79%;
+    margin: 0 auto;
+}
+
+
+
+
+.legal-header {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400!important;
+    font-size: 12px!important;
+    color: #7A7A7A;
+    margin: 25px auto;
+}
+
+.legal-content-wrapper {
+    display: flex;
+    gap: 0;
+    margin-bottom: 50px;
+    font-size: 18px;
+}
+
+.legal-sidebar {
+    flex: 0 0 26%;
+    margin-right: 2%;
+}
+
+.sidebar-title-container {
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+
+.legal-main-content {
+    flex-grow: 1;
+    min-width: 0;
+    padding-right: 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight:400;
+}
+
+.sidebar-item {
+    display: block;
+    padding: 20px 20px;
+    color: #222222;
+    font-weight: 500;
+   text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.legal-sidebar nav {
+    background-color: #F5F5F5;
+    border-radius: 24px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+
+.sidebar-item--active {
+    background-color: #E9E9E9;
+    color: #902067;
+    border-radius: 24px;
+
+}
+.legal-sidebar nav .sidebar-item:first-child.sidebar-item--active {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.legal-sidebar nav .sidebar-item:last-child.sidebar-item--active {
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.content-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 24px;
+    margin: 0;
+}
+
+@media (max-width: 1600px) {
+    .legal-page-layout {
+        max-width: 87%;
+    }
+}
+
+@media (max-width: 1440px) {
+    .legal-page-layout {
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 1230px) {
+    .legal-page-layout {
+        max-width: 97%;
+    }
+}
+
+/* ======================================= */
+/* Стили для мобильных устройств (до 768px) */
+/* ======================================= */
+
+@media (max-width: 768px) {
+
+    .legal-content-wrapper {
+        flex-direction: column;
+        gap: 0;
+
+    }
+
+    .legal-sidebar nav {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .legal-main-content {
+        width: 100%;
+        order: 2;
+        font-size: 14px;
+    }
+
+    #legal-sidebar {
+        margin-bottom: 20px;
+    }
+}

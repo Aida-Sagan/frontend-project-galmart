@@ -1,0 +1,58 @@
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    border-radius: 64px;
+    overflow: hidden;
+    height: 36px;
+    flex-shrink: 0;
+}
+
+.control-button {
+    background: #E9E9E9;
+    border: none;
+    width: 30px;
+    height: 100%;
+    font-size: 20px;
+    font-weight: 300;
+    cursor: pointer;
+    color: #222222;
+    transition: background-color 0.1s; display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.control-button:disabled {
+    cursor: not-allowed;
+    color: #E9E9E9;
+}
+
+.control-button:not(:disabled):hover {
+    background-color: #E9E9E9;
+}
+
+.quantity-value {
+    padding: 0 10px;
+    font-size: 16px;
+    width: 70px;
+    text-align: center;
+    line-height: 36px;
+    background-color: #E9E9E9;
+    font-weight: 500;
+    font-family: "Montserrat", sans-serif;
+    color: #222222;
+}
+
+.remove-button img {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+}
+
+.remove-button {
+    font-size: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}

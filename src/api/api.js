@@ -16,6 +16,14 @@ export const API_URLS = {
     ADDRESS: `${API_BASE_URL}/api/v2/account/address/`,
     GEOCODE: `${API_BASE_URL}/api/v2/account/geocode/`,
     POINTS: `${API_BASE_URL}/api/v2/account/points/`,
+
+    // Order / Cart (New Endpoints)
+    GET_CART_DATA: `${API_BASE_URL}/api/v2/orders/basket/`,
+    SET_BASKET_ITEM: `${API_BASE_URL}/api/v2/orders/basket/set/`,
+    CLEAR_CART: `${API_BASE_URL}/api/v2/orders/basket/clear/`,
+    GET_DELIVERY_TIMES: `${API_BASE_URL}/api/v2/orders/get_delivery_times`,
+    SET_DELIVERY_TIME: `${API_BASE_URL}/api/v2/orders/basket/set_delivery_time/`,
+    CREATE_ORDER: `${API_BASE_URL}/api/v2/orders/order/`,
 };
 
 export const getCityHeader = () => {

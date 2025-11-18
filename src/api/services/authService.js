@@ -11,6 +11,16 @@ async function apiClient(url, options = {}) {
         headers.Authorization = `Bearer ${token}`;
     }
 
+    // ➡️ LOG 1: Запрос и Токен
+    console.log('API Client Request:');
+    console.log('  URL:', url);
+    console.log('  Method:', options.method || 'GET');
+    console.log('  Using Token:', !!token);
+    if (options.body) {
+        console.log('  Body:', JSON.parse(options.body));
+    }
+    console.log('---');
+
     const response = await fetch(url, { ...options, headers });
 
     if (!response.ok) {
@@ -25,6 +35,8 @@ async function apiClient(url, options = {}) {
  * Отправляет запрос на получение SMS-кода.
  */
 export const sendLoginCode = (login) => {
+    // ➡️ LOG 2: Данные для отправки кода
+    console.log('Sending Login Code for:', login);
     return apiClient(API_URLS.SEND_CODE, {
         method: 'POST',
         body: JSON.stringify({ login }),
@@ -35,6 +47,8 @@ export const sendLoginCode = (login) => {
  * Отправляет номер телефона и код для проверки.
  */
 export const loginWithCode = (login, code) => {
+    // ➡️ LOG 3: Данные для входа
+    console.log('Attempting Login with Code:', { login, code });
     return apiClient(API_URLS.LOGIN, {
         method: 'POST',
         body: JSON.stringify({ login, code }),
@@ -44,10 +58,6 @@ export const loginWithCode = (login, code) => {
 
 /**
  * 1. Получает список избранных товаров.
- * @param {object} params - Параметры для пагинации и сортировки.
- * @param {number} params.page - Номер страницы.
- * @param {number} params.limit - Количество элементов на странице.
- * @param {string} params.ordering - Поле для сортировки.
  */
 export const fetchFavorites = ({ page = 1, limit = 16, ordering = '' } = {}) => {
     const url = new URL(API_URLS.FAVORITE);
@@ -56,6 +66,9 @@ export const fetchFavorites = ({ page = 1, limit = 16, ordering = '' } = {}) => 
     if (ordering) {
         url.searchParams.append('ordering', ordering);
     }
+
+    // ➡️ LOG 4: Параметры избранного
+    console.log('Fetching Favorites with params:', { page, limit, ordering });
 
     return apiClient(url.toString(), {
         method: 'GET',
@@ -68,6 +81,9 @@ export const fetchFavorites = ({ page = 1, limit = 16, ordering = '' } = {}) => 
 export const toggleFavorite = (productId) => {
     const url = API_URLS.FAVORITE;
 
+    // ➡️ LOG 5: ID для избранного
+    console.log('Toggling Favorite for Product ID:', productId);
+
     return apiClient(url, {
         method: 'POST',
         body: JSON.stringify({ id: productId }),
@@ -78,6 +94,8 @@ export const toggleFavorite = (productId) => {
  * 3. Удаляет все товары из избранного.
  */
 export const clearAllFavorites = () => {
+    // ➡️ LOG 6: Очистка избранного
+    console.log('Clearing all Favorites.');
     return apiClient(API_URLS.FAVORITE_CLEAR, {
         method: 'DELETE',
     });
@@ -86,12 +104,16 @@ export const clearAllFavorites = () => {
 
 /**
  * Обновляет профиль пользователя, отправляя данные с формы регистрации.
- * @param {object} userData - Данные из формы (имя, фамилия и т.д.).
- * @param {string} tempToken - Временный токен, полученный после ввода кода.
  */
 export const completeRegistrationApi = (userData, tempToken) => {
 
     const PROFILE_URL = `${import.meta.env.VITE_API_BASE_URL}/api/v2/account/profile/`;
+
+    // ➡️ LOG 7: Данные регистрации и временный токен
+    console.log('Completing Registration:');
+    console.log('  Data:', userData);
+    console.log('  Using Temporary Token:', !!tempToken);
+    console.log('---');
 
     return fetch(PROFILE_URL, {
         method: 'PATCH',

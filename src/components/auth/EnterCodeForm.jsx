@@ -11,7 +11,7 @@ export default function EnterCodeForm() {
 
     const [code, setCode] = useState(['', '', '', '']);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState(false); // Будет булево (true/false)
     const [timer, setTimer] = useState(60);
     const inputsRef = useRef([]);
 
@@ -29,6 +29,11 @@ export default function EnterCodeForm() {
         newCode[index] = value;
         setCode(newCode);
 
+        // Очищаем ошибку, как только пользователь начинает ввод
+        if (error) {
+            setError(false);
+        }
+
         if (value && index < 3) {
             inputsRef.current[index + 1]?.focus();
         }
@@ -36,12 +41,18 @@ export default function EnterCodeForm() {
         if (index === 3 && newCode.every((digit) => digit !== '')) {
             const joinedCode = newCode.join('');
             setIsLoading(true);
-            setError('');
+
             try {
                 const unmaskedPhone = loginPhone.replace(/\D/g, '');
                 await login(unmaskedPhone, joinedCode);
             } catch (err) {
-                setError('Код неверный, попробуйте снова', err);
+                setError(true);
+
+                setCode(['', '', '', '']);
+                inputsRef.current[0]?.focus();
+
+                console.error("Login error:", err);
+            } finally {
                 setIsLoading(false);
             }
         }
@@ -71,20 +82,18 @@ export default function EnterCodeForm() {
             try {
                 await sendLoginCode(loginPhone.replace(/\D/g, ''));
                 setCode(['', '', '', '']);
-                setError('');
+                setError(false); // Сброс ошибки
                 setTimer(60);
                 inputsRef.current[0]?.focus();
             } catch (err) {
-                setError('Не удалось отправить код повторно', err);
+                console.error('Не удалось отправить код повторно', err);
             }
         }
     };
 
     return (
         <div className="code-wrapper">
-            <div className={`code-inputs ${error ? 'error' : ''}`}>
-
-
+            <div className={`code-inputs ${error ? 'error-container' : ''}`}>
                 {code.map((digit, idx) => (
                     <div className="code-box" key={idx}>
                         <input
@@ -95,24 +104,27 @@ export default function EnterCodeForm() {
                             onChange={(e) => handleChange(e, idx)}
                             onKeyDown={(e) => handleKeyDown(e, idx)}
                             ref={(el) => (inputsRef.current[idx] = el)}
+                            // 💡 Добавляем класс, если есть ошибка, для стилизации конкретного input
+                            className={error ? 'input-error-state' : ''}
                             placeholder="---"
+                            disabled={isLoading}
                         />
 
                     </div>
                 ))}
             </div>
 
-            {error && (
-                <p className="code-error">Код неверный, попробуйте снова</p>
+            {error && !isLoading && (
+                <p className="code-error-message">Код неверный, попробуйте снова</p>
             )}
 
             <div className="btn-group">
                 <button
                     className="btn-get-code"
                     onClick={handleResend}
-                    disabled={timer > 0}
+                    disabled={timer > 0 || isLoading}
                 >
-                    {timer > 0 ? `Новый код через 0:${timer.toString().padStart(2, '0')}` : 'Получить новый код'}
+                    {isLoading ? 'Проверка...' : timer > 0 ? `Новый код через 0:${timer.toString().padStart(2, '0')}` : 'Получить новый код'}
                 </button>
 
                 <button
@@ -122,7 +134,7 @@ export default function EnterCodeForm() {
                     Вернуться на сайт
                 </button>
             </div>
-
+            {isLoading && <div className="loading-overlay">Проверка кода...</div>}
 
         </div>
     );

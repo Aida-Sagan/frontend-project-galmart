@@ -1,0 +1,208 @@
+.contacts-container {
+    padding: 0 40px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.addresses-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 40px 0 25px 0;
+}
+
+.contacts-title {
+    font-weight: 500;
+    font-size: 24px;
+    margin-bottom: 16px;
+}
+
+.contact-details {
+    display: flex;
+    flex-direction: column;
+    background-color: #F5F5F5;
+    border-radius: 24px;
+}
+
+.contact-item {
+    display: flex;
+    flex-direction: column;
+    padding: 15px 30px;
+    border-bottom: 1px solid #DBDBDB;
+}
+
+.contact-item:last-of-type {
+    border-bottom: none;
+}
+
+.contact-label {
+    font-size: 14px;
+    color: #7A7A7A;
+    margin-bottom: 5px;
+}
+
+.contact-value {
+    font-size: 16px;
+    color: #222222;
+    margin: 0;
+    font-weight: 500;
+}
+
+.social-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #7d4e78;
+    color: white;
+    text-decoration: none;
+    font-size: 1.2em;
+}
+
+/* --- Стили для блока Адресов супермаркетов --- */
+
+.addresses-title {
+    font-family: "Montserrat", sans-serif;
+    font-size: 24px;
+    font-weight: 500;
+    color: #222222;
+    margin: 0;
+    padding-right: 20px;
+}
+
+.city-selector {
+    display: flex;
+    background-color: transparent;
+    padding: 0;
+    width: fit-content;
+    margin: 0;
+}
+
+.city-button {
+    background: #F0F0F0;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 40px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #222222;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    outline: none;
+    font-family: 'Montserrat', sans-serif;
+    margin-right: 15px;
+}
+
+.city-button--active {
+    background-color: #C6D600;
+    color: #222222;
+    box-shadow: none;
+}
+
+.city-button:last-child {
+    margin-right: 0;
+}
+
+/* Отдельный элемент адреса */
+.address-item {
+    font-family: "Montserrat", sans-serif;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-radius: 0;
+    padding: 10px 20px;
+    box-shadow: none;
+    border: none;
+}
+
+.address-item:last-of-type {
+    border-bottom: none;
+}
+
+.address-title  {
+    color: #222;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.address-details {
+    font-size: 14px;
+    color: #4E4E4E;
+    margin-bottom: 2px;
+    margin-top: 5px;
+}
+
+.address-details-schedule{
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: #222222;
+
+}
+/* Иконка местоположения (правая часть) */
+.location-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 20px;
+    padding-top: 5px;
+}
+
+/* Имитация точки местоположения */
+.pin-icon {
+    width: 8px;
+    height: 8px;
+    background-color: #ccc;
+    border-radius: 50%;
+    margin-left: auto;
+}
+
+.location-icon--highlight .pin-icon {
+    background-color: #7d4e78;
+}
+
+/* Имитация карты */
+.map-placeholder {
+    height: 300px;
+    background-color: #e0e0e0;
+    background-image: url('');
+    background-size: cover;
+    margin: 20px 0;
+    position: relative;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+/* Контролы зума на карте */
+.map-zoom-controls {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.map-zoom-button {
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    /*border: 1px solid #ccc;*/
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+
+.addresses-list{
+    background-color: #F5F5F5;
+    border-radius: 24px;
+}

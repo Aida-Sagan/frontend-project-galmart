@@ -12,6 +12,7 @@
   "dependencies": {
     "@pbe/react-yandex-maps": "^1.2.5",
     "axios": "^1.11.0",
+    "date-fns": "^4.1.0",
     "formik": "^2.4.6",
     "imask": "^7.6.1",
     "lucide-react": "^0.525.0",

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ReactComponent as HeartIcon } from '../../assets/svg/like.svg';
 import { ReactComponent as HeartLikedIcon } from '../../assets/svg/liked.svg';
@@ -9,6 +9,7 @@ import { ReactComponent as GalmIcon } from '../../assets/svg/galm_icon.svg';
 import { ReactComponent as BonusIcon } from '../../assets/svg/2_1.svg';
 import { useAuth } from '../../context/AuthContext';
 import { useFavorites } from '../../context/FavoritesContext.jsx';
+import { useCart } from '../../context/CartContext';
 import { toggleFavorite as toggleFavoriteApi } from '../../api/services/authService.js';
 import './style/ProductCard.css';
 
@@ -23,22 +24,36 @@ const ProductCard = ({ product }) => {
         unit_value = 1,
         photos = [],
         inventory = 0,
-        count = 0,
         flags = []
     } = product;
 
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
     const { favoriteIds, addFavoriteId, removeFavoriteId, isLoading: isLoadingFavorites } = useFavorites();
+    const { items: cartItems, updateCartItemQuantity, isLoading: isLoadingCart } = useCart();
 
     const isFavorite = favoriteIds.has(id);
 
-    const [quantity, setQuantity] = useState(count);
+    const cartItem = cartItems.find(item => item.id === id);
+    const quantity = cartItem ? cartItem.quantity : 0;
     const addedToCart = quantity > 0;
+
 
     const isGalmart = flags.includes('galmart_production');
     const isEco = flags.includes('eco');
     const hasBonus = flags.includes('bonus');
+
+    const checkAuthAndRun = (callback, e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+        callback();
+    };
+
 
     const handleToggleFavorite = async (e) => {
         e.preventDefault();
@@ -69,28 +84,38 @@ const ProductCard = ({ product }) => {
     };
 
     const handleAddToCart = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (quantity === 0) {
-            setQuantity(1);
-        }
+        checkAuthAndRun(() => {
+            if (quantity === 0) {
+                updateCartItemQuantity(id, 1, product);
+            }
+        }, e);
     };
 
     const handleIncrement = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setQuantity(prev => (prev < inventory ? prev + 1 : prev));
+        checkAuthAndRun(() => {
+            const newQuantity = quantity + 1;
+            if (newQuantity <= inventory) {
+                updateCartItemQuantity(id, newQuantity, product);
+            }
+        }, e);
     };
 
     const handleDecrement = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setQuantity(prev => (prev > 0 ? prev - 1 : 0));
+        checkAuthAndRun(() => {
+            const newQuantity = quantity - 1;
+
+            if (quantity > 0) {
+                updateCartItemQuantity(id, newQuantity, product);
+            }
+        }, e);
     };
 
     const getTotalPrice = () => {
         return (unit_price * quantity).toLocaleString('ru-RU');
     };
+
+    const isUpdatingCart = isLoadingCart;
+
 
     const imageUrl = photos[0];
     const productUrl = `/product/${id}`;
@@ -128,6 +153,7 @@ const ProductCard = ({ product }) => {
                             <button
                                 className={`add-to-cart-btn ${addedToCart ? 'expanded' : ''}`}
                                 onClick={handleAddToCart}
+                                disabled={isUpdatingCart}
                             >
                                 {addedToCart ? (
                                     <>

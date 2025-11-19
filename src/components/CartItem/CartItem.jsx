@@ -6,7 +6,6 @@ import '../../assets/svg/cart.svg';
 import './style/CartItem.css';
 
 const CartItem = ({ item, isPromo, isOutOfStock }) => {
-    // ИСПРАВЛЕНО: используем правильное имя функции из CartContext
     const { updateCartItemQuantity } = useCart();
 
     const {
@@ -28,13 +27,7 @@ const CartItem = ({ item, isPromo, isOutOfStock }) => {
     const imageUrl = photos[0];
 
     const handleQuantityChange = (newQuantity) => {
-        if (newQuantity <= 0) {
-            // ИСПРАВЛЕНО: вызываем функцию с правильным именем
-            updateCartItemQuantity(id, 0);
-        } else {
-            // ИСПРАВЛЕНО: вызываем функцию с правильным именем
-            updateCartItemQuantity(id, newQuantity);
-        }
+        updateCartItemQuantity(id, newQuantity);
     };
 
     if (price === undefined) {
@@ -63,7 +56,6 @@ const CartItem = ({ item, isPromo, isOutOfStock }) => {
                     onQuantityChange={handleQuantityChange}
                     maxQuantity={maxQuantity || Infinity}
                     isMaxed={quantity >= (maxQuantity || Infinity)}
-                    showRemoveInsteadOfMinus={quantity <= (isWeight ? 0.001 : 1)}
                     isWeight={isWeight}
                 />
 
@@ -86,7 +78,6 @@ const CartItem = ({ item, isPromo, isOutOfStock }) => {
 
             <button
                 className="remove-item"
-                // ИСПРАВЛЕНО: вызываем функцию с правильным именем
                 onClick={() => updateCartItemQuantity(id, 0)}
                 title="Удалить товар"
             >

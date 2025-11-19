@@ -29,7 +29,10 @@ export const LocationProvider = ({ children }) => {
         if (isAuthenticated && token) {
             setIsLoading(true);
             fetchAddresses(token).then(addresses => {
-                const filteredAddresses = addresses.filter(addr => addr.city === city?.id);
+                const filteredAddresses = addresses.filter(addr =>
+                    addr.city && city?.name && addr.city.toLowerCase() === city.name.toLowerCase()
+                );
+
                 setUserAddresses(filteredAddresses || []);
                 if (filteredAddresses && filteredAddresses.length > 0) {
                     setSelectedAddress(filteredAddresses[0]);
@@ -56,7 +59,10 @@ export const LocationProvider = ({ children }) => {
     const addNewAddress = async (addressData) => {
         if (!isAuthenticated) return;
         const newAddress = await saveAddressApi(addressData, token);
-        const formattedAddress = { ...newAddress, city: newAddress.city.id };
+
+        const cityName = newAddress.city.name || newAddress.city;
+        const formattedAddress = { ...newAddress, city: cityName };
+
         setUserAddresses(prevAddresses => [...prevAddresses, formattedAddress]);
         setSelectedAddress(formattedAddress);
         return formattedAddress;

@@ -1,9 +1,7 @@
-// src/components/RegistrationForm.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import DatePicker, { registerLocale } from 'react-datepicker';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { HiOutlineCalendar } from 'react-icons/hi';
 import 'react-datepicker/dist/react-datepicker.css';
 import './style/RegistrationForm.css';
@@ -15,19 +13,17 @@ import { completeRegistrationApi } from '../../api/services/authService';
 
 export default function RegistrationForm() {
     const navigate = useNavigate();
-    const location = useLocation();
 
     const [isModalOpen, setModalOpen] = useState(false);
 
-    // tempAuthData содержит { phone, access_token, refresh_token }
-    const { tempAuthData, completeRegistration } = useAuth();
+    const { token, isNewUser, completeRegistration } = useAuth();
     registerLocale('ru', ru);
 
     useEffect(() => {
-        if (!tempAuthData) {
-            navigate('/login');
+        if (!token || !isNewUser) {
+            navigate('/', { replace: true });
         }
-    }, [tempAuthData, navigate]);
+    }, [token, isNewUser, navigate]);
 
     return (
         <Formik
@@ -46,38 +42,41 @@ export default function RegistrationForm() {
             }}
             validateOnMount
             onSubmit={async (values, { setSubmitting, setFieldError }) => {
-                if (!tempAuthData) {
+                if (!token) {
                     setFieldError('firstName', 'Ошибка аутентификации. Пожалуйста, начните сначала.');
                     setSubmitting(false);
                     return;
                 }
 
                 try {
-                    const apiData = {
-                        first_name: values.name,
-                        last_name: values.lastname,
-                        birth_date: values.birthday ? values.birthday.toISOString().split('T')[0] : null,
-                        address: values.address,
-                        phone: tempAuthData.phone,
-                    };
-
-                    const response = await completeRegistrationApi(apiData, tempAuthData.access_token);
-
-                    if (response.access && response.refresh) {
-                        completeRegistration(response.access, response.refresh);
-                    } else if (response.data && response.data.access && response.data.refresh) {
-                        completeRegistration(response.data.access, response.data.refresh);
-                    } else {
-                        console.warn("API не вернул постоянные токены. Перенаправление на вход.");
-
+                    let formattedBirthDate = null;
+                    if (values.birthDate) {
+                        const date = values.birthDate;
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const year = date.getFullYear();
+                        formattedBirthDate = `${day}.${month}.${year}`;
                     }
 
-                    // Навигация на предыдущую страницу
-                    const previousPath = location.state?.from || '/';
-                    navigate(previousPath, { replace: true });
+                    // Передача полей в формате, ожидаемом бэкендом: name, surname, birthday (DD.MM.YYYY)
+                    const apiData = {
+                        'name': values.firstName,
+                        'surname': values.lastName,
+                        'birthday': formattedBirthDate,
+                        'address': values.address,
+                    };
+
+                    // Предполагается, что в authService.js метод изменен на POST
+                    await completeRegistrationApi(apiData, token);
+
+                    completeRegistration();
 
                 } catch (error) {
-                    setFieldError('firstName', error.message || 'Произошла ошибка при регистрации');
+                    if (error.message) {
+                        setFieldError('firstName', error.message);
+                    } else {
+                        setFieldError('firstName', 'Произошла ошибка при регистрации');
+                    }
                 } finally {
                     setSubmitting(false);
                 }
@@ -86,7 +85,6 @@ export default function RegistrationForm() {
             {({ values, setFieldValue, touched, errors, isValid, isSubmitting }) => (
                 <>
                     <Form className="w-full max-w-md space-y-4">
-                        {/* ... (поля формы без изменений) ... */}
                         <div className="field-wrapper">
                             <Field
                                 type="text"
@@ -166,7 +164,7 @@ export default function RegistrationForm() {
                             setFieldValue('address', selectedAddress, true);
                             setModalOpen(false);
                         }}
-                        tempAuthToken={tempAuthData?.access_token}
+                        tempAuthToken={token}
                         isRegistrationMode={true}
                     />
                 </>

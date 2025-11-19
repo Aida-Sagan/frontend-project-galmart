@@ -13,6 +13,7 @@ export const API_URLS = {
     // Account
     SEND_CODE: `${API_BASE_URL}/api/v2/account/send_code/`,
     LOGIN: `${API_BASE_URL}/api/v2/account/login/`,
+    PROFILE: `${API_BASE_URL}/api/v2/account/profile/`,
     ADDRESS: `${API_BASE_URL}/api/v2/account/address/`,
     GEOCODE: `${API_BASE_URL}/api/v2/account/geocode/`,
     POINTS: `${API_BASE_URL}/api/v2/account/points/`,

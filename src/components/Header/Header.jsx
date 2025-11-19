@@ -26,7 +26,8 @@ const Header = () => {
     const [isMenuOpen, setMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-    const { city, selectedAddress, openLocationModal } = useLocation();
+    const {selectedAddress, openLocationModal } = useLocation();
+    console.log("selectedAddress = ",selectedAddress);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,7 +37,7 @@ const Header = () => {
     }, []);
 
     const closeMenu = () => setMenuOpen(false);
-    const locationText = selectedAddress?.address || city?.name || 'Выберите город';
+    const locationText = selectedAddress?.address  || 'Выберите город';
 
     return (
         <header className="header">

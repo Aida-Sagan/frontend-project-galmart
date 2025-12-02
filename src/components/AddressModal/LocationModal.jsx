@@ -25,10 +25,11 @@ const LocationModal = ({ onClose, onCitySelect }) => {
         onClose();
     };
 
+
     const handleSaveNewAddress = async (addressData) => {
         try {
             await addNewAddress(addressData);
-            setView('addressList');
+            onClose();
         } catch (error) {
             console.error("Не удалось сохранить новый адрес:", error);
         }

@@ -3,18 +3,25 @@ import {useState} from "react";
 
 import './styles/CitySelectionModal.css';
 
-// ИСПРАВЛЕНО: Инвертированы ID, чтобы соответствовать логике мобильного бэкенда (Астана=2, Алматы=1)
 const cities = [
     { id: 2, name: 'Астана' },
     { id: 1, name: 'Алматы' },
 ];
 
 export default function CitySelectionModal({ onSelectCity }) {
-    const [activeCity, setActiveCity] = useState('');
+    const [activeCity, setActiveCity] = useState(() => {
+        const saved = localStorage.getItem('userCity');
+        return saved ? JSON.parse(saved).name : 'Астана';
+    });
+
 
     const handleSelect = (cityObject) => {
         setActiveCity(cityObject.name);
-        onSelectCity(cityObject);
+        localStorage.setItem('userCity', JSON.stringify(cityObject));
+
+        if (onSelectCity) {
+            onSelectCity(cityObject);
+        }
     };
 
     return (

@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }) => {
     // Эффект для синхронизации флага isNewUser
     useEffect(() => {
         localStorage.setItem('isNewUser', JSON.stringify(isNewUser));
-        // Если пользователь завершил регистрацию, перенаправляем на главную
         if (!isNewUser && token && window.location.pathname === '/register') {
             navigate('/', { replace: true });
         }

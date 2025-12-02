@@ -57,7 +57,7 @@ const FavoritesPage = () => {
                 setIsAuthenticated(true);
                 try {
                     const response = await fetchFavorites({ ordering: sortOption });
-                    setFavoriteProducts(response.data || []);
+                    setFavoriteProducts(response.data?.data || []);
                 } catch (error) {
                     console.error("Не удалось загрузить избранные товары:", error);
                 }

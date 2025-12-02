@@ -1,21 +1,16 @@
-import { API_URLS, getCityHeader } from '../api';
+import $api from '../axiosInstance';
+import { API_URLS } from '../api';
 
 /**
  * Получение списка сохраненных адресов пользователя
- * @param {string} token - Токен авторизации
+ * Токен и City Header подставятся автоматически через интерсептор
  * @returns {Promise<Array>} - Массив адресов
  */
-export const fetchAddresses = async (token) => {
+export const fetchAddresses = async () => {
     try {
-        const response = await fetch(API_URLS.ADDRESS, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                ...getCityHeader()
-            },
-        });
-        if (!response.ok) throw new Error('Не удалось загрузить адреса');
-        const result = await response.json();
-        return result.data;
+        const response = await $api.get(API_URLS.ADDRESS);
+
+        return response.data.data;
     } catch (error) {
         console.error("Ошибка при получении адресов:", error);
         return [];
@@ -25,23 +20,12 @@ export const fetchAddresses = async (token) => {
 /**
  * Сохранение нового адреса
  * @param {object} addressData - Объект с данными адреса
- * @param {string} token - Токен авторизации
  * @returns {Promise<object>} - Сохраненный объект адреса
  */
-export const saveAddress = async (addressData, token) => {
+export const saveAddress = async (addressData) => {
     try {
-        const response = await fetch(API_URLS.ADDRESS, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-                ...getCityHeader()
-            },
-            body: JSON.stringify(addressData),
-        });
-        if (!response.ok) throw new Error('Не удалось сохранить адрес');
-        const result = await response.json();
-        return result.data;
+        const response = await $api.post(API_URLS.ADDRESS, addressData);
+        return response.data.data;
     } catch (error) {
         console.error("Ошибка при сохранении адреса:", error);
         throw error;
@@ -51,50 +35,37 @@ export const saveAddress = async (addressData, token) => {
 /**
  * Получение координат по строке адреса
  * @param {string} address - Строка для поиска (улица, дом)
- * @param {number} cityId - ID города
- * @param {string} token - Токен авторизации
+ * @param {number} cityId - ID города (оставляем, если эндпоинт требует это именно в body)
  * @returns {Promise<object|null>} - Объект с { latitude, longitude }
  */
-export const getCoordsByString = async (address, cityId, token) => {
+export const getCoordsByString = async (address, cityId) => {
     try {
-        const response = await fetch(API_URLS.GEOCODE, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-                ...getCityHeader()
-            },
-            body: JSON.stringify({ latitude: null, longitude: null, search_string: address, city: cityId }),
+        const response = await $api.post(API_URLS.GEOCODE, {
+            latitude: null,
+            longitude: null,
+            search_string: address,
+            city: cityId
         });
-        if (!response.ok) throw new Error('Ошибка геокодирования');
-        const result = await response.json();
-        return result.data[0];
+        return response.data.data[0];
     } catch (error) {
         console.error("Ошибка при получении координат:", error);
         return null;
     }
 };
+
 /**
  * Получение адреса по координатам
  * @param {number} latitude - Широта
  * @param {number} longitude - Долгота
- * @param {string} token - Токен авторизации
  * @returns {Promise<object|null>} - Объект с адресом { address, building, ... }
  */
-export const getAddressByCoords = async (latitude, longitude, token) => {
+export const getAddressByCoords = async (latitude, longitude) => {
     try {
-        const response = await fetch(API_URLS.GEOCODE, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-                ...getCityHeader()
-            },
-            body: JSON.stringify({ latitude, longitude }),
+        const response = await $api.post(API_URLS.GEOCODE, {
+            latitude,
+            longitude
         });
-        if (!response.ok) throw new Error('Ошибка обратного геокодирования');
-        const result = await response.json();
-        return result.data[0];
+        return response.data.data[0];
     } catch (error) {
         console.error("Ошибка при получении адреса:", error);
         return null;
@@ -103,21 +74,13 @@ export const getAddressByCoords = async (latitude, longitude, token) => {
 
 /**
  * Получение полигонов зон доставки для текущего города
- * @param {string} token - Токен авторизации
  * @returns {Promise<Array>} - Массив полигонов
  */
-export const getCityPolygons = async (token) => {
+export const getCityPolygons = async () => {
     try {
-        const response = await fetch(API_URLS.POINTS, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                ...getCityHeader()
-            },
-        });
-        if (!response.ok) throw new Error('Не удалось загрузить зоны доставки');
-        const result = await response.json();
-        console.log("Резульатыт полигонов: ",result.data);
-        return result.data;
+        const response = await $api.get(API_URLS.POINTS);
+        console.log("Результаты полигонов: ", response.data.data);
+        return response.data.data;
     } catch (error) {
         console.error("Ошибка при получении зон доставки:", error);
         return [];
@@ -126,20 +89,13 @@ export const getCityPolygons = async (token) => {
 
 /**
  * Удаление адреса по его ID
- * @param {number} addressId - ID адреса, который нужно удалить
- * @param {string} token - Токен авторизации
- * @returns {Promise<boolean>} - true в случае успешного удаления, false - в противном случае
+ * @param {number} addressId - ID адреса
+ * @returns {Promise<boolean>}
  */
-export const deleteAddress = async (addressId, token) => {
+export const deleteAddress = async (addressId) => {
     try {
-        const response = await fetch(`${API_URLS.ADDRESS}${addressId}/`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                ...getCityHeader()
-            },
-        });
-        if (!response.ok) throw new Error('Не удалось удалить адрес');
+        // Axios сам подставит нужные хедеры
+        await $api.delete(`${API_URLS.ADDRESS}${addressId}/`);
         return true;
     } catch (error) {
         console.error("Ошибка при удалении адреса:", error);
@@ -147,26 +103,15 @@ export const deleteAddress = async (addressId, token) => {
     }
 };
 
-
 /**
  * Установка адреса как избранного
- * @param {number} addressId - ID адреса, который нужно сделать избранным
- * @param {string} token - Токен авторизации
+ * @param {number} addressId - ID адреса
  * @returns {Promise<object>} - Обновленный объект адреса
  */
-export const setAddressAsFavourite = async (addressId, token) => {
+export const setAddressAsFavourite = async (addressId) => {
     try {
-        const response = await fetch(`${API_URLS.ADDRESS}${addressId}/`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-                ...getCityHeader()
-            },
-        });
-        if (!response.ok) throw new Error('Не удалось сделать адрес избранным');
-        const result = await response.json();
-        return result.data;
+        const response = await $api.patch(`${API_URLS.ADDRESS}${addressId}/`);
+        return response.data.data;
     } catch (error) {
         console.error("Ошибка при установке избранного адреса:", error);
         throw error;

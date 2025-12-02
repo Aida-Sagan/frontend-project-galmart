@@ -4,7 +4,8 @@ import YandexMap from "./YandexMap";
 import "./styles/AddressModal.css";
 import { useLocation } from "../../context/LocationContext";
 import { useAuth } from "../../context/AuthContext";
-import { saveAddress, getCoordsByString, getCityPolygons, getAddressByCoords } from "../../api/services/addressService";
+// Убрали saveAddress из импорта, он здесь больше не нужен
+import { getCoordsByString, getCityPolygons, getAddressByCoords } from "../../api/services/addressService";
 
 function useDebounce(value, delay) {
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -101,52 +102,44 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
     };
 
     const handleSubmit = async () => {
+        // Проверки
         if (!addressString || !coords) {
-            alert("Пожалуйста, выберите точку на карте или введите адрес.");
+            alert("Пожалуйста, выберите точку на карте или введите адрес (дождитесь загрузки координат).");
             return;
         }
 
         const pointInPolygonCheck = isPointInAnyPolygon(coords, deliveryPolygons);
-
         if (deliveryPolygons.length > 0 && !pointInPolygonCheck) {
             alert("Извините, выбранный адрес находится вне зоны доставки.");
             return;
         }
 
-        if (isRegistrationMode) {
-            const regApartment = isPrivateHouse ? '' : apartment;
-            const regEntrance = isPrivateHouse ? '' : entrance;
-            const regFloor = isPrivateHouse ? '' : floor;
+        // Подготовка данных
+        const finalBuilding = isPrivateHouse ? "" : building;
+        const finalApartment = isPrivateHouse ? "" : apartment;
+        const finalEntrance = isPrivateHouse ? "" : entrance;
+        const finalFloor = isPrivateHouse ? "" : floor;
 
+        // Если это режим регистрации, возвращаем строку (логика остается прежней)
+        if (isRegistrationMode) {
             const fullAddressString = street +
-                (building ? `, д. ${building}` : '') +
+                (finalBuilding ? `, д. ${finalBuilding}` : '') +
                 (isPrivateHouse ? ' (Частный дом)' : '') +
-                (regApartment ? `, кв/офис ${regApartment}` : '') +
-                (regEntrance ? `, подъезд ${regEntrance}` : '') +
-                (regFloor ? `, этаж ${regFloor}` : '');
+                (finalApartment ? `, кв/офис ${finalApartment}` : '') +
+                (finalEntrance ? `, подъезд ${finalEntrance}` : '') +
+                (finalFloor ? `, этаж ${finalFloor}` : '');
 
             onSave(fullAddressString.trim().replace(/^,/, '').trim());
             onClose();
             return;
         }
 
-        if (!serviceToken) {
-            alert("Для сохранения адреса необходимо войти в аккаунт.");
-            return;
-        }
-
-        setIsLoading(true);
-
-        const finalBuilding = isPrivateHouse ? "" : building;
-        const finalApartment = isPrivateHouse ? "" : apartment;
-        const finalEntrance = isPrivateHouse ? "" : entrance;
-        const finalFloor = isPrivateHouse ? "" : floor;
-
+        // Для обычного режима собираем JSON объект
         const addressData = {
             city: city.id,
             address: street,
             building: finalBuilding,
-            latitude: coords[0],
+            latitude: coords[0], // ВАЖНО: Координаты берутся из стейта
             longitude: coords[1],
             apartment: finalApartment,
             entrance: finalEntrance,
@@ -156,28 +149,17 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
             name: "Мой новый адрес",
         };
 
+        // ИСПРАВЛЕНИЕ:
+        // Мы НЕ вызываем api.saveAddress здесь. Мы передаем данные родителю.
+        // Родитель (LocationModal) вызовет addNewAddress, который уже сделает запрос к API.
+
+        setIsLoading(true);
         try {
-            const savedData = await saveAddress(addressData, serviceToken);
-            onSave(savedData);
-            onClose();
+            await onSave(addressData); // Ждем пока родитель сохранит
+            // onClose не вызываем, так как родитель (LocationModal) сам управляет закрытием
         } catch (error) {
-            console.error("Ошибка при сохранении адреса:", error);
-
-            let alertMessage = "Не удалось сохранить адрес. Попробуйте снова.";
-
-            try {
-                const errorDetailsMatch = error.message.match(/\{'building': \[ErrorDetail\(string='(.+?)'/);
-
-                if (errorDetailsMatch && errorDetailsMatch[1]) {
-                    alertMessage = `Ошибка поля "Номер дома": ${errorDetailsMatch[1]}`;
-                }
-                else if (error.message.includes("на этот адрес не доставляем")) {
-                    alertMessage = "Извините, на этот адрес не доставляем.";
-                }
-            } catch (e) {
-                console.log(e.response);
-            }
-            alert(alertMessage);
+            console.error(error);
+            alert("Ошибка при сохранении адреса");
         } finally {
             setIsLoading(false);
         }
@@ -200,6 +182,15 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
         }
     }, [city, serviceToken]);
 
+    // При ручном изменении текста сбрасываем координаты, чтобы заставить геокодер сработать заново
+    const handleInputChange = (e) => {
+        setAddressString(e.target.value);
+        setIsManualInput(true);
+        // Сбрасываем координаты при ручном вводе, чтобы нельзя было сохранить "старые" координаты с новым текстом
+        // или сохранить текст без координат
+        // setCoords(null); // <-- Можно раскомментировать для строгой валидации
+    };
+
     if (!isOpen) return null;
 
     return (
@@ -218,6 +209,7 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
                         <button className="close-btn" onClick={onClose}> <X size={20} /> </button>
                     </div>
                     <div className="form-fields">
+                        {/* ... выпадающий список городов без изменений ... */}
                         <div className="form-group dropdown-container">
                             <label htmlFor="city-select" className={city?.name ? 'active' : ''}>Город</label>
                             <input
@@ -246,15 +238,13 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
                                 </ul>
                             )}
                         </div>
+
                         <div className="form-group">
                             <input
                                 id="address"
                                 type="text"
                                 value={addressString}
-                                onChange={(e) => {
-                                    setAddressString(e.target.value);
-                                    setIsManualInput(true);
-                                }}
+                                onChange={handleInputChange}
                                 className="form-input address-text"
                                 placeholder=" "
                             />

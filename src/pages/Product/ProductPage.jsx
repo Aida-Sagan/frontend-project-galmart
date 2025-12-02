@@ -24,7 +24,9 @@ const ProductPage = () => {
             try {
                 const currentProduct = await fetchProductDetails(productId);
                 setProduct(currentProduct);
-
+                console.log('--- API Response Data (Product Details) ---');
+                console.log(currentProduct);
+                console.log('---------------------------------------------');
 
             } catch (err) {
                 setError('Произошла ошибка при загрузке товара.');

@@ -8,6 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 const LocationModal = ({ onClose, onCitySelect }) => {
     const { city, userAddresses, selectedAddress, selectAddress, addNewAddress } = useLocation();
     const { isAuthenticated } = useAuth();
+
     const [view, setView] = useState(() => city && isAuthenticated ? 'addressList' : 'city');
 
     const handleCitySelect = (selectedCity) => {
@@ -25,10 +26,10 @@ const LocationModal = ({ onClose, onCitySelect }) => {
         onClose();
     };
 
-
     const handleSaveNewAddress = async (addressData) => {
         try {
             await addNewAddress(addressData);
+
             onClose();
         } catch (error) {
             console.error("Не удалось сохранить новый адрес:", error);
@@ -62,6 +63,7 @@ const LocationModal = ({ onClose, onCitySelect }) => {
                     <AddressModal
                         isOpen={true}
                         onClose={() => setView('addressList')}
+
                         onSave={handleSaveNewAddress}
                     />
                 );

@@ -8,6 +8,7 @@ import Container from '../../components/Container/Container';
 import AddressModal from '../../components/AddressModal/AddressModal.jsx';
 import './style/CartPage.css';
 import authRequiredIcon from '../../assets/is_exists.png';
+import cartEmpty from '../../assets/cartEmpty.png';
 
 const TrashIcon = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -54,7 +55,6 @@ const CartContent = () => {
     // Added fetchCart to destructuring
     const { cartData, isLoading, cartError, items, deleteUnavailableItemsApi, setOrderApi, fetchCart } = useCart();
 
-    // State for Modals
     const [isUnavailableModalOpen, setIsUnavailableModalOpen] = useState(false);
     const [isAddressModalOpen, setIsAddressModalOpen] = useState(false); // NEW STATE
 
@@ -116,12 +116,12 @@ const CartContent = () => {
     if (isLoading) return <div className="cart-content-loading">Загрузка корзины...</div>;
     if (cartError) return <div className="cart-content-error">Ошибка: {cartError}</div>;
 
-    // Only show empty cart if no items AND cart is loaded
     if (!cartData || (items.length === 0 && !isLoading)) {
         return (
             <div className="empty-cart-message">
-                <h2>Ваша корзина пуста</h2>
-                <p>Добавьте товары, чтобы начать оформление заказа.</p>
+                <img src={cartEmpty} alt="Корзина пуста" className="placeholder-image" />
+                <h2>В корзине пока пусто</h2>
+                <p>Добавьте товары, чтобы продолжить оформление заказа</p>
             </div>
         );
     }

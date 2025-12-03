@@ -300,3 +300,65 @@ input:checked + .slider:before {
         width: 100%;
     }
 }
+
+
+/* --- Стили для заглушек (Пустая корзина / Нет авторизации) --- */
+
+.favorites-placeholder,
+.empty-cart-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;       /* Центрирование текста внутри */
+    min-height: 60vh;         /* Занимаем 60% высоты экрана, чтобы блок был посередине */
+    padding: 20px;
+    max-width: 500px;         /* Ограничиваем ширину, чтобы текст не растягивался */
+    margin: 0 auto;           /* Центрируем сам блок внутри родителя */
+}
+
+/* Стили для картинки-заглушки */
+.placeholder-image {
+    height: auto;
+    margin-bottom: 24px;
+    object-fit: contain;
+}
+
+/* Стили заголовков внутри заглушек */
+.placeholder-title,
+.empty-cart-message h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #222;
+    margin: 0 0 12px 0;
+}
+
+/* Стили текста/описания */
+.placeholder-subtitle,
+.empty-cart-message p {
+    font-size: 16px;
+    color: #666;
+    margin: 0 0 32px 0;
+    line-height: 1.5;
+}
+
+/* Стили для кнопки "Войти" */
+.auth-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 40px;
+    background-color: #902067;
+    color: #fff;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+
+.auth-button:hover {
+    background-color: #7a1b57;
+    opacity: 0.9;
+}

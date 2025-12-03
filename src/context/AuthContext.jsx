@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }) => {
     });
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [loginPhone, setLoginPhone] = useState('');
-    // Новый стейт для отслеживания незавершенной регистрации
     const [isNewUser, setIsNewUser] = useState(
         JSON.parse(localStorage.getItem('isNewUser')) || false
     );
@@ -23,7 +22,7 @@ export const AuthProvider = ({ children }) => {
         } else {
             localStorage.removeItem('authToken');
             localStorage.removeItem('refreshToken');
-            localStorage.removeItem('userCity');
+            //localStorage.removeItem('userCity');
         }
     }, [token]);
 

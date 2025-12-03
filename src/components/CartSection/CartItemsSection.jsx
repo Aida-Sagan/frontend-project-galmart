@@ -15,12 +15,9 @@ const CartItemsSection = () => {
 
     const allItems = cartData.items;
 
-    // --- СОРТИРОВКА ТОВАРОВ ПО КАТЕГОРИЯМ ---
 
     const promoItems = allItems.filter(item => item.is_promo);
-
     const outOfStockItems = allItems.filter(item => item.out_of_stock);
-
     const orderItems = allItems.filter(
         item => !item.is_promo && !item.out_of_stock
     );
@@ -29,6 +26,7 @@ const CartItemsSection = () => {
         <>
             <ItemsBlock title="Состав заказа">
                 {orderItems.map(item => (
+
                     <CartItem
                         key={item.id}
                         item={item}

@@ -1,5 +1,3 @@
-// Общий контейнер для Состав заказа, Акционные, Нет в наличии
-// components/CartSection/ItemsBlock.jsx
 
 import React from 'react';
 

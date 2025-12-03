@@ -6,6 +6,7 @@
     overflow: hidden;
     height: 36px;
     flex-shrink: 0;
+    width: max-content;
 }
 
 .control-button {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import Container from '../../components/Container/Container.jsx';
 import MainBanner from '../../components/Banner/MainBanner.jsx';
 import SectionBlock from '../../components/Section/SectionBlock.jsx';
@@ -28,6 +27,8 @@ export default function MainPage() {
 
     useEffect(() => {
         const loadPageData = async () => {
+            if (isLocationLoading) return;
+
             setLoading(true);
             try {
                 const data = await fetchHomePageData();
@@ -40,30 +41,27 @@ export default function MainPage() {
                 setLoading(false);
             }
         };
+
         loadPageData();
-    }, [city]);
+
+    }, [city, isLocationLoading]);
 
     useEffect(() => {
-        // Показываем модальное окно, если:
-        // 1. Контексты загрузились
-        // 2. Город не выбран
-        // 3. Пользователь не авторизован
         if (!isLocationLoading && !city) {
             openLocationModal();
         }
     }, [city, isLocationLoading, openLocationModal]);
 
-
     const handleCitySelect = (selectedCity) => {
         selectCity(selectedCity);
     };
 
-    if (loading) {
+    if (loading || isLocationLoading) {
         return <Loader />;
     }
 
     if (!pageData || !pageData.product_offers) {
-        return <Container><div>Не удалось загрузить данные.</div></Container>;
+        return <Container><div className="error-message">Не удалось загрузить данные для выбранного региона.</div></Container>;
     }
 
     const regularCategoryTitles = ['Вкусные новинки', 'Новинки'];
@@ -76,15 +74,15 @@ export default function MainPage() {
 
     return (
         <Container>
-            {isLocationModalOpen &&
+            {isLocationModalOpen && (
                 <LocationModal
                     onClose={closeLocationModal}
                     onCitySelect={handleCitySelect}
                 />
-            }
+            )}
 
             <div className="home-container">
-                <MainBanner banners={pageData.banners} />
+                {pageData.banners && <MainBanner banners={pageData.banners} />}
 
                 {regularProductOffers.map(category => (
                     <SectionBlock

@@ -4,7 +4,8 @@ import {
     updateCart as updateCartApi,
     setDeliveryTime as setDeliveryTimeService,
     getDeliveryTimes as getDeliveryTimesService,
-    setOrder as setOrderService
+    setOrder as setOrderService,
+    deleteCart as deleteCartApi
 } from '../api/services/cartService';
 import { useAuth } from './AuthContext';
 
@@ -16,6 +17,8 @@ export const CartProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [cartError, setCartError] = useState(null);
 
+    // Внутри CartContext.js -> fetchCart
+
     const fetchCart = useCallback(async () => {
         if (!isAuthenticated) {
             setCartData(null);
@@ -25,20 +28,19 @@ export const CartProvider = ({ children }) => {
         setIsLoading(true);
         try {
             const response = await getCartData();
-            setCartData(response.data);
+
+
+            const dataToSave = response.data || response;
+
+            setCartData(dataToSave);
             setCartError(null);
         } catch (error) {
             console.error("Ошибка загрузки корзины:", error);
             setCartError("Не удалось загрузить корзину.");
-            setCartData(null);
         } finally {
             setIsLoading(false);
         }
     }, [isAuthenticated]);
-
-    useEffect(() => {
-        fetchCart();
-    }, [fetchCart]);
 
     const updateCartItemQuantity = async (itemId, newCount, productDetails = {}) => {
         if (!isAuthenticated) {
@@ -49,74 +51,98 @@ export const CartProvider = ({ children }) => {
         const previousCartData = cartData;
         setCartError(null);
 
-        // 1. ОПТИМИСТИЧНОЕ ОБНОВЛЕНИЕ UI
         setCartData(prev => {
             if (!prev || !prev.items) return prev;
 
             let updatedItems = [];
             const existingItem = prev.items.find(item => item.id === itemId);
 
+            // if (existingItem) {
+            //     updatedItems = prev.items
+            //         .map(item => {
+            //             if (item.id === itemId) {
+            //                 const availableQuantity = item.inventory?.count || Infinity;
+            //                 let isOutOfStock = newCount > availableQuantity;
+            //
+            //
+            //                 return {
+            //                     ...item,
+            //                     quantity: newCount,
+            //                     count: newCount,
+            //                     out_of_stock: isOutOfStock
+            //                 };
+            //             }
+            //             return item;
+            //         })
+            //         .filter(item => item.quantity > 0);
+            // } else if (newCount > 0) {
+            //     // Если товара нет и количество > 0: Добавляем
+            //     const availableQuantity = productDetails.inventory?.count || Infinity;
+            //     const isOutOfStock = newCount > availableQuantity;
+            //
+            //     const newCartItem = {
+            //         ...productDetails,
+            //         id: itemId,
+            //         quantity: newCount,
+            //         count: newCount,
+            //         name: productDetails.title || 'Товар',
+            //         unit_price: productDetails.unit_price || 0,
+            //         out_of_stock: isOutOfStock, // Устанавливаем статус при добавлении
+            //     };
+            //     updatedItems = [...prev.items, newCartItem];
+            // } else {
+            //     updatedItems = prev.items;
+            // }
+
             if (existingItem) {
-                // Если товар уже есть: Обновляем, удаляем или переносим между секциями
-                updatedItems = prev.items
-                    .map(item => {
-                        if (item.id === itemId) {
-                            const availableQuantity = item.inventory?.count || Infinity; // Используем inventory для проверки
-                            let isOutOfStock = newCount > availableQuantity;
-
-                            // Логика переноса (Требования 3 и 4):
-                            // 3. Если товар был "Нет в наличии" и количество уменьшено до доступного,
-                            //    перенос его в orderItems (out_of_stock: false).
-                            // 4. Если quantity <= 0, удаление (уже обрабатывается фильтром ниже).
-
-                            return {
-                                ...item,
-                                quantity: newCount,
-                                count: newCount,
-                                out_of_stock: isOutOfStock
-                            };
-                        }
-                        return item;
-                    })
-                    .filter(item => item.quantity > 0);
-            } else if (newCount > 0) {
-                // Если товара нет и количество > 0: Добавляем
-                const availableQuantity = productDetails.inventory?.count || Infinity;
-                const isOutOfStock = newCount > availableQuantity;
-
-                const newCartItem = {
-                    ...productDetails,
-                    id: itemId,
-                    quantity: newCount,
-                    count: newCount,
-                    name: productDetails.title || 'Товар',
-                    unit_price: productDetails.unit_price || 0,
-                    out_of_stock: isOutOfStock, // Устанавливаем статус при добавлении
-                };
-                updatedItems = [...prev.items, newCartItem];
+                updatedItems = prev.items.map(item => {
+                    if (item.id === itemId) {
+                        return { ...item, quantity: newCount, count: newCount };
+                    }
+                    return item;
+                });
             } else {
-                updatedItems = prev.items;
+                // Логика добавления (упрощенно)
+                updatedItems = [...prev.items, { ...productDetails, id: itemId, quantity: newCount }];
             }
 
-            const updatedTotalCount = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
-            return {
-                ...prev,
-                items: updatedItems,
-                total_count: updatedTotalCount,
-            };
+            // Пересчет общих сумм (примерно)
+            const newTotal = updatedItems.reduce((acc, i) => acc + (i.unit_price * i.quantity), 0);
+
+            return { ...prev, items: updatedItems, total_price: newTotal };
+            // const updatedTotalCount = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
+            // return {
+            //     ...prev,
+            //     items: updatedItems,
+            //     total_count: updatedTotalCount,
+            // };
         });
 
-        // 2. ВЫЗОВ API С ОБРАБОТКОЙ ОШИБОК
-        setIsLoading(true);
+        //setIsLoading(true);
         try {
             await updateCartApi(newCount, itemId);
             await fetchCart();
         } catch (error) {
             setCartData(previousCartData);
-            setCartError(error.message || "Ошибка при изменении количества товара.");
-            console.error("Ошибка API при изменении корзины:", error);
-        } finally {
-            setIsLoading(false);
+            console.error("Ошибка API:", error);
+        }
+    };
+
+    const removeCartItem = (itemId) => {
+        updateCartItemQuantity(itemId, 0);
+    };
+
+    const clearCart = async () => {
+        if (!isAuthenticated) return;
+
+        setCartData({ ...cartData, items: [], total_price: 0 });
+
+        try {
+            await deleteCartApi(false); // false = удалить всё
+            await fetchCart();
+        } catch (error) {
+            console.error("Ошибка очистки корзины:", error);
+            await fetchCart();
         }
     };
 
@@ -163,6 +189,8 @@ export const CartProvider = ({ children }) => {
         items: cartData?.items || [],
         fetchCart,
         updateCartItemQuantity,
+        removeCartItem,
+        clearCart,
         getDeliveryTimesApi,
         setDeliveryTimeApi,
         setOrderApi,

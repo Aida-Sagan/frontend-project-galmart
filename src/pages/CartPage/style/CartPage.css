@@ -71,14 +71,14 @@
 }
 
 .clickable-widget {
-    padding: 0 24px; /* Для строк с разделителями */
+    padding: 0 24px;
 }
 
 /* Заголовки внутри виджетов */
 .widget-header h3 {
-    font-size: 18px;
-    font-weight: 600;
-    margin: 0 0 12px 0;
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0 0 5px 0;
 }
 
 /* Строки виджетов (Адрес, Оплата и т.д.) */
@@ -103,28 +103,36 @@
 .label {
     font-size: 16px;
     font-weight: 500;
-    color: #222;
+    color: #7A7A7A;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .sub-label {
     font-size: 13px;
-    color: #888;
+    color: #7A7A7A;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .value {
     font-size: 16px;
     color: #222;
+    font-family: 'Montserrat', sans-serif;
 }
 
+
+
 .red-text {
-    color: #FF3B30;
+    color: #FF6A6A;
+    font-family: 'Montserrat', sans-serif;
 }
 
 /* Прогресс бар доставки */
 .delivery-progress-text {
     font-size: 13px;
-    color: #666;
-    margin-bottom: 8px;
+    color: #7A7A7A;
+    margin-bottom: 12px;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .delivery-progress-bar {
@@ -136,10 +144,9 @@
 
 .progress-fill {
     height: 100%;
-    background-color: #CDDC39; /* Салатовый цвет Galmart */
+    background-color: #C6D600;
 }
 
-/* Поле ввода комментария */
 .widget-input-wrapper {
     padding-bottom: 20px;
 }
@@ -148,10 +155,10 @@
     width: 100%;
     background: #FFFFFF;
     border: none;
-    border-radius: 12px;
+    border-radius: 64px!important;
     padding: 14px 16px;
-    font-size: 14px;
-    color: #222;
+    font-size: 12px!important;
+    color: #7A7A7A!important;
     outline: none;
     box-sizing: border-box;
 }
@@ -160,7 +167,6 @@
     color: #999;
 }
 
-/* --- Toggle Switch (Переключатель бонусов) --- */
 .toggle-switch {
     position: relative;
     display: inline-block;
@@ -199,7 +205,7 @@
 }
 
 input:checked + .slider {
-    background-color: #CDDC39;
+    background-color: #C6D600;
 }
 
 input:checked + .slider:before {
@@ -257,24 +263,24 @@ input:checked + .slider:before {
 }
 
 .legal-checkbox input:checked ~ .checkmark {
-    background-color: #902067; /* Брендовый цвет для галочки */
+    background-color: #902067;
     border-color: #902067;
 }
 
 .legal-text {
     font-size: 11px;
     line-height: 1.4;
-    color: #666;
+    color: #902067;
 }
 
 /* Кнопка оплаты */
 .checkout-submit-btn {
     width: 100%;
     height: 56px;
-    border-radius: 16px;
+    border-radius: 64px;
     border: none;
-    background-color: #222;
-    color: #fff;
+    background-color: #902067;
+    color: #FBFBFB;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
@@ -310,21 +316,19 @@ input:checked + .slider:before {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;       /* Центрирование текста внутри */
-    min-height: 60vh;         /* Занимаем 60% высоты экрана, чтобы блок был посередине */
+    text-align: center;
+    min-height: 60vh;
     padding: 20px;
-    max-width: 500px;         /* Ограничиваем ширину, чтобы текст не растягивался */
-    margin: 0 auto;           /* Центрируем сам блок внутри родителя */
+    max-width: 500px;
+    margin: 0 auto;
 }
 
-/* Стили для картинки-заглушки */
 .placeholder-image {
     height: auto;
     margin-bottom: 24px;
     object-fit: contain;
 }
 
-/* Стили заголовков внутри заглушек */
 .placeholder-title,
 .empty-cart-message h2 {
     font-size: 24px;
@@ -333,7 +337,6 @@ input:checked + .slider:before {
     margin: 0 0 12px 0;
 }
 
-/* Стили текста/описания */
 .placeholder-subtitle,
 .empty-cart-message p {
     font-size: 16px;
@@ -342,7 +345,6 @@ input:checked + .slider:before {
     line-height: 1.5;
 }
 
-/* Стили для кнопки "Войти" */
 .auth-button {
     display: inline-flex;
     align-items: center;

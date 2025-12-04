@@ -1,15 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import CitySelectionModal from './CitySelectionModal';
 import AddressList from './AddressList';
 import AddressModal from './AddressModal';
 import { useLocation } from '../../context/LocationContext';
 import { useAuth } from '../../context/AuthContext';
+import './styles/LocationModal.css';
 
 const LocationModal = ({ onClose, onCitySelect }) => {
     const { city, userAddresses, selectedAddress, selectAddress, addNewAddress } = useLocation();
     const { isAuthenticated } = useAuth();
 
-    const [view, setView] = useState(() => city && isAuthenticated ? 'addressList' : 'city');
+    const [view, setView] = useState(() => (city && isAuthenticated ? 'addressList' : 'city'));
+
+    const flatAddresses = useMemo(() => {
+        if (!userAddresses) return [];
+
+        return (userAddresses || []).flatMap(group =>
+            (group.addresses || []).map(addr => ({
+                ...addr,
+                cityName: group.city
+            }))
+        );
+    }, [userAddresses]);
 
     const handleCitySelect = (selectedCity) => {
         onCitySelect(selectedCity);
@@ -21,58 +33,73 @@ const LocationModal = ({ onClose, onCitySelect }) => {
     };
 
     const handleAddressSelect = (addressId) => {
-        const address = userAddresses.find(a => a.id === addressId);
-        selectAddress(address);
-        onClose();
+        const address = flatAddresses.find(a => a.id === addressId);
+        if (address) {
+            selectAddress(address);
+            onClose();
+        }
     };
 
     const handleSaveNewAddress = async (addressData) => {
         try {
             await addNewAddress(addressData);
-
-            onClose();
+            setView('addressList');
         } catch (error) {
             console.error("Не удалось сохранить новый адрес:", error);
         }
     };
 
-    const renderContent = () => {
-        if (!isAuthenticated) {
-            return <CitySelectionModal onSelectCity={handleCitySelect} />;
-        }
+    if (!isAuthenticated || view === 'city') {
+        return <CitySelectionModal onSelectCity={handleCitySelect} onClose={onClose} />;
+    }
 
-        switch(view) {
-            case 'city':
-                return <CitySelectionModal onSelectCity={handleCitySelect} />;
+    if (view === 'newAddress') {
+        return (
+            <AddressModal
+                isOpen={true}
+                onClose={() => setView('addressList')}
+                onSave={handleSaveNewAddress}
+            />
+        );
+    }
 
-            case 'addressList': {
-                const addressesForCity = userAddresses.filter(addr => addr.city === city?.id);
-                return (
-                    <div className="modal-overlay">
+    return (
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-content-adress-list" onClick={e => e.stopPropagation()}>
+                <div className="modal-header">
+                    <h2>Выбор адреса</h2>
+                    <button className="close-btn" onClick={onClose}>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M18 6L6 18M6 6L18 18" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div className="modal-body">
+                    {flatAddresses.length > 0 ? (
                         <AddressList
-                            addresses={addressesForCity}
-                            selectedAddress={selectedAddress?.id}
+                            addresses={flatAddresses}
+                            selectedId={selectedAddress?.id}
                             onSelect={handleAddressSelect}
-                            onAddNew={() => setView('newAddress')}
                         />
-                    </div>
-                );
-            }
-            case 'newAddress':
-                return (
-                    <AddressModal
-                        isOpen={true}
-                        onClose={() => setView('addressList')}
+                    ) : (
+                        <div style={{ textAlign: 'center', padding: '20px', color: '#999' }}>
+                            Список адресов пуст
+                        </div>
+                    )}
+                </div>
 
-                        onSave={handleSaveNewAddress}
-                    />
-                );
-            default:
-                return null;
-        }
-    };
-
-    return renderContent();
+                <div className="modal-footer">
+                    <button
+                        className="add-new-btn"
+                        onClick={() => setView('newAddress')}
+                    >
+                        Добавить новый адрес
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default LocationModal;

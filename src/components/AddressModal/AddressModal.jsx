@@ -4,7 +4,6 @@ import YandexMap from "./YandexMap";
 import "./styles/AddressModal.css";
 import { useLocation } from "../../context/LocationContext";
 import { useAuth } from "../../context/AuthContext";
-// Убрали saveAddress из импорта, он здесь больше не нужен
 import { getCoordsByString, getCityPolygons, getAddressByCoords } from "../../api/services/addressService";
 
 function useDebounce(value, delay) {
@@ -102,7 +101,6 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
     };
 
     const handleSubmit = async () => {
-        // Проверки
         if (!addressString || !coords) {
             alert("Пожалуйста, выберите точку на карте или введите адрес (дождитесь загрузки координат).");
             return;
@@ -120,7 +118,6 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
         const finalEntrance = isPrivateHouse ? "" : entrance;
         const finalFloor = isPrivateHouse ? "" : floor;
 
-        // Если это режим регистрации, возвращаем строку (логика остается прежней)
         if (isRegistrationMode) {
             const fullAddressString = street +
                 (finalBuilding ? `, д. ${finalBuilding}` : '') +
@@ -134,12 +131,11 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
             return;
         }
 
-        // Для обычного режима собираем JSON объект
         const addressData = {
             city: city.id,
             address: street,
             building: finalBuilding,
-            latitude: coords[0], // ВАЖНО: Координаты берутся из стейта
+            latitude: coords[0],
             longitude: coords[1],
             apartment: finalApartment,
             entrance: finalEntrance,
@@ -149,14 +145,10 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
             name: "Мой новый адрес",
         };
 
-        // ИСПРАВЛЕНИЕ:
-        // Мы НЕ вызываем api.saveAddress здесь. Мы передаем данные родителю.
-        // Родитель (LocationModal) вызовет addNewAddress, который уже сделает запрос к API.
 
         setIsLoading(true);
         try {
-            await onSave(addressData); // Ждем пока родитель сохранит
-            // onClose не вызываем, так как родитель (LocationModal) сам управляет закрытием
+            await onSave(addressData);
         } catch (error) {
             console.error(error);
             alert("Ошибка при сохранении адреса");
@@ -182,13 +174,10 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
         }
     }, [city, serviceToken]);
 
-    // При ручном изменении текста сбрасываем координаты, чтобы заставить геокодер сработать заново
     const handleInputChange = (e) => {
         setAddressString(e.target.value);
         setIsManualInput(true);
-        // Сбрасываем координаты при ручном вводе, чтобы нельзя было сохранить "старые" координаты с новым текстом
-        // или сохранить текст без координат
-        // setCoords(null); // <-- Можно раскомментировать для строгой валидации
+
     };
 
     if (!isOpen) return null;
@@ -209,7 +198,6 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
                         <button className="close-btn" onClick={onClose}> <X size={20} /> </button>
                     </div>
                     <div className="form-fields">
-                        {/* ... выпадающий список городов без изменений ... */}
                         <div className="form-group dropdown-container">
                             <label htmlFor="city-select" className={city?.name ? 'active' : ''}>Город</label>
                             <input

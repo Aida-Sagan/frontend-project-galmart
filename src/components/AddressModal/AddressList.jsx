@@ -1,28 +1,26 @@
 import React from 'react';
 import './styles/AddressList.css';
 
-const AddressList = ({ addresses, selectedAddress, onSelect, onAddNew }) => {
+const AddressList = ({ addresses, selectedId, onSelect }) => {
     return (
-        <div className="address-list-content">
-            <h2 className="modal-title">Выбор адреса</h2>
-            <div className="addresses">
-                {addresses.map((addr, index) => (
-                    <label key={addr.id || index} className="address-item">
-                        <span className="address-text">{addr.address}</span>
-                        <input
-                            type="radio"
-                            name="address"
-                            checked={selectedAddress === addr.id}
-                            onChange={() => onSelect(addr.id)}
-                        />
-                        <span className="radio-custom"></span>
-                    </label>
-                ))}
-            </div>
-            <button onClick={onAddNew} className="btn-add-new-address">
-                Добавить новый адрес
-            </button>
+        <div className="address-list">
+            {addresses.map((addr) => (
+                <div
+                    key={addr.id}
+                    className={`address-item ${selectedId === addr.id ? 'active' : ''}`}
+                    onClick={() => onSelect(addr.id)}
+                >
+                    <div className="address-text">
+                        {addr.full_address || addr.address}
+                    </div>
+
+                    <div className="radio-indicator">
+                        <div className="radio-inner"></div>
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
+
 export default AddressList;

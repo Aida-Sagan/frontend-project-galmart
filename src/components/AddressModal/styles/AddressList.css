@@ -25,21 +25,23 @@
 }
 
 .address-item {
+    padding: 16px 0;
+    border-bottom: 1px solid #DBDBDB;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    cursor: pointer;
 }
 
+.address-item:last-child {
+    border-bottom: none;
+}
 .address-text {
     font-size: 16px;
     color: #333;
+    padding: 0!important;
 }
 
-.address-item input[type="radio"] {
+.address-item-choice input[type="radio"] {
     display: none;
 }
 
@@ -53,11 +55,11 @@
     margin-left: 15px;
 }
 
-.address-item input[type="radio"]:checked + .radio-custom {
+.address-item-choice input[type="radio"]:checked + .radio-custom {
     border-color: #902067;
 }
 
-.address-item input[type="radio"]:checked + .radio-custom::after {
+.address-item-choice input[type="radio"]:checked + .radio-custom::after {
     content: '';
     position: absolute;
     top: 50%;

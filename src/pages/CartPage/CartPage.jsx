@@ -7,7 +7,7 @@ import { deleteCart as deleteCartService } from '../../api/services/cartService'
 
 import CartItemsSection from '../../components/CartSection/CartItemsSection';
 import Container from '../../components/Container/Container';
-import AddressModal from '../../components/AddressModal/AddressModal.jsx';
+import LocationModal from '../../components/AddressModal/LocationModal';
 import Loader from '../../components/Loader/Loader.jsx';
 import DeliveryTimeModal from './DeliveryTimeModal/DeliveryTimeModal';
 
@@ -101,19 +101,19 @@ const CartContent = () => {
         fetchCart
     } = useCart();
 
-    const { city, loading: isLocationLoading } = useLocation();
+    const { city, loading: isLocationLoading, selectedAddress } = useLocation();
 
     const [isUnavailableModalOpen, setIsUnavailableModalOpen] = useState(false);
     const [isClearCartModalOpen, setIsClearCartModalOpen] = useState(false);
+
     const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
     const [isDeliveryTimeModalOpen, setIsDeliveryTimeModalOpen] = useState(false);
-
 
     useEffect(() => {
         if (city) {
             fetchCart();
         }
-    }, [city, fetchCart]);
+    }, [city, selectedAddress, fetchCart]);
 
     const itemsPrice = cartData?.items_price || 0;
     const deliveryCost = cartData?.delivery_price || 0;
@@ -179,7 +179,6 @@ const CartContent = () => {
         }
     };
 
-    // Очистка недоступных (Вызов API)
     const handleClearUnavailableClick = async () => {
         try {
             await deleteCartService(true);
@@ -206,7 +205,8 @@ const CartContent = () => {
             .catch(error => console.error("Ошибка при создании заказа:", error));
     };
 
-    const handleAddressUpdate = () => {
+    const handleModalClose = () => {
+        setIsAddressModalOpen(false);
         fetchCart();
     };
 
@@ -437,11 +437,13 @@ const CartContent = () => {
                 text="Вы уверены, что хотите удалить все товары из корзины?"
             />
 
-            <AddressModal
-                isOpen={isAddressModalOpen}
-                onClose={() => setIsAddressModalOpen(false)}
-                onAddressUpdate={handleAddressUpdate}
-            />
+            {/* ИЗМЕНЕНИЕ 2: Использование LocationModal. Условный рендеринг, так как внутри нет isOpen */}
+            {isAddressModalOpen && (
+                <LocationModal
+                    onClose={handleModalClose}
+                    onCitySelect={() => {}}
+                />
+            )}
         </div>
     );
 };

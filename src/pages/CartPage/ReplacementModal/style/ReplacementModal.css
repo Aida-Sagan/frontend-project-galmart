@@ -1,0 +1,97 @@
+.replacement-modal {
+    max-width: 450px!important;
+    width: 90%;
+    padding: 24px;
+    border-radius: 20px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.replacement-body {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0;
+}
+
+.replacement-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    cursor: pointer;
+}
+
+.replacement-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-right: 10px;
+}
+
+.replacement-title {
+    font-size: 16px;
+    color: #7A7A7A;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.replacement-row.active .replacement-title {
+    color: #222222;
+}
+
+.replacement-subtitle {
+    font-size: 12px;
+    color: #7A7A7A;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.replacement-divider {
+    height: 1px;
+    background-color: #F0F0F0;
+    width: 100%;
+}
+
+/* Radio Button Styles */
+.radio-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
+}
+
+.radio-circle.active {
+    border-color: #902067;
+}
+
+.radio-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #902067;
+}
+
+/* Button */
+.replacement-save-btn {
+    width: 100%;
+    background-color: #902067;
+    color: white;
+    padding: 14px;
+    border-radius: 64px;
+    font-weight: 600;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.replacement-save-btn:hover {
+    background-color: #7a1b57;
+}

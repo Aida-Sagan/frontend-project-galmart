@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import { fetchAddresses, saveAddress as saveAddressApi } from '../api/services/addressService';
 
@@ -26,15 +26,15 @@ export const LocationProvider = ({ children }) => {
         setIsLoading(false);
     }, []);
 
-    useEffect(() => {
+    const loadUserAddresses = useCallback(() => {
         if (!isAuthenticated) {
             setUserAddresses([]);
             setSelectedAddress(null);
-            return;
+            return Promise.resolve();
         }
 
         setIsLoading(true);
-        fetchAddresses()
+        return fetchAddresses()
             .then(addresses => {
                 const currentCityName = city?.name || '';
 
@@ -45,16 +45,17 @@ export const LocationProvider = ({ children }) => {
 
                 setUserAddresses(filteredAddresses);
 
-                if (filteredAddresses.length > 0) {
+                if (filteredAddresses.length > 0 && !selectedAddress) {
                     setSelectedAddress(filteredAddresses[0]);
-                } else {
-                    setSelectedAddress(null);
                 }
             })
             .catch(err => console.error("Ошибка загрузки адресов:", err))
             .finally(() => setIsLoading(false));
+    }, [isAuthenticated, city, selectedAddress]);
 
-    }, [isAuthenticated, city]);
+    useEffect(() => {
+        loadUserAddresses();
+    }, [loadUserAddresses]);
 
     const selectCity = (newCityObject) => {
         setCity(newCityObject);
@@ -70,11 +71,15 @@ export const LocationProvider = ({ children }) => {
         // eslint-disable-next-line no-useless-catch
         try {
             const newAddress = await saveAddressApi(addressData);
+
+            await loadUserAddresses();
+
+
             const cityName = newAddress.city.name || newAddress.city;
             const formattedAddress = { ...newAddress, city: cityName };
 
-            setUserAddresses(prev => [...prev, formattedAddress]);
             setSelectedAddress(formattedAddress);
+
             return formattedAddress;
         } catch (error) {
             throw error;

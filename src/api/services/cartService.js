@@ -11,9 +11,8 @@ import $api from '../axiosInstance';
  */
 export const getCartData = async () => {
     try {
-        // Интерсептор сам добавит Authorization и City
         const response = await $api.get(API_URLS.GET_CART_DATA);
-        return response.data; // Axios кладет JSON ответ в поле .data
+        return response.data;
     } catch (error) {
         console.error(`[Service] 🛑 Ошибка при получении корзины:`, error);
         throw error;
@@ -38,7 +37,6 @@ export const updateCart = async (count, item) => {
 
         let errorMessage = 'Не удалось изменить количество товара в корзине';
 
-        // Обработка ошибок от бэкенда (400 Bad Request и т.д.)
         if (error.response && error.response.data) {
             const errorDetail = error.response.data;
             if (errorDetail.detail) {
@@ -58,7 +56,6 @@ export const updateCart = async (count, item) => {
  * Очистка корзины
  */
 export const deleteCart = async (deleteOnlyUnavailable = false) => {
-    // Axios позволяет передавать параметры прямо в конфиге
     try {
         const response = await $api.delete(API_URLS.CLEAR_CART, {
             params: {
@@ -125,6 +122,66 @@ export const setOrder = async (orderDetails) => {
         return response.data;
     } catch (error) {
         console.error("Ошибка при создании заказа:", error);
+        throw error;
+    }
+};
+
+// ----------------------------------------------------
+// --- Методы для работы с промокодами ---
+// ----------------------------------------------------
+
+/**
+ * Применение промокода
+ * @param {string} code - Строка промокода
+ * @returns {Promise<DTO>}
+ */
+export const setPromocode = async (code) => {
+    try {
+
+        const response = await $api.get(API_URLS.APPLY_PROMOCODE, {
+            params: {
+                code: code
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Ошибка при применении промокода:", error);
+        throw error;
+    }
+};
+
+
+/**
+ * Получение списка сохраненных карт
+ */
+export const getSavedCards = async () => {
+    try {
+        const response = await $api.get('/api/v2/account/card/');
+
+        if (response.data && Array.isArray(response.data.data)) {
+            return response.data.data;
+        }
+
+        if (Array.isArray(response.data)) {
+            return response.data;
+        }
+
+        return [];
+    } catch (error) {
+        console.error("Ошибка при получении карт:", error);
+        return [];
+    }
+};
+
+/**
+ * Удаление карты
+ */
+export const deleteSavedCard = async (cardId) => {
+    try {
+        const response = await $api.delete(`/api/v2/account/card/${cardId}/`);
+        return response.data;
+    } catch (error) {
+        console.error("Ошибка при удалении карты:", error);
         throw error;
     }
 };

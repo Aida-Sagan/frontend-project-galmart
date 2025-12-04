@@ -3,17 +3,23 @@ import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useLocation } from '../../context/LocationContext';
 import { Link } from 'react-router-dom';
-import { deleteCart as deleteCartService } from '../../api/services/cartService';
+import { deleteCart as deleteCartService, setPromocode,getSavedCards, deleteSavedCard } from '../../api/services/cartService';
 
 import CartItemsSection from '../../components/CartSection/CartItemsSection';
 import Container from '../../components/Container/Container';
 import LocationModal from '../../components/AddressModal/LocationModal';
 import Loader from '../../components/Loader/Loader.jsx';
 import DeliveryTimeModal from './DeliveryTimeModal/DeliveryTimeModal';
+import PromoCodeModal from './PromoCodeModal/PromoCodeModal';
+import DeliveryPreferencesModal from './DeliveryPreferencesModal/DeliveryPreferencesModal';
+import ReplacementModal from './ReplacementModal/ReplacementModal';
+import PaymentMethodModal from './PaymentMethodModal/PaymentMethodModal';
 
 import './style/CartPage.css';
 import authRequiredIcon from '../../assets/is_exists.png';
 import cartEmpty from '../../assets/cartEmpty.png';
+
+
 
 const TrashIcon = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -105,9 +111,15 @@ const CartContent = () => {
 
     const [isUnavailableModalOpen, setIsUnavailableModalOpen] = useState(false);
     const [isClearCartModalOpen, setIsClearCartModalOpen] = useState(false);
-
     const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
     const [isDeliveryTimeModalOpen, setIsDeliveryTimeModalOpen] = useState(false);
+    const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
+    const [isPreferencesModalOpen, setIsPreferencesModalOpen] = useState(false);
+    const [isReplacementModalOpen, setIsReplacementModalOpen] = useState(false);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [savedCards, setSavedCards] = useState([]);
+    const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('apple_pay');
+
 
     useEffect(() => {
         if (city) {
@@ -120,8 +132,34 @@ const CartContent = () => {
     const freeDeliveryThreshold = cartData?.free_delivery || 10000;
 
     const bonusesBalance = cartData?.bonuses?.balance || 0;
-    const addressString = cartData?.address?.full_address || cartData?.address_string;
     const currency = cartData?.currency || '₸';
+
+
+    const handleApplyPromocode = async (code) => {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            await setPromocode(code);
+            await fetchCart();
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    const handleSaveReplacementAction = (actionText) => {
+        setCheckoutDetails(prev => ({
+            ...prev,
+            replaceItemsAction: actionText
+        }));
+    };
+
+
+    const addressString =
+        selectedAddress?.full_address ||
+        selectedAddress?.base_address ||
+        selectedAddress?.address ||
+        cartData?.address?.full_address ||
+        cartData?.address_string ||
+        city?.name;
 
     const [checkoutDetails, setCheckoutDetails] = useState({
         paymentMethod: 'Картой онлайн',
@@ -145,11 +183,11 @@ const CartContent = () => {
     const hasOutOfStockItems = items?.some(item => item.out_of_stock) || false;
 
     const isCheckoutReady = useMemo(() => {
-        const hasAddress = !!addressString;
+        const hasAddress = !!(selectedAddress || cartData?.address);
         const hasCard = true;
         const hasProducts = items?.length > 0;
         return hasAddress && hasCard && checkoutDetails.acceptPriceChanges && hasProducts;
-    }, [checkoutDetails, addressString, items?.length]);
+    }, [checkoutDetails, selectedAddress, cartData, items?.length]);
 
     const deliveryTimeRaw = cartData?.delivery_time;
     let displayDeliveryTime = null;
@@ -162,10 +200,41 @@ const CartContent = () => {
         }
     }
 
+    const handleSavePreferences = (newPrefs) => {
+        setCheckoutDetails(prev => ({
+            ...prev,
+            deliveryTimePreferences: newPrefs.deliveryTimePreferences,
+            leaveAtDoor: newPrefs.leaveAtDoor
+        }));
+    };
+
+    const getPreferencesText = () => {
+        const timeText = checkoutDetails.deliveryTimePreferences === 'on_time'
+            ? 'В указанное время'
+            : 'По возможности раньше';
+
+        if (checkoutDetails.leaveAtDoor) {
+            return `${timeText}, оставить у двери`;
+        }
+        return timeText;
+    };
 
     const handleTimeSaveSuccess = () => {
         fetchCart();
     };
+
+    useEffect(() => {
+        const fetchCards = async () => {
+
+            try {
+                const cards = await getSavedCards();
+                setSavedCards(cards || []);
+            } catch (e) {
+                console.error("Failed to load cards", e);
+            }
+        };
+        fetchCards();
+    }, []);
 
     const handleClearCartClick = async () => {
         try {
@@ -192,10 +261,16 @@ const CartContent = () => {
     const handleOrderSubmit = () => {
         if (!isCheckoutReady) return;
 
+
+        let replaceActionKey = 'call';
+        if (checkoutDetails.replaceItemsAction === 'Не звонить и заменить') replaceActionKey = 'replace';
+        if (checkoutDetails.replaceItemsAction === 'Не заменять') replaceActionKey = 'remove';
+
+
         const orderDetails = {
             bonuses: checkoutDetails.useBonuses ? 1 : 0,
             notes: checkoutDetails.comment,
-            replace_items_action: checkoutDetails.replaceItemsAction === 'Позвонить и заменить' ? 'call' : 'replace', // Пример маппинга
+            replace_items_action: replaceActionKey,
             delivery_time_preferences: checkoutDetails.deliveryTimePreferences,
             leave_at_door: checkoutDetails.leaveAtDoor,
         };
@@ -207,7 +282,44 @@ const CartContent = () => {
 
     const handleModalClose = () => {
         setIsAddressModalOpen(false);
+
         fetchCart();
+    };
+
+    const handleDeleteCard = async (cardId) => {
+        try {
+            await deleteSavedCard(cardId);
+
+            const updatedCards = await getSavedCards();
+            setSavedCards(updatedCards || []);
+
+            if (selectedPaymentMethodId === cardId) {
+                setSelectedPaymentMethodId('apple_pay');
+            }
+        } catch (error) {
+            console.error("Failed to delete card", error);
+            alert("Не удалось удалить карту");
+        }
+    };
+
+
+    const handleAddNewCard = () => {
+        console.log("Redirect to add card flow");
+        // Implement redirection logic here (e.g., navigate('/profile/cards/add'))
+    };
+
+
+    const getSelectedMethodName = () => {
+        if (selectedPaymentMethodId === 'apple_pay') return 'Apple Pay';
+        if (selectedPaymentMethodId === 'kaspi') return 'Kaspi.kz';
+
+        const card = savedCards.find(c => c.id === selectedPaymentMethodId);
+        if (card) {
+            const last4 = card.pan || card.mask || card.number?.slice(-4) || '****';
+            return `.... ${last4} ${card.type || ''}`;
+        }
+
+        return 'Выбрать способ оплаты';
     };
 
 
@@ -289,11 +401,13 @@ const CartContent = () => {
                         </div>
                     </div>
 
-                    {/* 3. Replacements Block */}
                     <div className="checkout-widget clickable-widget">
-                        <div className="widget-row">
+                        <div
+                            className="widget-row"
+                            onClick={() => setIsReplacementModalOpen(true)}
+                        >
                             <div className="widget-info">
-                                <span className="label">Замена товаров</span>
+                                <span className="widget-info-text">Замена товаров</span>
                                 <span className="sub-label">{checkoutDetails.replaceItemsAction}</span>
                             </div>
                             <ChevronRight />
@@ -311,10 +425,13 @@ const CartContent = () => {
 
                     {/* 4. Preferences Block */}
                     <div className="checkout-widget clickable-widget">
-                        <div className="widget-row">
+                        <div
+                            className="widget-row"
+                            onClick={() => setIsPreferencesModalOpen(true)}
+                        >
                             <div className="widget-info">
-                                <span className="label">Пожелания по доставке</span>
-                                <span className="sub-label">В указанное время</span>
+                                <span className="widget-info-text ">Пожелания по доставке</span>
+                                <span className="sub-label">{getPreferencesText()}</span>
                             </div>
                             <ChevronRight />
                         </div>
@@ -325,10 +442,20 @@ const CartContent = () => {
                         <div className="widget-header">
                             <h3>Способ оплаты</h3>
                         </div>
-                        <div className="widget-row clickable-row border-bottom">
+                        <div
+                            className="widget-row clickable-row border-bottom"
+                            onClick={() => setIsPaymentModalOpen(true)}
+                        >
                             <div className="widget-info">
                                 <span className="label">Способ оплаты</span>
-                                <span className="value">.... 2636 <span style={{border:'1px solid #ccc', padding:'0 4px', borderRadius:'4px', fontSize:'10px'}}>VISA</span></span>
+                                <span className="value">
+                                {getSelectedMethodName()}
+                                    {savedCards.some(c => c.id === selectedPaymentMethodId) && (
+                                        <span style={{border:'1px solid #ccc', padding:'0 4px', borderRadius:'4px', fontSize:'10px', marginLeft: '5px'}}>
+                                         CARD
+                                     </span>
+                                    )}
+                            </span>
                             </div>
                             <ChevronRight />
                         </div>
@@ -353,11 +480,18 @@ const CartContent = () => {
                                 <span className="slider round"></span>
                             </label>
                         </div>
-                        <div className="widget-row clickable-row">
+                        <div
+                            className="widget-row clickable-row"
+                            onClick={() => setIsPromoModalOpen(true)}
+                        >
                             <div className="widget-info">
                                 <span className="label">Промокод</span>
-                                {cartData?.applied_promocode?.code && (
-                                    <span className="sub-label" style={{color: '#902067'}}>{cartData.applied_promocode.code}</span>
+                                {cartData?.applied_promocode?.code ? (
+                                    <span className="sub-label" style={{color: '#902067'}}>
+                                        {cartData.applied_promocode.code} (Применен)
+                                    </span>
+                                ) : (
+                                    <span className="sub-label">Введите промокод</span>
                                 )}
                             </div>
                             <ChevronRight />
@@ -415,6 +549,39 @@ const CartContent = () => {
                 </div>
             </div>
 
+            <PaymentMethodModal
+                isOpen={isPaymentModalOpen}
+                onClose={() => setIsPaymentModalOpen(false)}
+                selectedMethodId={selectedPaymentMethodId}
+                onSelect={setSelectedPaymentMethodId}
+
+                cards={savedCards} // Передаем список карт
+                onDeleteCard={handleDeleteCard} // Передаем функцию удаления
+                onAddCard={handleAddNewCard}
+            />
+            <ReplacementModal
+                isOpen={isReplacementModalOpen}
+                onClose={() => setIsReplacementModalOpen(false)}
+                initialValue={checkoutDetails.replaceItemsAction}
+                onSave={handleSaveReplacementAction}
+            />
+
+            <DeliveryPreferencesModal
+                isOpen={isPreferencesModalOpen}
+                onClose={() => setIsPreferencesModalOpen(false)}
+                initialData={{
+                    deliveryTimePreferences: checkoutDetails.deliveryTimePreferences,
+                    leaveAtDoor: checkoutDetails.leaveAtDoor
+                }}
+                onSave={handleSavePreferences}
+            />
+
+            <PromoCodeModal
+                isOpen={isPromoModalOpen}
+                onClose={() => setIsPromoModalOpen(false)}
+                onApply={handleApplyPromocode}
+            />
+
             <DeliveryTimeModal
                 isOpen={isDeliveryTimeModalOpen}
                 onClose={() => setIsDeliveryTimeModalOpen(false)}
@@ -437,7 +604,6 @@ const CartContent = () => {
                 text="Вы уверены, что хотите удалить все товары из корзины?"
             />
 
-            {/* ИЗМЕНЕНИЕ 2: Использование LocationModal. Условный рендеринг, так как внутри нет isOpen */}
             {isAddressModalOpen && (
                 <LocationModal
                     onClose={handleModalClose}

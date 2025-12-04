@@ -76,7 +76,7 @@
 
 /* Заголовки внутри виджетов */
 .widget-header h3 {
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 500;
     margin: 0 0 5px 0;
 }
@@ -101,7 +101,7 @@
 }
 
 .label {
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 500;
     color: #7A7A7A;
     font-family: 'Montserrat', sans-serif;
@@ -118,6 +118,7 @@
     font-size: 16px;
     color: #222;
     font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
 }
 
 
@@ -363,4 +364,11 @@ input:checked + .slider:before {
 .auth-button:hover {
     background-color: #7a1b57;
     opacity: 0.9;
+}
+
+.widget-info-text{
+    color: #222222!important;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
 }

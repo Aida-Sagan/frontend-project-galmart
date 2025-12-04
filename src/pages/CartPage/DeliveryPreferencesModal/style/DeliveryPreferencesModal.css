@@ -1,0 +1,115 @@
+.pref-modal {
+    max-width: 400px!important;
+    width: 90%;
+    padding: 24px;
+    border-radius: 20px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.pref-body {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0;
+}
+
+.pref-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    cursor: pointer;
+}
+
+.pref-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-right: 10px;
+}
+
+.pref-title {
+    font-size: 16px;
+    color: #7A7A7A;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.modal-header-title{
+    color: #222222!important;
+}
+
+.pref-row.active .pref-title {
+    color: #222222;
+}
+
+.pref-subtitle {
+    font-size: 12px;
+    color: #7A7A7A;
+    font-weight: 500;
+}
+
+.pref-divider {
+    height: 1px;
+    background-color: #F0F0F0;
+    width: 100%;
+}
+
+.radio-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.2s;
+}
+
+.radio-circle.active {
+    border-color: #902067;
+}
+
+.radio-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #902067;
+}
+
+.checkbox-square {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 2px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.checkbox-square.checked {
+    background-color: #902067;
+    border-color: #902067;
+}
+
+.pref-save-btn {
+    width: 100%;
+    background-color: #902067;
+    color: white;
+    padding: 14px;
+    border-radius: 64px;
+    font-weight: 600;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.pref-save-btn:hover {
+    background-color: #7a1b57;
+}

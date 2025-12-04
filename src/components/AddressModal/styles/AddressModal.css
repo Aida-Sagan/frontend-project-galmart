@@ -237,7 +237,6 @@ textarea.form-input {
     }
 }
 
-/* Dropdown styles */
 .form-group.dropdown-container {
     position: relative;
     cursor: pointer;
@@ -349,4 +348,12 @@ textarea.form-input {
 
 .address-text{
     padding: 15px 0 0 20px!important;
+}
+
+#apartment, #entrance, #floor {
+    padding: 11px 0 0 20px!important;
+}
+
+#address {
+    padding: 20px 0 0 20px!important;
 }

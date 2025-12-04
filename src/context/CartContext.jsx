@@ -7,6 +7,7 @@ import {
     setOrder as setOrderService,
     deleteCart as deleteCartApi
 } from '../api/services/cartService';
+import { useLocation } from './LocationContext';
 import { useAuth } from './AuthContext';
 
 const CartContext = createContext(null);
@@ -17,7 +18,7 @@ export const CartProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [cartError, setCartError] = useState(null);
 
-    // Внутри CartContext.js -> fetchCart
+    const { city } = useLocation();
 
     const fetchCart = useCallback(async () => {
         if (!isAuthenticated) {
@@ -41,6 +42,13 @@ export const CartProvider = ({ children }) => {
             setIsLoading(false);
         }
     }, [isAuthenticated]);
+
+    useEffect(() => {
+        if (isAuthenticated && city) {
+            fetchCart();
+        }
+    }, [isAuthenticated, city, fetchCart]);
+
 
     const updateCartItemQuantity = async (itemId, newCount, productDetails = {}) => {
         if (!isAuthenticated) {

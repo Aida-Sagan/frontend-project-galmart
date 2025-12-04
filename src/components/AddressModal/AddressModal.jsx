@@ -113,7 +113,7 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
         }
 
         // Подготовка данных
-        const finalBuilding = isPrivateHouse ? "" : building;
+        const finalBuilding = building;
         const finalApartment = isPrivateHouse ? "" : apartment;
         const finalEntrance = isPrivateHouse ? "" : entrance;
         const finalFloor = isPrivateHouse ? "" : floor;
@@ -142,7 +142,7 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
             floor: finalFloor,
             private_house: isPrivateHouse,
             comment: comment,
-            name: "Мой новый адрес",
+            name: "Новый адрес",
         };
 
 

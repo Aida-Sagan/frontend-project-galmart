@@ -1,3 +1,4 @@
+/* Контейнер модального окна */
 .address-list-content {
     background: white;
     padding: 30px;
@@ -5,6 +6,8 @@
     text-align: center;
     max-width: 450px;
     width: 90%;
+    /* Ограничиваем максимальную высоту самого окна, чтобы оно не вылезало за экран */
+    max-height: 80vh;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
@@ -14,61 +17,103 @@
     font-size: 24px;
     font-weight: 500;
     margin-bottom: 20px;
+    flex-shrink: 0; /* Заголовок не должен сжиматься */
 }
 
-.addresses {
+/* === ИЗМЕНЕНИЯ ЗДЕСЬ === */
+/* В React компоненте класс называется address-list, поэтому стилизуем его */
+.address-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-bottom: 30px;
     text-align: left;
+
+    /* 1. Задаем ограничение по высоте (можно в px или vh) */
+    max-height: 400px;
+
+    /* 2. Включаем вертикальный скролл */
+    overflow-y: auto;
+
+    /* Отступы */
+    margin-bottom: 30px;
+    padding-right: 5px; /* Чтобы скроллбар не перекрывал контент */
 }
 
+/* Стилизация скроллбара (чтобы он был красивым и тонким) */
+.address-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.address-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.address-list::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+.address-list::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+/* ======================== */
+
 .address-item {
-    padding: 16px 0;
-    border-bottom: 1px solid #DBDBDB;
+    padding: 16px 0 !important;
+    border-bottom: 1px solid #DBDBDB !important;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer; /* Добавил курсор, так как элемент кликабельный */
 }
 
 .address-item:last-child {
-    border-bottom: none;
+    border-bottom: none !important; /* Убрал линию у последнего элемента */
 }
+
 .address-text {
     font-size: 16px;
-    color: #333;
-    padding: 0!important;
+    color: #7A7A7A;
+    padding: 0 !important;
+    line-height: 1.4;
 }
 
-.address-item-choice input[type="radio"] {
-    display: none;
+/* Если в React вы добавляете класс 'active' к address-item,
+   то нужно стилизовать вложенный текст так: */
+.address-item.active .address-text {
+    color: #222222;
+    font-weight: 500;
 }
 
-.radio-custom {
-    display: inline-block;
+/* Стили для кружочка (Radio) из React компонента */
+.radio-indicator {
     width: 22px;
     height: 22px;
     border-radius: 50%;
     border: 2px solid #ccc;
-    position: relative;
-    margin-left: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Чтобы кружок не сплющило */
+    transition: all 0.2s;
 }
 
-.address-item-choice input[type="radio"]:checked + .radio-custom {
+.radio-inner {
+    width: 12px;
+    height: 12px;
+    background-color: #902067;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform 0.2s ease;
+}
+
+/* Активное состояние кружочка */
+.address-item.active .radio-indicator {
     border-color: #902067;
 }
 
-.address-item-choice input[type="radio"]:checked + .radio-custom::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: #902067;
+.address-item.active .radio-inner {
+    transform: scale(1);
 }
 
 .btn-add-new-address {
@@ -81,7 +126,9 @@
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
+    flex-shrink: 0; /* Кнопка не должна сжиматься */
 }
+
 .btn-add-new-address:hover {
     background: #7a1a59;
 }

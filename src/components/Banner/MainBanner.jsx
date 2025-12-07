@@ -7,7 +7,6 @@ import { fetchHomepageBanners } from '../../api/services/bannerService';
 
 import './style/MainBanner.css';
 
-
 const MainBanner = () => {
     const [banners, setBanners] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -19,7 +18,7 @@ const MainBanner = () => {
         const loadBanners = async () => {
             try {
                 const fetchedBanners = await fetchHomepageBanners();
-                setBanners(fetchedBanners);
+                setBanners(Array.isArray(fetchedBanners) ? fetchedBanners : []);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -60,7 +59,7 @@ const MainBanner = () => {
     };
 
     if (loading) {
-        return <div>Загрузка баннеров...</div>;
+        return <div className="main-banner-skeleton"></div>;
     }
 
     if (error) {
@@ -70,12 +69,19 @@ const MainBanner = () => {
     if (banners.length === 0) {
         return null;
     }
+    const currentBanner = banners[current];
+    const imageSrc = currentBanner.images?.desktop || currentBanner.image;
 
     return (
         <div className="main-banner" onClick={handleClick}>
-            <img src={banners[current].image} alt={banners[current].title} />
 
-            {/* Стрелки навигации */}
+            <img
+                src={imageSrc}
+                alt={banners[current].title}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+
+
             <button className="banner-arrow banner-arrow-left" onClick={handlePrev}>
                 <ArrowLeft />
             </button>
@@ -83,7 +89,6 @@ const MainBanner = () => {
                 <ArrowRight />
             </button>
 
-            {/* Пагинация (точки) */}
             <div className="banner-dots">
                 {banners.map((_, index) => (
                     <span

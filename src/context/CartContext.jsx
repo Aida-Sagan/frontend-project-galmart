@@ -65,43 +65,6 @@ export const CartProvider = ({ children }) => {
             let updatedItems = [];
             const existingItem = prev.items.find(item => item.id === itemId);
 
-            // if (existingItem) {
-            //     updatedItems = prev.items
-            //         .map(item => {
-            //             if (item.id === itemId) {
-            //                 const availableQuantity = item.inventory?.count || Infinity;
-            //                 let isOutOfStock = newCount > availableQuantity;
-            //
-            //
-            //                 return {
-            //                     ...item,
-            //                     quantity: newCount,
-            //                     count: newCount,
-            //                     out_of_stock: isOutOfStock
-            //                 };
-            //             }
-            //             return item;
-            //         })
-            //         .filter(item => item.quantity > 0);
-            // } else if (newCount > 0) {
-            //     // Если товара нет и количество > 0: Добавляем
-            //     const availableQuantity = productDetails.inventory?.count || Infinity;
-            //     const isOutOfStock = newCount > availableQuantity;
-            //
-            //     const newCartItem = {
-            //         ...productDetails,
-            //         id: itemId,
-            //         quantity: newCount,
-            //         count: newCount,
-            //         name: productDetails.title || 'Товар',
-            //         unit_price: productDetails.unit_price || 0,
-            //         out_of_stock: isOutOfStock, // Устанавливаем статус при добавлении
-            //     };
-            //     updatedItems = [...prev.items, newCartItem];
-            // } else {
-            //     updatedItems = prev.items;
-            // }
-
             if (existingItem) {
                 updatedItems = prev.items.map(item => {
                     if (item.id === itemId) {
@@ -110,23 +73,14 @@ export const CartProvider = ({ children }) => {
                     return item;
                 });
             } else {
-                // Логика добавления (упрощенно)
                 updatedItems = [...prev.items, { ...productDetails, id: itemId, quantity: newCount }];
             }
 
-            // Пересчет общих сумм (примерно)
             const newTotal = updatedItems.reduce((acc, i) => acc + (i.unit_price * i.quantity), 0);
 
             return { ...prev, items: updatedItems, total_price: newTotal };
-            // const updatedTotalCount = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
-            // return {
-            //     ...prev,
-            //     items: updatedItems,
-            //     total_count: updatedTotalCount,
-            // };
         });
 
-        //setIsLoading(true);
         try {
             await updateCartApi(newCount, itemId);
             await fetchCart();
@@ -146,7 +100,7 @@ export const CartProvider = ({ children }) => {
         setCartData({ ...cartData, items: [], total_price: 0 });
 
         try {
-            await deleteCartApi(false); // false = удалить всё
+            await deleteCartApi(false);
             await fetchCart();
         } catch (error) {
             console.error("Ошибка очистки корзины:", error);
@@ -184,7 +138,7 @@ export const CartProvider = ({ children }) => {
             return response.data;
         } catch (error) {
             console.error("Ошибка создания заказа:", error);
-            setCartError("Ошибка при оформлении заказа.");
+            // set OrderError здесь больше не вызывается, чтобы не блокировать модальное окно ошибки.
             throw error;
         }
     };

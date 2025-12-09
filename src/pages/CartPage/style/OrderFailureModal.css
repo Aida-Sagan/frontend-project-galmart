@@ -1,0 +1,77 @@
+/* Общие стили для модального окна */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4); /* Полупрозрачный фон */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal-content.order-failure-modal {
+    background: #fff;
+    border-radius: 20px; /* Сильное скругление углов */
+    padding: 32px 24px;
+    width: 100%;
+    max-width: 440px; /* Ограниченная ширина по дизайну */
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Центрирование контента по горизонтали */
+    text-align: center;
+}
+
+/* Кнопка закрытия */
+.order-failure-modal .close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+/* Заголовок */
+.order-failure-modal .failure-title {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #222;
+    margin: 0 0 16px 0;
+}
+
+/* Текст ошибки */
+.order-failure-modal .failure-text {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #222;
+    margin: 0 0 32px 0;
+}
+
+/* Кнопка "К заказам" */
+.order-failure-modal .modal-btn.primary-action {
+    width: 100%;
+    height: 48px;
+    padding: 12px 24px;
+    background-color: #902067; /* Цвет кнопки по дизайну */
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    border: none;
+    border-radius: 64px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.order-failure-modal .modal-btn.primary-action:hover {
+    background-color: #7d1a5b;
+}

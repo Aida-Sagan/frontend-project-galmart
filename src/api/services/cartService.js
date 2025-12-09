@@ -117,6 +117,10 @@ export const setOrder = async (orderDetails) => {
         body['delivery_time_preferences'] = orderDetails.deliveryTimePreferences;
     if (orderDetails.leaveAtDoor != null) body['leave_at_door'] = orderDetails.leaveAtDoor;
 
+    if (orderDetails.paymentMethodId != null) {
+        body['payment_method_id'] = orderDetails.paymentMethodId;
+    }
+
     try {
         const response = await $api.post(API_URLS.CREATE_ORDER, body);
         return response.data;

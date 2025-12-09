@@ -218,14 +218,6 @@ input:checked + .slider:before {
     background-color: #F3F3F5;
 }
 
-.summary-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    font-size: 16px;
-    color: #666;
-}
-
 .summary-total-row {
     display: flex;
     justify-content: space-between;
@@ -268,10 +260,11 @@ input:checked + .slider:before {
     border-color: #902067;
 }
 
-.legal-text {
-    font-size: 11px;
-    line-height: 1.4;
-    color: #902067;
+.legal-text-cart {
+    font-size: 10px;
+    color: #222222;
+    font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
 }
 
 /* Кнопка оплаты */
@@ -375,4 +368,70 @@ input:checked + .slider:before {
 
 .modal-content-confirm{
     width: 350px!important;
+}
+
+
+/* Стиль для каждой строки в блоке суммы */
+.summary-widget .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #222;
+    border-bottom: 1px solid #EBEBEB;
+}
+
+/* Отмена разделителя для последней строки перед "Итого" */
+/* Предполагая, что "Оплачено бонусами" или "Скидка" являются последними перед "Итого" */
+.summary-widget .summary-row:last-of-type {
+    border-bottom: none;
+}
+
+/* Специальный стиль для строки "Итого" */
+.summary-widget .summary-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #222;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #EBEBEB; /* Разделитель перед Итого */
+    padding-bottom: 0;
+}
+
+/* Стиль для строки Скидка, которая включает имя промокода */
+.summary-row.discount-row {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.summary-row.discount-row > span:first-child {
+    font-weight: 700;
+}
+
+.summary-row.discount-row > span:last-child {
+    align-self: flex-end; /* Выравнивает сумму скидки вправо */
+}
+
+.summary-row.discount-row .discount-info-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.summary-row.discount-row .discount-amount {
+    color: #902067;
+    font-weight: 700;
+}
+
+.summary-row.discount-row .promo-name {
+    font-size: 14px;
+    color: #A3A3A3;
+    font-weight: 400;
 }

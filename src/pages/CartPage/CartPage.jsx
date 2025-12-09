@@ -14,6 +14,7 @@ import PromoCodeModal from './PromoCodeModal/PromoCodeModal';
 import DeliveryPreferencesModal from './DeliveryPreferencesModal/DeliveryPreferencesModal';
 import ReplacementModal from './ReplacementModal/ReplacementModal';
 import PaymentMethodModal from './PaymentMethodModal/PaymentMethodModal';
+import OrderFailureModal from './OrderFailureModal';
 
 import './style/CartPage.css';
 import authRequiredIcon from '../../assets/is_exists.png';
@@ -120,7 +121,8 @@ const CartContent = () => {
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [savedCards, setSavedCards] = useState([]);
     const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('apple_pay');
-
+    const [isOrderFailureModalOpen, setIsOrderFailureModalOpen] = useState(false);
+    const [orderFailureMessage, setOrderFailureMessage] = useState('');
 
     useEffect(() => {
         if (city) {
@@ -134,6 +136,14 @@ const CartContent = () => {
 
     const bonusesBalance = cartData?.bonuses?.balance || 0;
     const currency = cartData?.currency || '₸';
+
+
+    // Новые переменные для сумм
+    const discount = cartData?.applied_promocode?.amount || 0;
+    const promoCodeName = cartData?.applied_promocode?.code;
+    const bonusesSpent = cartData?.bonuses?.spent || 0; // Предполагаем, что бэкенд возвращает spent
+    const oldTotal = cartData?.old_total || 0;
+    const finalTotal = cartData?.total || (itemsPrice + deliveryCost - discount - bonusesSpent);
 
 
     const handleApplyPromocode = async (code) => {
@@ -174,9 +184,6 @@ const CartContent = () => {
     });
 
 
-    const discount = cartData?.applied_promocode?.amount || 0;
-
-    const finalTotal = cartData?.total || (itemsPrice + deliveryCost - discount);
     const deliveryProgress = freeDeliveryThreshold > 0
         ? Math.min((itemsPrice / freeDeliveryThreshold) * 100, 100)
         : 100;
@@ -274,11 +281,27 @@ const CartContent = () => {
             replace_items_action: replaceActionKey,
             delivery_time_preferences: checkoutDetails.deliveryTimePreferences,
             leave_at_door: checkoutDetails.leaveAtDoor,
+            paymentMethodId: selectedPaymentMethodId,
         };
 
         setOrderApi(orderDetails)
-            .then(data => console.log("Заказ успешно создан:", data))
-            .catch(error => console.error("Ошибка при создании заказа:", error));
+            .then(data => {
+                console.log("Заказ успешно создан:", data);
+            })
+            .catch(error => {
+                console.error("Ошибка при создании заказа:", error);
+
+                let message = "Произошла ошибка при оплате заказа. Пожалуйста, попробуйте снова.";
+
+                if (error && error.response && error.response.data && error.response.data.message) {
+                    message = error.response.data.message;
+                } else if (error instanceof Error) {
+                    message = error.message;
+                }
+
+                setOrderFailureMessage(message);
+                setIsOrderFailureModalOpen(true);
+            });
     };
 
     const handleModalClose = () => {
@@ -326,7 +349,7 @@ const CartContent = () => {
 
     if (isLocationLoading) return <Loader />;
     if (isLoading) return <CartSkeleton />;
-    if (cartError) return <div className="cart-content-error">Ошибка: {cartError}</div>;
+
 
     if (!cartData || (items.length === 0 && !isLoading)) {
         return (
@@ -513,18 +536,37 @@ const CartContent = () => {
                             <span>{deliveryCost > 0 ? `${deliveryCost} ${currency}` : '0 ' + currency}</span>
                         </div>
 
-                        {/* Отображаем скидку если она есть */}
+                        {/* Отображаем Скидку */}
                         {discount > 0 && (
-                            <div className="summary-row">
+                            <div className="summary-row discount-row">
                                 <span>Скидка</span>
+                                {promoCodeName && <span className="promo-name">По промокоду {promoCodeName}</span>}
                                 <span>-{discount.toLocaleString()} {currency}</span>
                             </div>
                         )}
 
+                        {/* Отображаем Оплачено бонусами */}
+                        {bonusesSpent > 0 && (
+                            <div className="summary-row bonus-spent-row">
+                                <span>Оплачено бонусами</span>
+                                <span>-{bonusesSpent.toLocaleString()} {currency}</span>
+                            </div>
+                        )}
+
+
                         <div className="summary-total-row">
                             <span>Итого</span>
-                            <span>{finalTotal.toLocaleString()} {currency}</span>
+                            <span className="final-total-value">
+                                {/* Отображение старой цены */}
+                                {oldTotal > finalTotal && oldTotal > 0 && (
+                                    <span className="old-total-price">
+                                        {oldTotal.toLocaleString()} {currency} &rarr;
+                                    </span>
+                                )}
+                                {finalTotal.toLocaleString()} {currency}
+                            </span>
                         </div>
+
 
                         <label className="legal-checkbox">
                             <input
@@ -533,7 +575,7 @@ const CartContent = () => {
                                 onChange={(e) => setCheckoutDetails({...checkoutDetails, acceptPriceChanges: e.target.checked})}
                             />
                             <span className="checkmark"></span>
-                            <span className="legal-text">
+                            <span className="legal-text-cart">
                                 Я подтверждаю, что сумма заказа может измениться из-за наличия весового товара в моем заказе
                             </span>
                         </label>
@@ -549,6 +591,16 @@ const CartContent = () => {
 
                 </div>
             </div>
+
+            <OrderFailureModal
+                isOpen={isOrderFailureModalOpen}
+                onClose={() => setIsOrderFailureModalOpen(false)}
+                onGoToOrders={() => {
+                    setIsOrderFailureModalOpen(false);
+                }}
+                errorMessage={orderFailureMessage}
+            />
+
 
             <PaymentMethodModal
                 isOpen={isPaymentModalOpen}
@@ -604,6 +656,7 @@ const CartContent = () => {
                 title="Очистить корзину?"
                 text="Вы уверены, что хотите удалить все товары из корзины?"
             />
+
 
             {isAddressModalOpen && (
                 <LocationModal

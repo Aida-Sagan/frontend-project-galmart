@@ -73,13 +73,14 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, text }) => {
     if (!isOpen) return null;
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-content modal-content-confirm" onClick={e => e.stopPropagation()}>
                 <button className="modal-close-btn" onClick={onClose}>&times;</button>
                 <h2>{title}</h2>
                 <p>{text}</p>
                 <div className="modal-actions">
+                    <button className="modal-btn secondary" onClick={onConfirm}>
+                        Очистить корзину</button>
                     <button className="modal-btn primary" onClick={onClose}>Отмена</button>
-                    <button className="modal-btn secondary" onClick={onConfirm}>Удалить</button>
                 </div>
             </div>
         </div>
@@ -555,8 +556,8 @@ const CartContent = () => {
                 selectedMethodId={selectedPaymentMethodId}
                 onSelect={setSelectedPaymentMethodId}
 
-                cards={savedCards} // Передаем список карт
-                onDeleteCard={handleDeleteCard} // Передаем функцию удаления
+                cards={savedCards}
+                onDeleteCard={handleDeleteCard}
                 onAddCard={handleAddNewCard}
             />
             <ReplacementModal

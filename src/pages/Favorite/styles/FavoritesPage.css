@@ -349,8 +349,8 @@
 
 .modal-btn.primary:hover {
     background-color: #FFFFFF;
-    border-color: #902067;
-    color: #902067;
+    border-color: #902067!important;
+    color: #902067!important;
 }
 
 .modal-btn.secondary {

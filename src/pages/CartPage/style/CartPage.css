@@ -372,3 +372,7 @@ input:checked + .slider:before {
     font-weight: 500;
     font-family: 'Montserrat', sans-serif;
 }
+
+.modal-content-confirm{
+    width: 350px!important;
+}

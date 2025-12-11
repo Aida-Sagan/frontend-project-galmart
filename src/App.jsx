@@ -31,6 +31,7 @@ import { AuthProvider } from './context/AuthContext';
 import { FavoritesProvider } from './context/FavoritesContext.jsx';
 import { LocationProvider } from './context/LocationContext';
 import { CartProvider } from './context/CartContext';
+import { ProfileProvider } from './context/ProfileContext';
 
 function AppContent() {
     const location = useLocation();
@@ -86,15 +87,17 @@ function AppContent() {
 function App() {
     return (
         <Router>
-            <AuthProvider>
-                <FavoritesProvider>
-                    <LocationProvider>
-                        <CartProvider>
-                            <AppContent />
-                        </CartProvider>
-                    </LocationProvider>
-                </FavoritesProvider>
-            </AuthProvider>
+            <ProfileProvider>
+                <AuthProvider>
+                    <FavoritesProvider>
+                        <LocationProvider>
+                            <CartProvider>
+                                    <AppContent />
+                            </CartProvider>
+                        </LocationProvider>
+                    </FavoritesProvider>
+                </AuthProvider>
+            </ProfileProvider>
         </Router>
     );
 }

@@ -26,4 +26,6 @@ export const API_URLS = {
     SET_DELIVERY_TIME: `/api/v2/orders/basket/set_delivery_time/`,
     CREATE_ORDER: `/api/v2/orders/order/`,
     APPLY_PROMOCODE: '/api/v2/promocode_my/apply/',
+
+
 };

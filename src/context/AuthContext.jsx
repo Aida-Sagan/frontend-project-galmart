@@ -22,11 +22,9 @@ export const AuthProvider = ({ children }) => {
         } else {
             localStorage.removeItem('authToken');
             localStorage.removeItem('refreshToken');
-            //localStorage.removeItem('userCity');
         }
     }, [token]);
 
-    // Эффект для синхронизации флага isNewUser
     useEffect(() => {
         localStorage.setItem('isNewUser', JSON.stringify(isNewUser));
         if (!isNewUser && token && window.location.pathname === '/register') {
@@ -40,7 +38,6 @@ export const AuthProvider = ({ children }) => {
             const { data } = response;
             const { is_account_exists, access, refresh } = data;
 
-            // Сразу устанавливаем токены как постоянные в обоих случаях
             setToken(access);
             localStorage.setItem('refreshToken', refresh);
 
@@ -50,17 +47,14 @@ export const AuthProvider = ({ children }) => {
                 setIsNewUser(false);
                 navigate('/profile');
             } else {
-                // Если аккаунт не существует, сохраняем токен, но устанавливаем флаг регистрации
                 setIsNewUser(true);
                 navigate('/register');
             }
         } catch (error) {
             console.error('Login error:', error);
-            // Обработка ошибок входа (например, неверный код)
         }
     };
 
-    // Теперь эта функция просто убирает флаг регистрации
     const completeRegistration = () => {
         setIsNewUser(false);
         navigate('/');
@@ -81,7 +75,6 @@ export const AuthProvider = ({ children }) => {
         token,
         loginPhone,
         setLoginPhone,
-        // Заменяем tempAuthData на isNewUser для логики регистрации
         isNewUser,
         login,
         logout,

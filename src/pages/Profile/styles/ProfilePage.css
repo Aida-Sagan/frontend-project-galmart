@@ -1,36 +1,308 @@
-.profile-page {
-    padding: 40px 20px;
+* {
+    font-family: 'Montserrat', sans-serif!important;
+}
+:root {
+    --primary-purple: #B54A92;
+    --primary-text: #222222;
+    --gray-text: #7A7A7A;
+    --border-color: #E9E9E9;
+    --light-bg: #F0F0F0;
+    --light-gray-bg: #F8F8F8;
+    --error-red: #EF4444;
+}
+
+/* --- Макет страницы --- */
+
+.profile-page-wrapper {
+    padding: 32px 0 64px 0;
+}
+
+.profile-header-title {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
-    min-height: 50vh;
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
 .profile-title {
     font-size: 32px;
+    font-weight: 700;
+    color: var(--primary-text);
+    margin: 0;
+}
+
+.dev-status {
+    background-color: #E6FFFA;
+    color: #047857;
     font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.profile-layout {
+    display: flex;
+    gap: 40px; /* Расстояние между сайдбаром и контентом */
+}
+
+
+/* --- Сайдбар (Меню) --- */
+.profile-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+}
+
+/* Блок с именем и телефоном */
+.profile-user-info {
+    background-color:#F5F5F5;
+    border-radius: 16px;
+    padding: 24px 20px 20px 20px; /* Увеличен верхний отступ для соответствия дизайну */
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.profile-user-info .user-name-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.profile-user-info .user-name {
+    font-size: 20px;
+    font-weight: 500; /* Полужирный */
+    color: var(--primary-text);
+}
+
+.profile-user-info .user-phone {
+    font-size: 14px;
+    color: var(--gray-text);
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.edit-btn {
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+/* Виджет баланса */
+.profile-balance-widget {
+    background-color: var(--primary-purple);
+    color: #fff;
+    padding: 20px 20px 20px 20px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 119px;
+    margin-bottom: 24px;
+
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-balance-widget::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100%;
+    background: radial-gradient(circle at 100% 100%, transparent 50%, rgba(255, 255, 255, 0.15) 50%);
+    opacity: 0.8;
+}
+
+
+.profile-balance-widget span:first-child {
+    font-size: 20px;
+    opacity: 0.9;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.profile-balance-widget .balance-amount {
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: 0;
+}
+
+/* Навигация */
+.profile-nav {
+    display: flex;
+    flex-direction: column;
+    background: #F5F5F5;
+    border-radius: 37px;
+}
+
+.profile-nav .nav-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 21px 20px;
+    font-size: 16px;
+    color: var(--primary-text);
+    cursor: pointer;
+    border-radius: 64px;
+    transition: background-color 0.2s;
+    border: none;
+    text-align: left;
+    margin-bottom: 4px;
+}
+
+.profile-nav .nav-item:hover:not(.active) {
+    background-color: var(--light-gray-bg);
+}
+
+.nav-item.active {
+    background-color: #E9E9E9;
+    font-weight: 600;
+    color: #902067;
+    padding-left: 20px;
+    border-radius: 0;
+}
+
+.nav-item.active:nth-child(1) {
+    border-radius: 39px 41px 0 0px;
+}
+
+.profile-nav .nav-item .item-count {
+    background-color: #FFC000;
+    color: var(--primary-text);
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 2px 8px;
+    min-width: 24px;
+    text-align: center;
+}
+
+.profile-nav .logout-link {
+    margin-top: 16px;
+    color: var(--error-red);
+    font-weight: 600;
+    border-top: none;
+    padding-top: 12px;
+    border-radius: 16px;
+}
+
+/* --- Основной контент (Заказы) --- */
+
+.profile-content-area {
+    flex-grow: 1;
+    min-width: 0;
+    padding: 0 0 40px 0;
+}
+
+.orders-section .content-title {
+    font-family: "Montserrat", sans-serif!important;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--primary-text);
+
+}
+
+/* Блок "Нет заказов" */
+.no-orders-message {
+    font-size: 16px;
+    color: #4E4E4E;
+    background-color: #F5F5F5;
+    padding: 32px;
+    border-radius: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    font-weight: 400;
+    margin: 0;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Карточка заказа */
+.order-card {
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.order-card .order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.order-card .order-number {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary-text);
+}
+
+.order-card .order-status-indicator {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    border: 1px solid;
+}
+
+.order-card .order-status-text {
+    font-size: 14px;
+    color: var(--gray-text);
+    margin: 0 0 16px 0;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--light-bg);
+}
+
+.order-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 16px;
 }
 
-.profile-welcome {
+.order-details .order-total {
     font-size: 18px;
-    color: #555;
-    margin-bottom: 32px;
+    font-weight: 700;
+    color: var(--primary-text);
 }
 
-.logout-button {
-    padding: 12px 40px;
-    font-size: 16px;
-    font-weight: 500;
-    color: #fff;
-    background-color: #902067; /* Ваш фирменный цвет */
+.order-details .order-bonus {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-purple);
+}
+
+.order-card .details-link {
+    background: none;
     border: none;
-    border-radius: 25px;
+    color: var(--primary-purple);
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    padding: 0;
+    margin-top: 8px;
 }
 
-.logout-button:hover {
-    background-color: #7a1a59;
+/* Иконки товаров */
+.order-item-icons {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--light-bg);
+}
+
+.order-item-icons img {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    background-color: var(--light-gray-bg);
 }

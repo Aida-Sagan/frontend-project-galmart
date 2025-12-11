@@ -15,10 +15,8 @@ const QuantityControl = ({
 
     const handleAction = () => {
         if (isRemoveAction) {
-            // Удаление (если количество <= шагу)
             onQuantityChange(0);
         } else {
-            // Уменьшение количества
             const newQuantity = quantity - step;
             onQuantityChange(Math.max(step, newQuantity));
         }

@@ -1,0 +1,277 @@
+* {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.content-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 20px;
+}
+.error-message {
+    color: #EF4444;
+    padding: 20px;
+}
+
+/* --- Заглушка (No Purchases) --- */
+.no-purchases-container {
+    padding: 0 20px;
+}
+.no-purchases-card {
+    background-color: #F8F8F8;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.no-purchases-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 8px;
+}
+.no-purchases-text {
+    font-size: 14px;
+    color: #7A7A7A;
+}
+
+/* --- Список покупок (Purchase Cards) --- */
+.purchases-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.purchase-card {
+    background-color: #F5F5F5;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    transition: background-color 0.1s;
+    box-shadow: none;
+}
+.purchase-card:hover {
+    background-color: #f9f9f9;
+}
+
+.card-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.card-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    position: relative;
+    padding-top: 5px;
+    gap: 5px;
+}
+
+.purchase-number {
+    color: #7A7A7A;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 120%;
+    margin-bottom: 4px;
+}
+
+.purchase-shop {
+    color: #222222;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 100%;
+    margin-bottom: 8px;
+}
+
+.purchase-date {
+    color: #4E4E4E;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 120%;
+}
+
+.purchase-total-amount {
+    color: #222222;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 120%;
+    margin-bottom: 4px;
+}
+
+.purchase-bonuses-amount {
+    color: #7A7A7A;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 120%;
+    margin-bottom: 12px;
+}
+
+.details-link-btn {
+    font-family: 'Montserrat', sans-serif;
+    position: static;
+    padding: 6px 11px;
+    color: #222222;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: auto;
+    border: 2px solid #FFFFFF;
+    border-radius: 50px;
+    background: #FFFFFF;
+    align-items: center;
+    display: flex;
+}
+
+.back-to-list {
+    background: #F5F5F5;
+    border: none;
+    color: #222222;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 24px;
+}
+.back-to-list:hover{
+    background: #d6d6d6;
+}
+
+.arrow-icon {
+    margin-right: 8px;
+}
+
+/* Заголовок с номером заказа */
+.detail-number {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    color: #222222;
+    margin-bottom: 15px;
+}
+
+.products-block,
+.details-block {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.detail-section {
+    padding: 20px;
+    border-bottom: none;
+    background-color: #F5F5F5;
+    border-radius: 24px;
+}
+.detail-section:last-of-type {
+    border-bottom: none;
+}
+.section-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: #222;
+    margin-bottom: 15px;
+}
+
+/* Стили для строк (Товары) */
+.item-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-size: 15px;
+    color: #222;
+    border-bottom: 1px solid #F0F0F0;
+}
+.item-row:last-of-type {
+    border-bottom: none;
+}
+.item-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.item-name {
+    font-weight: 500;
+    color: #222;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 14px!important;
+
+}
+
+.item-right-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    flex-basis: 40%;
+}
+
+
+.item-amount {
+    font-size: 12px;
+    color: #7A7A7A;
+    margin-top: 2px;
+}
+.item-price {
+    font-weight: 600;
+    color: #222;
+}
+
+/* Стили для строк (Детали) */
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-size: 13px;
+    color: #4E4E4E;
+    border-bottom: 1px solid #F0F0F0;
+}
+.detail-row:last-of-type {
+    border-bottom: none;
+}
+
+.detail-row span:first-child {
+    color: #222;
+    font-weight: 500;
+}
+
+.detail-value {
+    font-weight: 500;
+    color: #4E4E4E;
+}
+.date-value {
+    color: #4E4E4E;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+
+/* Стиль Итого */
+.total-row {
+    padding-top: 15px;
+    font-size: 18px;
+    color: #902067;
+    border-top: none;
+    margin-top: 0;
+    padding-bottom: 0;
+}
+.total-row span {
+    font-weight: 600;
+}
+.total-value {
+    font-size: 17px;
+    color: #222222;
+    font-weight: 600;
+}

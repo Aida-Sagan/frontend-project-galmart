@@ -15,6 +15,7 @@ import {
     getContactsPageData,
     getQuestionsPageData
 } from '../../api/services/profileService.js';
+import OfflinePurchasesList from './Offline/OfflinePurchasesList.jsx';
 
 
 const EditIcon = () => (
@@ -116,7 +117,6 @@ const ProfilePage = () => {
             const data = await fetcherMap[tabId]();
             setTabContent(data);
         } catch (err) {
-            console.error(err);
             setTabError('Не удалось загрузить данные раздела.');
             setTabContent(null);
         } finally {
@@ -215,6 +215,15 @@ const ProfilePage = () => {
                     </div>
                 );
             case 'offlinePurchases':
+                // ИНТЕГРАЦИЯ НОВОГО КОМПОНЕНТА
+                return (
+                    <OfflinePurchasesList
+                        purchases={tabContent}
+                        isLoading={tabLoading}
+                        error={tabError}
+                    />
+                );
+
             case 'paymentMethods':
             case 'myAddresses':
             case 'checkRegistration':

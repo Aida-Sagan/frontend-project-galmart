@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { editUserInfo } from '../../../api/services/profileService.js';
 import Loader from '../../../components/Loader/Loader.jsx';
 import { useProfile } from '../../../context/ProfileContext.jsx';
@@ -8,14 +8,17 @@ import './styles/EditProfileForm.css';
 const convertDateToInputFormat = (dateString) => {
     if (!dateString) return '';
 
-    const parts = dateString.split('.');
+    const cleanDate = dateString.split('T')[0].trim();
+    const parts = cleanDate.split('.');
 
     if (parts.length === 3) {
-        const [day, month, year] = parts;
+        const day = parts[0];
+        const month = parts[1];
+        const year = parts[2];
+
         return `${year}-${month}-${day}`;
     }
-
-    return dateString;
+    return '';
 };
 
 const convertDateToApiFormat = (dateString) => {
@@ -36,15 +39,21 @@ const EditProfileForm = ({ initialData, onClose }) => {
     const { fetchUserProfile } = useProfile();
     const dateInputRef = useRef(null);
 
-    const formattedBirthday = convertDateToInputFormat(initialData.birthday);
-
     const [formData, setFormData] = useState({
         name: initialData.name || '',
-        surname: initialData.surname || '',
-        birthday: formattedBirthday,
+        surname: initialData.surname || initialData.lastname || '',
+        birthday: convertDateToInputFormat(initialData.birthday),
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+        setFormData({
+            name: initialData.name || '',
+            surname: initialData.surname || initialData.lastname || '',
+            birthday: convertDateToInputFormat(initialData.birthday),
+        });
+    }, [initialData]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -59,11 +68,12 @@ const EditProfileForm = ({ initialData, onClose }) => {
 
         const updateBody = {
             name: formData.name,
-            surname: formData.surname,
+            lastname: formData.surname,
             birthday: apiBirthday,
             phone: initialData.phone,
         };
-
+        console.log("Отправляемые данные (updateBody):", updateBody);
+        console.log("Формат birthday (API):", typeof apiBirthday, apiBirthday);
         try {
             await editUserInfo(updateBody);
             await fetchUserProfile();

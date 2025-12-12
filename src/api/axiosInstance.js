@@ -31,7 +31,6 @@ $api.interceptors.request.use(async (config) => {
     } else {
         cityId = '2'; // Астана и все остальные случаи
     }
-    config.headers['City'] = cityId;
 
     const locale = localStorage.getItem('locale') || 'ru';
     config.headers['Accept-Language'] = locale.toLowerCase();

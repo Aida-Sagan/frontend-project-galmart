@@ -94,21 +94,17 @@ const ProfilePage = () => {
     }), []);
 
 
-    useEffect(() => {
-        if (!isAuthenticated) {
-            navigate('/login');
-            clearProfileState();
-            return;
-        }
-        fetchAllProfileData();
-    }, [isAuthenticated, navigate, fetchAllProfileData, clearProfileState]);
-
-
+    // --- ОПТИМИЗАЦИЯ 1: Логика загрузки контента вкладки ---
     const loadTabContent = useCallback(async (tabId) => {
         if (tabId === 'onlineOrders' || !fetcherMap[tabId]) {
             setTabContent(null);
+            setTabLoading(false); // Убедимся, что загрузка сбрасывается, если это 'onlineOrders'
             return;
         }
+
+        // Пропускаем загрузку, если данные уже есть в tabContent,
+        // но только если это не 'initial load' и нет ошибки.
+        // Здесь мы загружаем всегда, чтобы обеспечить актуальность при смене вкладок.
 
         setTabLoading(true);
         setTabError(null);
@@ -124,11 +120,30 @@ const ProfilePage = () => {
         }
     }, [fetcherMap]);
 
+    // --- ЭФФЕКТ 1: Инициализация и загрузка основных данных ---
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login');
+            clearProfileState();
+            return;
+        }
+        fetchAllProfileData();
+    }, [isAuthenticated, navigate, fetchAllProfileData, clearProfileState]);
+
+
+    // --- ЭФФЕКТ 2: Загрузка контента при смене активной вкладки ---
+    useEffect(() => {
+        // Запускаем загрузку, только если вкладка изменилась, и это не режим редактирования
+        if (activeTab && !isEditMode) {
+            loadTabContent(activeTab);
+        }
+    }, [activeTab, isEditMode, loadTabContent]);
+
 
     const handleMenuClick = (id) => {
+        // Убрали loadTabContent(id) отсюда
         setActiveTab(id);
         setIsEditMode(false);
-        loadTabContent(id);
     };
 
     const handleEditProfileClick = () => {
@@ -138,8 +153,9 @@ const ProfilePage = () => {
 
     const handleCloseEditMode = () => {
         setIsEditMode(false);
-        setActiveTab('onlineOrders');
-        fetchUserProfile();
+        const defaultTab = 'onlineOrders';
+        setActiveTab(defaultTab);
+        fetchUserProfile(); // Обновление данных профиля после сохранения
     };
 
 
@@ -215,7 +231,6 @@ const ProfilePage = () => {
                     </div>
                 );
             case 'offlinePurchases':
-                // ИНТЕГРАЦИЯ НОВОГО КОМПОНЕНТА
                 return (
                     <OfflinePurchasesList
                         purchases={tabContent}

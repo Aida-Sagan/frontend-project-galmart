@@ -177,6 +177,12 @@
     color: #902067;
     font-weight: 500;
 }
+.addresses-list-profile {
+    margin-top: 15px!important;
+    background-color: #F5F5F5;
+    border-radius: 24px;
+    padding: 10px 20px;
+}
 
 
 /* МОДАЛЬНОЕ ОКНО ДЛЯ УДАЛЕНИЯ АДРЕСА */

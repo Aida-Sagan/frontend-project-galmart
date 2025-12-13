@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Loader from '../../../components/Loader/Loader.jsx';
-import { deleteAddress } from '../../../api/services/addressService.js'; // Предполагаемый путь к сервису
+import { deleteAddress } from '../../../api/services/addressService.js';
 import './style/myAddresses.css';
 
 const CloseIcon = () => (
@@ -63,7 +63,7 @@ const MyAddresses = ({ addresses: groupedAddresses, isLoading, error, onAddressL
     const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
-        if (groupedAddresses && groupedAddresses.length > 0 && selectedAddressId === null) {
+        if (Array.isArray(groupedAddresses) && groupedAddresses.length > 0 && selectedAddressId === null) {
             for (const group of groupedAddresses) {
                 const currentAddress = group.addresses.find(a => a.is_current);
                 if (currentAddress) {
@@ -95,7 +95,6 @@ const MyAddresses = ({ addresses: groupedAddresses, isLoading, error, onAddressL
             const success = await deleteAddress(addressToDelete.id);
 
             if (success && onAddressListChange) {
-                // Если удаление успешно, вызываем функцию для обновления списка адресов в родительском компоненте
                 await onAddressListChange();
 
                 if (selectedAddressId === addressToDelete.id) {
@@ -128,7 +127,10 @@ const MyAddresses = ({ addresses: groupedAddresses, isLoading, error, onAddressL
         return <p className="error-message">Ошибка при загрузке данных: {error}</p>;
     }
 
-    if (!groupedAddresses || groupedAddresses.length === 0 || groupedAddresses.every(g => g.addresses.length === 0)) {
+    // ИСПРАВЛЕНИЕ: Добавление проверки Array.isArray
+    const isAddressesEmpty = !Array.isArray(groupedAddresses) || groupedAddresses.length === 0 || groupedAddresses.every(g => g.addresses && g.addresses.length === 0);
+
+    if (isAddressesEmpty) {
         return (
             <div className="my-addresses-section no-data">
                 <h2 className="content-title">Мои адреса</h2>
@@ -145,7 +147,6 @@ const MyAddresses = ({ addresses: groupedAddresses, isLoading, error, onAddressL
 
         const { city, address, building, apartment, floor } = addressToDelete;
 
-        // Формирование строки адреса для модального окна
         let displayAddressPart = `${address}, ${building}`;
         if (apartment) {
             displayAddressPart += `, кв ${apartment}`;
@@ -182,7 +183,7 @@ const MyAddresses = ({ addresses: groupedAddresses, isLoading, error, onAddressL
         <div className="my-addresses-section">
             <h2 className="content-title">Мои адреса</h2>
 
-            <div className="addresses-list">
+            <div className="addresses-list-profile">
                 {groupedAddresses.map((group) => (
                     <div key={group.city} className="city-group">
                         <h3 className="city-title">{group.city}</h3>

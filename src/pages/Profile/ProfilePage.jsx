@@ -17,6 +17,7 @@ import {
 } from '../../api/services/profileService.js';
 import OfflinePurchasesList from './Offline/OfflinePurchasesList.jsx';
 import MyAddresses from './MyAdresses/MyAddresses.jsx';
+import CheckRegistrationForm from './CheckRegistration/CheckRegistrationForm.jsx';
 
 
 const EditIcon = () => (
@@ -26,9 +27,10 @@ const EditIcon = () => (
 
 );
 
-const OrderStatusIndicator = ({ status }) => {
+const OrderStatusIndicator = () => {
     let color = '#222';
     let label = 'В процессе';
+    const status = arguments[0].status; // Получение статуса из аргументов
 
     if (status === 'Завершен') {
         color = '#10B981';
@@ -65,7 +67,10 @@ const ProfilePage = () => {
         fetchUserProfile
     } = useProfile();
 
-    const [activeTab, setActiveTab] = useState('onlineOrders');
+    // --- ИСПРАВЛЕНИЕ 1: Инициализация activeTab из localStorage ---
+    const initialTab = localStorage.getItem('profileActiveTab') || 'onlineOrders';
+    const [activeTab, setActiveTab] = useState(initialTab);
+
     const [isEditMode, setIsEditMode] = useState(false);
     const [tabContent, setTabContent] = useState(null);
     const [tabLoading, setTabLoading] = useState(false);
@@ -132,6 +137,13 @@ const ProfilePage = () => {
         }
     }, [activeTab, isEditMode, loadTabContent]);
 
+    // --- ИСПРАВЛЕНИЕ 2: Сохранение activeTab в localStorage при изменении ---
+    useEffect(() => {
+        if (activeTab) {
+            localStorage.setItem('profileActiveTab', activeTab);
+        }
+    }, [activeTab]);
+
 
     const handleMenuClick = (id) => {
         setActiveTab(id);
@@ -145,7 +157,7 @@ const ProfilePage = () => {
 
     const handleCloseEditMode = () => {
         setIsEditMode(false);
-        const defaultTab = 'onlineOrders';
+        const defaultTab = localStorage.getItem('profileActiveTab') || 'onlineOrders';
         setActiveTab(defaultTab);
         fetchUserProfile();
     };
@@ -188,12 +200,14 @@ const ProfilePage = () => {
                             {hasOrders ? 'История заказов' : ' '}
                         </h2>
                         {!hasOrders && (
-                            <p className="no-orders-message">
+                            <div className="no-orders-message"> {/* ИСПРАВЛЕНИЕ 3: Заменил <p> на <div> */}
                                 <h2 className="content-title">
                                     Пока у вас нет заказов
                                 </h2>
-                                Совершайте покупки в приложении и на сайте и здесь появится история ваших заказов
-                            </p>
+                                <p> {/* Используем <p> только для текста */}
+                                    Совершайте покупки в приложении и на сайте и здесь появится история ваших заказов
+                                </p>
+                            </div>
                         )}
 
                         {hasOrders && (
@@ -241,8 +255,16 @@ const ProfilePage = () => {
                     />
                 );
 
-            case 'paymentMethods':
             case 'checkRegistration':
+                return (
+                    <CheckRegistrationForm
+                        checkRegistrationData={tabContent}
+                        isLoading={tabLoading}
+                        error={tabError}
+                    />
+                );
+
+            case 'paymentMethods':
             case 'promocodes':
             case 'contacts':
             case 'questions':

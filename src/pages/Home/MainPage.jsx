@@ -9,7 +9,6 @@ import { fetchHomePageData } from '../../api/services/homepageService';
 import Loader from '../../components/Loader/Loader.jsx';
 import ScrollToTopButton from '../../components/ScrollToTopButton/ScrollToTopButton';
 import { useLocation } from '../../context/LocationContext.jsx';
-import LocationModal from '../../components/AddressModal/LocationModal.jsx';
 import './styles/MainPage.css';
 
 export default function MainPage() {
@@ -18,11 +17,7 @@ export default function MainPage() {
 
     const {
         city,
-        selectCity,
         isLoading: isLocationLoading,
-        isLocationModalOpen,
-        openLocationModal,
-        closeLocationModal
     } = useLocation();
 
     useEffect(() => {
@@ -46,15 +41,6 @@ export default function MainPage() {
 
     }, [city, isLocationLoading]);
 
-    useEffect(() => {
-        if (!isLocationLoading && !city) {
-            openLocationModal();
-        }
-    }, [city, isLocationLoading, openLocationModal]);
-
-    const handleCitySelect = (selectedCity) => {
-        selectCity(selectedCity);
-    };
 
     if (loading || isLocationLoading) {
         return <Loader />;
@@ -74,12 +60,6 @@ export default function MainPage() {
 
     return (
         <Container>
-            {isLocationModalOpen && (
-                <LocationModal
-                    onClose={closeLocationModal}
-                    onCitySelect={handleCitySelect}
-                />
-            )}
 
             <div className="home-container">
                 {pageData.banners && <MainBanner banners={pageData.banners} />}

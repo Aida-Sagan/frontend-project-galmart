@@ -1,0 +1,292 @@
+/* Основной контейнер */
+.my-addresses-section {
+    padding: 0 10px;
+}
+
+/* Заголовок города */
+.city-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 120%;
+    color: #222222;
+    margin-bottom: 10px;
+}
+
+/* Элемент адреса */
+.address-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 15px;
+    margin-bottom: 8px;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.address-item:hover {
+    background-color: #eee;
+}
+
+.address-info {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+/* Радио-кнопка */
+.address-radio {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #7A7A7A;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.address-radio.selected {
+    border-color: #902067;
+}
+
+.address-radio-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #902067;
+}
+
+/* Текст адреса */
+.address-text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 120%;
+    color: #7A7A7A;
+    word-break: break-word;
+}
+
+/* Стили для выбранного адреса */
+.address-item.selected .address-text {
+    color: #222222;
+}
+
+/* Кнопки действий (редактировать, удалить) */
+.address-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: 15px;
+    flex-shrink: 0;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+}
+
+/* Кнопка "Добавить новый адрес" */
+.add-address-btn {
+    width: 100%;
+    padding: 16px 20px;
+    margin-top: 30px;
+    border: none;
+    border-radius: 64px;
+    background-color: #902067;
+    cursor: pointer;
+
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 120%;
+    color: #FBFBFB;
+    transition: background-color 0.2s;
+}
+
+.add-address-btn:hover {
+    background-color: #7d1c58;
+}
+
+/* --- Модальное окно удаления --- */
+
+/* Контейнер модального окна */
+.address-delete-modal {
+    padding: 30px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 120%;
+    color: #222222;
+    margin-bottom: 15px;
+}
+
+.modal-text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 120%;
+    color: #7A7A7A;
+    margin-bottom: 30px;
+    max-width: 80%;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    padding: 0 10px;
+}
+
+.modal-actions button {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 120%;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background-color: #902067;
+    border: none;
+    color: #FBFBFB;
+}
+
+.btn-confirm {
+    background: none;
+    border: 2px solid #902067;
+    color: #902067;
+    font-weight: 500;
+}
+
+
+/* МОДАЛЬНОЕ ОКНО ДЛЯ УДАЛЕНИЯ АДРЕСА */
+.delete-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.delete-modal-content {
+    background: white;
+    border-radius: 20px;
+    position: relative;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Кнопка закрытия модалки (крестик) */
+.modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+/* Контейнер модального окна */
+.address-delete-modal {
+    padding-top: 50px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 120%;
+    color: #222222;
+    margin-bottom: 25px;
+}
+
+.modal-text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 120%;
+    color: #7A7A7A;
+    margin-bottom: 30px;
+    max-width: 100%;
+    text-align: center;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    padding: 0;
+}
+
+.modal-actions button {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 64px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 120%;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-cancel {
+    background-color: #902067;
+    border: none;
+    color: #FBFBFB;
+    font-weight: 600;
+}
+
+.btn-cancel:hover {
+    background-color: #7d1c58;
+}
+
+.btn-confirm {
+    background: none;
+    border: 2px solid #902067;
+    color: #902067;
+    font-weight: 600;
+}
+
+.btn-confirm:hover {
+    background-color: #f0f0f0;
+}

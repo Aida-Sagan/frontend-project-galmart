@@ -33,6 +33,9 @@ import { LocationProvider } from './context/LocationContext';
 import { CartProvider } from './context/CartContext';
 import { ProfileProvider } from './context/ProfileContext';
 
+import GlobalModals from '../src/GlobalModals.jsx';
+
+
 function AppContent() {
     const location = useLocation();
 
@@ -41,6 +44,8 @@ function AppContent() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <GlobalModals />
+
             {!shouldHideHeader && <Header />}
             <main style={{ flex: 1 }}>
                 <Routes>

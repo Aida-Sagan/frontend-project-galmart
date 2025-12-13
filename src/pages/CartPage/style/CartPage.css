@@ -347,7 +347,7 @@ input:checked + .slider:before {
     padding: 0 40px;
     background-color: #902067;
     color: #fff;
-    border-radius: 12px;
+    border-radius: 64px;
     text-decoration: none;
     font-weight: 600;
     font-size: 16px;

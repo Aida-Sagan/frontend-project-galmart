@@ -18,6 +18,7 @@ import {
 import OfflinePurchasesList from './Offline/OfflinePurchasesList.jsx';
 import MyAddresses from './MyAdresses/MyAddresses.jsx';
 import CheckRegistrationForm from './CheckRegistration/CheckRegistrationForm.jsx';
+import PromocodesList from './Promocodes/PromocodesList.jsx';
 
 
 const EditIcon = () => (
@@ -27,10 +28,10 @@ const EditIcon = () => (
 
 );
 
-const OrderStatusIndicator = () => {
+const OrderStatusIndicator = ([first]) => {
     let color = '#222';
     let label = 'В процессе';
-    const status = arguments[0].status; // Получение статуса из аргументов
+    const status = first.status;
 
     if (status === 'Завершен') {
         color = '#10B981';
@@ -266,6 +267,13 @@ const ProfilePage = () => {
 
             case 'paymentMethods':
             case 'promocodes':
+                return (
+                    <PromocodesList
+                        promocodesData={tabContent}
+                        isLoading={tabLoading}
+                        error={tabError}
+                    />
+                );
             case 'contacts':
             case 'questions':
                 return (

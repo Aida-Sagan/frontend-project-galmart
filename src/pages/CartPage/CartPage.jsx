@@ -138,10 +138,9 @@ const CartContent = () => {
     const currency = cartData?.currency || '₸';
 
 
-    // Новые переменные для сумм
     const discount = cartData?.applied_promocode?.amount || 0;
     const promoCodeName = cartData?.applied_promocode?.code;
-    const bonusesSpent = cartData?.bonuses?.spent || 0; // Предполагаем, что бэкенд возвращает spent
+    const bonusesSpent = cartData?.bonuses?.spent || 0;
     const oldTotal = cartData?.old_total || 0;
     const finalTotal = cartData?.total || (itemsPrice + deliveryCost - discount - bonusesSpent);
 

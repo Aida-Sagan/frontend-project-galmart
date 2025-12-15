@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ReactComponent as HeartIcon } from '../../assets/svg/like.svg';
 import { ReactComponent as HeartLikedIcon } from '../../assets/svg/liked.svg';
@@ -35,9 +35,10 @@ const ProductCard = ({ product }) => {
     const isFavorite = favoriteIds.has(id);
 
     const cartItem = cartItems.find(item => item.id === id);
-    const quantity = cartItem ? cartItem.quantity : 0;
-    const addedToCart = quantity > 0;
 
+    const quantity = cartItem ? Number(cartItem.count) : 0;
+
+    const addedToCart = quantity > 0;
 
     const isGalmart = flags.includes('galmart_production');
     const isEco = flags.includes('eco');
@@ -119,7 +120,6 @@ const ProductCard = ({ product }) => {
 
     const imageUrl = photos[0];
     const productUrl = `/product/${id}`;
-
 
     return (
         <Link to={productUrl} className="product-card">

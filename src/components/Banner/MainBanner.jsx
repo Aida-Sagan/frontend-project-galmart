@@ -70,7 +70,7 @@ const MainBanner = () => {
         return null;
     }
     const currentBanner = banners[current];
-    const imageSrc = currentBanner.images?.desktop || currentBanner.image;
+    const imageSrc = currentBanner?.images || currentBanner.image;
 
     return (
         <div className="main-banner" onClick={handleClick}>

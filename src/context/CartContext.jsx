@@ -29,6 +29,7 @@ export const CartProvider = ({ children }) => {
         setIsLoading(true);
         try {
             const response = await getCartData();
+            console.log('SERVER CART:', response.data);
 
 
             const dataToSave = response.data || response;
@@ -83,7 +84,6 @@ export const CartProvider = ({ children }) => {
 
         try {
             await updateCartApi(newCount, itemId);
-            await fetchCart();
         } catch (error) {
             setCartData(previousCartData);
             console.error("Ошибка API:", error);

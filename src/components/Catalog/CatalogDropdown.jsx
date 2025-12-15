@@ -170,7 +170,8 @@ const CatalogDropdown = () => {
                         {activeCategory.sections.length > 0 ? (
                             activeCategory.sections.map((section) => {
                                 const subCategoriesData = subCategoryCache[section.id];
-                                const subCategoriesList = subCategoriesData?.data || [];
+                                // ИСПРАВЛЕНО: Теперь берем массив 'categories' из объекта данных секции
+                                const subCategoriesList = subCategoriesData?.categories || [];
 
                                 return (
                                     <div key={section.id} className="catalog-column">

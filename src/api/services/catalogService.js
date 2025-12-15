@@ -13,23 +13,25 @@ export const fetchCatalogData = async () => {
 
 const PAGE_SIZE = 10;
 
-export const fetchSectionDetails = async (sectionId, { page = 1, ordering = 'popular', categories = '' }) => {
+export const fetchSectionDetails = async (sectionId, params = {}) => {
+    const { page = 1, ordering = 'popular', categories = '' } = params;
+
     try {
         const response = await $api.get(API_URLS.SECTION_DETAILS(sectionId), {
             params: {
                 page: page,
                 limit: PAGE_SIZE,
                 ordering: ordering,
-                categories: categories || undefined // undefined параметры axios не отправляет
+                categories: categories || undefined
             }
         });
+        console.log(response);
         return response.data.data;
     } catch (error) {
         console.error(`Не удалось получить детали для секции ${sectionId}:`, error);
         return null;
     }
 };
-
 export const fetchProductDetails = async (productId) => {
     try {
         const response = await $api.get(API_URLS.PRODUCT_DETAILS(productId));

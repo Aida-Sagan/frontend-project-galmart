@@ -2,7 +2,7 @@ import $api from '../axiosInstance';
 import { API_URLS } from '../api';
 
 /**
- * Получение данных пользователя (Соответствует getUserData из Dart)
+ * Получение данных пользователя (Соответствует getUserData)
  * Использует: API_URLS.PROFILE
  */
 export const getUserData = async () => {
@@ -16,7 +16,7 @@ export const getUserData = async () => {
 };
 
 /**
- * Получение списка товаров категории (getTermsData из Dart)
+ * Получение списка товаров категории (getTermsData)
  * Использует: /api/v2/addits/legal/ (строка)
  */
 export const getTermsData = async () => {
@@ -30,7 +30,7 @@ export const getTermsData = async () => {
 };
 
 /**
- * Получение списка товаров категории (getOnlineOrdersData из Dart)
+ * Получение списка товаров категории (getOnlineOrdersData)
  * Использует: '/api/v2/orders/order/history/' (строка, так как нет в API_URLS)
  */
 export const getOnlineOrdersData = async () => {
@@ -44,7 +44,7 @@ export const getOnlineOrdersData = async () => {
 };
 
 /**
- * Получение списка товаров категории (getOfflineOrdersData из Dart)
+ * Получение списка товаров категории (getOfflineOrdersData)
  * Использует: /api/v2/bonus/transaction/1 (строка)
  */
 export const getOfflineOrdersData = async () => {
@@ -58,7 +58,7 @@ export const getOfflineOrdersData = async () => {
 };
 
 /**
- * Получение списка товаров категории (getAllActions из Dart)
+ * Получение списка товаров категории (getAllActions)
  * Использует: /getAllActions (строка)
  */
 export const getAllActions = async () => {
@@ -72,7 +72,7 @@ export const getAllActions = async () => {
 };
 
 /**
- * Получение списка товаров категории (getAllPromocodes из Dart)
+ * Получение списка товаров категории (getAllPromocodes)
  * Использует: /api/v2/promocode_my/favorites/ (строка)
  */
 export const getAllPromocodes = async () => {
@@ -86,7 +86,7 @@ export const getAllPromocodes = async () => {
 };
 
 /**
- * Получение списка товаров категории (checkNewPromocode из Dart)
+ * Получение списка товаров категории (checkNewPromocode )
  * Использует: /api/v2/promocode_my/add_favorite/ (строка, похож на API_URLS.APPLY_PROMOCODE)
  */
 export const checkNewPromocode = async (promocode) => {
@@ -102,7 +102,7 @@ export const checkNewPromocode = async (promocode) => {
 };
 
 /**
- * Получение списка товаров категории (getCheckRegisterPageData из Dart)
+ * Получение списка товаров категории (getCheckRegisterPageData )
  * Использует: /api/v2/actions/registration/ (строка)
  */
 export const getCheckRegisterPageData = async () => {

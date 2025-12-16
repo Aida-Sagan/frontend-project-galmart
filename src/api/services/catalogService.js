@@ -25,7 +25,6 @@ export const fetchSectionDetails = async (sectionId, params = {}) => {
                 categories: categories || undefined
             }
         });
-        console.log(response);
         return response.data.data;
     } catch (error) {
         console.error(`Не удалось получить детали для секции ${sectionId}:`, error);

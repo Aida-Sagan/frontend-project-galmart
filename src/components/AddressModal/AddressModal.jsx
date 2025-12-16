@@ -1,3 +1,4 @@
+// src/components/AddressModal/AddressModal.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import { X } from "lucide-react";
 import YandexMap from "./YandexMap";
@@ -6,6 +7,16 @@ import { useLocation } from "../../context/LocationContext";
 import { useAuth } from "../../context/AuthContext";
 import { getCoordsByString, getCityPolygons, getAddressByCoords } from "../../api/services/addressService";
 
+// --- Функция-заглушка для уведомлений ---
+// ЗАМЕНИТЕ ЭТУ ФУНКЦИЮ НА ВАШ РЕАЛЬНЫЙ КОМПОНЕНТ УВЕДОМЛЕНИЙ (Toast/Snackbar/Flushbar)
+const showNotification = (message) => {
+    // Временно используем console.warn для отслеживания, пока не будет реализован UI-компонент
+    console.warn("Уведомление для пользователя:", message);
+    // alert(message); // Удаляем alert
+};
+// ------------------------------------------
+
+// --- Вспомогательный хук для Debounce ---
 function useDebounce(value, delay) {
     const [debouncedValue, setDebouncedValue] = useState(value);
     useEffect(() => {
@@ -19,6 +30,7 @@ function useDebounce(value, delay) {
     return debouncedValue;
 }
 
+// --- Логика проверки нахождения точки в полигоне (Geo-Fencing) ---
 const isPointInAnyPolygon = (point, polygons) => {
     const isPointInPolygon = (p, poly) => {
         const x = p[1], y = p[0];
@@ -50,6 +62,7 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
         { id: 1, name: 'Алматы' },
     ];
 
+    // --- State: Аналоги TextEditingController и StateNotifier в Dart-коде ---
     const [addressString, setAddressString] = useState('');
     const [street, setStreet] = useState('');
     const [building, setBuilding] = useState('');
@@ -66,9 +79,10 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
 
     const debouncedAddressString = useDebounce(addressString, 500);
 
+    // 1. Загрузка полигонов (зон доставки)
     useEffect(() => {
         const fetchPolygons = async () => {
-            if (city?.id && serviceToken) {
+            if (city?.id) {
                 const polygonsData = await getCityPolygons(serviceToken);
                 setDeliveryPolygons(polygonsData);
             } else {
@@ -78,15 +92,25 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
         fetchPolygons();
     }, [city, serviceToken]);
 
+    // 2. Поиск координат по строке адреса (с Debounce, аналог getCoordinatesByString)
     useEffect(() => {
         if (isManualInput && serviceToken && debouncedAddressString && debouncedAddressString.length > 3 && city?.id) {
+
+            // setIsLoading(true); // Если хотите показать загрузку при поиске
+
             getCoordsByString(debouncedAddressString, city.id, serviceToken).then(result => {
                 if (result) {
                     setAddressString(result.title);
                     setStreet(result.address);
                     setBuilding(result.building);
                     setCoords([result.latitude, result.longitude]);
+                } else {
+                    setCoords(null);
+                    setStreet('');
+                    setBuilding('');
+                    // showNotification("Не удалось найти адрес по введенной строке."); // Уведомление об ошибке поиска
                 }
+                // setIsLoading(false);
             });
         }
     }, [debouncedAddressString, city, serviceToken, isManualInput]);
@@ -102,17 +126,18 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
 
     const handleSubmit = async () => {
         if (!addressString || !coords) {
-            alert("Пожалуйста, выберите точку на карте или введите адрес (дождитесь загрузки координат).");
+            showNotification("Пожалуйста, выберите точку на карте или введите адрес (дождитесь загрузки координат).");
             return;
         }
 
+        // Повторная проверка нахождения в полигоне перед сохранением
         const pointInPolygonCheck = isPointInAnyPolygon(coords, deliveryPolygons);
         if (deliveryPolygons.length > 0 && !pointInPolygonCheck) {
-            alert("Извините, выбранный адрес находится вне зоны доставки.");
+            showNotification("Извините, выбранный адрес находится вне зоны доставки.");
             return;
         }
 
-        // Подготовка данных
+        // ... (остальная логика сохранения адреса, соответствует Dart-коду)
         const finalBuilding = building;
         const finalApartment = isPrivateHouse ? "" : apartment;
         const finalEntrance = isPrivateHouse ? "" : entrance;
@@ -148,36 +173,57 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
 
         setIsLoading(true);
         try {
-            await onSave(addressData);
+            await onSave(addressData, serviceToken);
+            onClose();
         } catch (error) {
             console.error(error);
-            alert("Ошибка при сохранении адреса");
+            showNotification("Ошибка при сохранении адреса");
         } finally {
             setIsLoading(false);
         }
     };
 
+    // 3. Обработка выбора точки на карте (аналог searchAddressByCoordinated)
     const handleMapSelect = useCallback(async ({ coords: mapCoords }) => {
         setIsManualInput(false);
+        const [latitude, longitude] = mapCoords;
 
         if (!city?.id) {
-            alert("Пожалуйста, сначала выберите город.");
+            showNotification("Пожалуйста, сначала выберите город.");
             return;
         }
 
-        const result = await getAddressByCoords(mapCoords[0], mapCoords[1], serviceToken);
+        // 1. Проверка нахождения в полигоне (Geo-Fencing)
+        if (!isPointInAnyPolygon(mapCoords, deliveryPolygons)) {
+            showNotification("Извините, выбранный адрес находится вне зоны доставки.");
+            setAddressString('');
+            setCoords(null);
+            return;
+        }
+
+        // 2. Если в полигоне, ищем адрес по координатам
+        setIsLoading(true);
+
+        const result = await getAddressByCoords(latitude, longitude, serviceToken);
+
+        setIsLoading(false);
+
         if (result) {
             setAddressString(result.title);
             setStreet(result.address);
             setBuilding(result.building);
             setCoords([result.latitude, result.longitude]);
+        } else {
+            setAddressString('');
+            setCoords(null);
+            showNotification("Не удалось определить адрес по координатам.");
         }
-    }, [city, serviceToken]);
+    }, [city, serviceToken, deliveryPolygons]);
+
 
     const handleInputChange = (e) => {
         setAddressString(e.target.value);
         setIsManualInput(true);
-
     };
 
     if (!isOpen) return null;
@@ -190,6 +236,10 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
                         city={city}
                         onAddressSelect={handleMapSelect}
                         serviceToken={serviceToken}
+                        // Передаем полигоны для отрисовки
+                        deliveryPolygons={deliveryPolygons}
+                        // Передаем текущие координаты, чтобы карта могла центрироваться при поиске по строке
+                        currentCoords={coords}
                     />
                 </div>
                 <div className="modal-form">
@@ -263,7 +313,7 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
                             <textarea id="comment" placeholder=" " value={comment} onChange={(e) => setComment(e.target.value)} className="form-input" rows={3}/>
                             <label htmlFor="comment">Комментарий для курьера</label>
                         </div>
-                        <button onClick={handleSubmit} className="btn-submit" disabled={isLoading}>
+                        <button onClick={handleSubmit} className="btn-submit" disabled={isLoading || !coords}>
                             {isLoading ? 'Загрузка...' : (isRegistrationMode ? 'Выбрать адрес' : 'Сохранить адрес')}
                         </button>
                     </div>

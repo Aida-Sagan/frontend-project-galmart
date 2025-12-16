@@ -25,12 +25,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .modal-header h2 {
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 500;
     margin: 0;
     color: #222;
 }
@@ -76,7 +76,7 @@
 .radio-indicator {
     width: 20px;
     height: 20px;
-    border: 2px solid #ccc;
+    border: 1px solid #902067;
     border-radius: 50%;
     display: flex;
     align-items: center;

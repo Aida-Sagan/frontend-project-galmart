@@ -14,48 +14,59 @@ export const LocationProvider = ({ children }) => {
     const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
 
     useEffect(() => {
+        let initialCity = null;
         const savedCityJSON = localStorage.getItem('userCity');
+
         if (savedCityJSON) {
             try {
-                setCity(JSON.parse(savedCityJSON));
+                initialCity = JSON.parse(savedCityJSON);
             } catch (e) {
-                console.error("Ошибка чтения города", e);
+                console.error("Ошибка чтения города:", e);
                 localStorage.removeItem('userCity');
             }
         }
-        setIsLoading(false);
+        setCity(initialCity);
     }, []);
 
-    const loadUserAddresses = useCallback(() => {
-        if (!isAuthenticated) {
+    const loadUserAddresses = useCallback(async () => {
+        if (!isAuthenticated || !city) {
             setUserAddresses([]);
             setSelectedAddress(null);
-            return Promise.resolve();
+            return;
         }
 
         setIsLoading(true);
-        return fetchAddresses()
-            .then(addresses => {
-                const currentCityName = city?.name || '';
+        try {
+            const addresses = await fetchAddresses();
+            const currentCityName = city.name || '';
 
-                const filteredAddresses = addresses.filter(addr => {
-                    if (!addr.city) return false;
-                    return addr.city.toLowerCase() === currentCityName.toLowerCase();
-                });
+            const filteredAddresses = addresses.filter(addr => {
+                if (!addr.city) return false;
+                return addr.city.toLowerCase() === currentCityName.toLowerCase();
+            });
 
-                setUserAddresses(filteredAddresses);
+            setUserAddresses(filteredAddresses);
 
-                if (filteredAddresses.length > 0 && !selectedAddress) {
-                    setSelectedAddress(filteredAddresses[0]);
-                }
-            })
-            .catch(err => console.error("Ошибка загрузки адресов:", err))
-            .finally(() => setIsLoading(false));
+            if (filteredAddresses.length > 0 && !selectedAddress) {
+                setSelectedAddress(filteredAddresses[0]);
+            }
+        } catch (err) {
+            console.error("Ошибка загрузки адресов:", err);
+        } finally {
+            setIsLoading(false);
+        }
     }, [isAuthenticated, city, selectedAddress]);
 
     useEffect(() => {
-        loadUserAddresses();
-    }, [loadUserAddresses]);
+        if (city !== undefined) {
+            if (city && isAuthenticated) {
+                loadUserAddresses();
+            } else {
+                setIsLoading(false);
+            }
+        }
+    }, [city, isAuthenticated, loadUserAddresses]);
+
 
     const selectCity = (newCityObject) => {
         setCity(newCityObject);
@@ -68,12 +79,10 @@ export const LocationProvider = ({ children }) => {
 
     const addNewAddress = async (addressData) => {
         if (!isAuthenticated) return;
-        // eslint-disable-next-line no-useless-catch
         try {
             const newAddress = await saveAddressApi(addressData);
 
             await loadUserAddresses();
-
 
             const cityName = newAddress.city.name || newAddress.city;
             const formattedAddress = { ...newAddress, city: cityName };

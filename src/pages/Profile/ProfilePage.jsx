@@ -12,8 +12,6 @@ import {
     getUserAddresses,
     getCheckRegisterPageData,
     getAllPromocodes,
-    getContactsPageData,
-    getQuestionsPageData
 } from '../../api/services/profileService.js';
 import OfflinePurchasesList from './Offline/OfflinePurchasesList.jsx';
 import MyAddresses from './MyAdresses/MyAddresses.jsx';
@@ -28,10 +26,9 @@ const EditIcon = () => (
 
 );
 
-const OrderStatusIndicator = ([first]) => {
+const OrderStatusIndicator = ({status}) => {
     let color = '#222';
     let label = 'В процессе';
-    const status = first.status;
 
     if (status === 'Завершен') {
         color = '#10B981';
@@ -54,6 +51,159 @@ const OrderStatusIndicator = ([first]) => {
     );
 };
 
+const notificationData = {
+    orders: [
+        { id: 1, date: '19.02.2026', title: 'Заказ №01100018957 доставляется', subtitle: 'Ваш заказ доставляется', isNew: false },
+        { id: 2, date: '19.02.2026', title: 'Заказ №01100018957 собран', subtitle: 'Ваш заказ собран, скоро передадим курьеру', isNew: true },
+        { id: 3, date: '19.02.2026', title: 'Заказ №01100018957 на сборке', subtitle: 'Собираем ваш заказ', isNew: true },
+        { id: 4, date: '19.02.2026', title: 'Заказ №01100018957 оформлен', subtitle: 'Скоро передадим на сборку', isNew: true },
+    ],
+    bonuses: [
+        { id: 5, date: '19.02.2026', title: 'Начислены бонусы за заказ', subtitle: 'Спасибо за заказ! Вам начислено 320 ₸ бонусов', isNew: false },
+        { id: 6, date: '19.02.2026', title: 'Начислены бонусы за отзыв', subtitle: 'Спасибо за отзыв! Вам начислено 200 ₸ бонусов', isNew: false },
+        { id: 7, date: '19.02.2026', title: 'Начислены бонусы за покупку', subtitle: 'Спасибо за покупку! Вам начислено 1 200 ₸ бонусов', isNew: false },
+        { id: 8, date: '19.02.2026', title: 'Возвращены бонусы', subtitle: '1 200 ₸ возвращены на ваш баланс, после возврата заказа №123456789', isNew: false },
+    ],
+    news: [
+        { id: 9, date: '19.02.2026', title: 'Миллионы в корзине', subtitle: 'Покупайте 2 любые продукции Gillette и Venus и выигрывайте призы!', isNew: false },
+        { id: 10, date: '19.02.2026', title: 'Миллионы в корзине', subtitle: 'Акция доступна до 28.12.2024', isNew: false },
+    ]
+};
+
+const NotificationContent = ({ initialTab, menuItems }) => {
+    const [activeSubTab, setActiveSubTab] = useState(initialTab);
+    const [unreadCount, setUnreadCount] = useState(12);
+
+    useEffect(() => {
+    }, []);
+
+    const subTabs = useMemo(() => [
+        { id: 'orders', title: 'Заказы', data: notificationData.orders, hasUnread: true },
+        { id: 'bonuses', title: 'Бонусы', data: notificationData.bonuses, hasUnread: false },
+        { id: 'news', title: 'Новости', data: notificationData.news, count: 12, hasUnread: true },
+    ], []);
+
+    const currentData = subTabs.find(tab => tab.id === activeSubTab)?.data || [];
+
+    return (
+        <div className="notifications-page">
+            <h1 className="content-title">Уведомления</h1>
+
+            <div className="notification-subtabs">
+                {subTabs.map(tab => (
+                    <div
+                        key={tab.id}
+                        className={`notification-chip ${activeSubTab === tab.id ? 'active' : ''}`}
+                        onClick={() => setActiveSubTab(tab.id)}
+                    >
+                        <span>{tab.title}</span>
+                        {tab.id === 'news' && (
+                            <span className="chip-badge">{tab.count}</span>
+                        )}
+                    </div>
+                ))}
+            </div>
+
+            <div className="notification-list">
+                {currentData.length > 0 ? (
+                    currentData.map(item => (
+                        <div
+                            key={item.id}
+                            className={`notification-item ${item.isNew ? 'is-new' : ''}`}
+                        >
+                            <div className="item-text">
+                                <span className="item-title">{item.title}</span>
+                                <p className="item-subtitle">{item.subtitle}</p>
+                                <span className="item-date">{item.date}</span>
+                            </div>
+                            <span className="item-arrow">&gt;</span>
+                        </div>
+                    ))
+                ) : (
+                    activeSubTab === 'bonuses' ? (
+                        <div className="no-bonuses-message">
+                            <h2 className="content-title">Пока у вас нет бонусов</h2>
+                            <p>Чтобы получать бонусы, совершайте покупки в интернет-магазине и в супермаркетах galmart</p>
+                        </div>
+                    ) : (
+                        <p className="no-data-message">Пока нет уведомлений в этом разделе.</p>
+                    )
+                )}
+            </div>
+
+            <style>{`
+                .notification-subtabs {
+                    display: flex;
+                    gap: 10px;
+                    margin-bottom: 20px;
+                }
+                .notification-chip {
+                    padding: 8px 15px;
+                    border-radius: 20px;
+                    cursor: pointer;
+                    background-color: #f0f0f0;
+                    color: #4E4E4E;
+                    font-weight: 500;
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    transition: background-color 0.2s;
+                }
+                .notification-chip.active {
+                    background-color: #902067;
+                    color: #fff;
+                }
+                .chip-badge {
+                    background-color: #F59E0B;
+                    color: white;
+                    padding: 2px 7px;
+                    border-radius: 50%;
+                    font-size: 12px;
+                    font-weight: bold;
+                }
+                .notification-item {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 15px;
+                    margin-bottom: 10px;
+                    border-radius: 8px;
+                    background-color: #fff;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                    cursor: pointer;
+                    transition: background-color 0.3s;
+                }
+                .notification-item.is-new {
+                    background-color: #F5F5F5;
+                    font-weight: 500;
+                }
+                .item-text {
+                    display: flex;
+                    flex-direction: column;
+                }
+                .item-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #222;
+                }
+                .item-subtitle, .item-date {
+                    font-size: 14px;
+                    color: #666;
+                }
+                .item-date {
+                    font-size: 12px;
+                    margin-top: 5px;
+                }
+                .item-arrow {
+                    font-size: 20px;
+                    color: #902067;
+                }
+            `}</style>
+        </div>
+    );
+};
+
+
 const ProfilePage = () => {
     const { isAuthenticated, logout } = useAuth();
     const navigate = useNavigate();
@@ -68,9 +218,9 @@ const ProfilePage = () => {
         fetchUserProfile
     } = useProfile();
 
-    // --- ИСПРАВЛЕНИЕ 1: Инициализация activeTab из localStorage ---
     const initialTab = localStorage.getItem('profileActiveTab') || 'onlineOrders';
     const [activeTab, setActiveTab] = useState(initialTab);
+    const [notificationCount, setNotificationCount] = useState(12);
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [tabContent, setTabContent] = useState(null);
@@ -85,10 +235,9 @@ const ProfilePage = () => {
         { id: 'myAddresses', title: 'Мои адреса', path: '/profile/addresses' },
         { id: 'checkRegistration', title: 'Регистрация чека', path: '/profile/check-reg' },
         { id: 'promocodes', title: 'Промокоды', path: '/profile/promocodes' },
-        { id: 'contacts', title: 'Контакты', path: '/profile/contacts'},
-        { id: 'questions', title: 'Вопросы и ответы', path: '/profile/faq'},
+        { id: 'notifications', title: 'Уведомления', path: '/profile/notifications', count: notificationCount },
         { id: 'support', title: 'Поддержка', path: '/profile/support', count: 12 },
-    ], []);
+    ], [notificationCount]);
 
     const fetcherMap = useMemo(() => ({
         offlinePurchases: getOfflineOrdersData,
@@ -96,13 +245,11 @@ const ProfilePage = () => {
         myAddresses: getUserAddresses,
         checkRegistration: getCheckRegisterPageData,
         promocodes: getAllPromocodes,
-        contacts: getContactsPageData,
-        questions: getQuestionsPageData,
     }), []);
 
 
     const loadTabContent = useCallback(async (tabId) => {
-        if (tabId === 'onlineOrders' || !fetcherMap[tabId]) {
+        if (tabId === 'onlineOrders' || tabId === 'notifications' || !fetcherMap[tabId]) {
             setTabContent(null);
             setTabLoading(false);
             return;
@@ -138,7 +285,6 @@ const ProfilePage = () => {
         }
     }, [activeTab, isEditMode, loadTabContent]);
 
-    // --- ИСПРАВЛЕНИЕ 2: Сохранение activeTab в localStorage при изменении ---
     useEffect(() => {
         if (activeTab) {
             localStorage.setItem('profileActiveTab', activeTab);
@@ -149,6 +295,11 @@ const ProfilePage = () => {
     const handleMenuClick = (id) => {
         setActiveTab(id);
         setIsEditMode(false);
+
+        if (id === 'notifications') {
+            setNotificationCount(0);
+        } else if (notificationCount === 0) {
+        }
     };
 
     const handleEditProfileClick = () => {
@@ -201,11 +352,11 @@ const ProfilePage = () => {
                             {hasOrders ? 'История заказов' : ' '}
                         </h2>
                         {!hasOrders && (
-                            <div className="no-orders-message"> {/* ИСПРАВЛЕНИЕ 3: Заменил <p> на <div> */}
+                            <div className="no-orders-message">
                                 <h2 className="content-title">
                                     Пока у вас нет заказов
                                 </h2>
-                                <p> {/* Используем <p> только для текста */}
+                                <p>
                                     Совершайте покупки в приложении и на сайте и здесь появится история ваших заказов
                                 </p>
                             </div>
@@ -274,13 +425,12 @@ const ProfilePage = () => {
                         error={tabError}
                     />
                 );
-            case 'contacts':
-            case 'questions':
+            case 'notifications':
                 return (
-                    <div className="data-section">
-                        <h2 className="content-title">{menuItems.find(i => i.id === activeTab)?.title}</h2>
-                        <pre>{JSON.stringify(tabContent, null, 2)}</pre>
-                    </div>
+                    <NotificationContent
+                        initialTab={'orders'}
+                        menuItems={menuItems}
+                    />
                 );
             case 'support':
                 return (
@@ -327,7 +477,9 @@ const ProfilePage = () => {
                                     onClick={() => handleMenuClick(item.id)}
                                 >
                                     <span className="item-title">{item.title}</span>
-                                    {item.count && <span className="item-count">{item.count}</span>}
+                                    {item.count > 0 && item.id === 'notifications' && activeTab !== item.id && (
+                                        <span className="item-count">{item.count}</span>
+                                    )}
                                 </div>
                             ))}
                             <button onClick={logout} className="nav-item logout-link">

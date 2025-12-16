@@ -19,6 +19,7 @@ import OrderFailureModal from './OrderFailureModal';
 import './style/CartPage.css';
 import authRequiredIcon from '../../assets/is_exists.png';
 import cartEmpty from '../../assets/cartEmpty.png';
+import { ReactComponent as CheckboxIcon } from '../../assets/svg/checkbox.svg';
 
 
 
@@ -123,6 +124,8 @@ const CartContent = () => {
     const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('apple_pay');
     const [isOrderFailureModalOpen, setIsOrderFailureModalOpen] = useState(false);
     const [orderFailureMessage, setOrderFailureMessage] = useState('');
+
+    const checkboxMessage = cartData?.checkbox_message || " ";
 
     useEffect(() => {
         if (city) {
@@ -573,9 +576,11 @@ const CartContent = () => {
                                 checked={checkoutDetails.acceptPriceChanges}
                                 onChange={(e) => setCheckoutDetails({...checkoutDetails, acceptPriceChanges: e.target.checked})}
                             />
-                            <span className="checkmark"></span>
+                            <span className="checkmark">
+                                <CheckboxIcon />
+                            </span>
                             <span className="legal-text-cart">
-                                Я подтверждаю, что сумма заказа может измениться из-за наличия весового товара в моем заказе
+                                {checkboxMessage}
                             </span>
                         </label>
 

@@ -46,7 +46,14 @@ const CartItem = ({ item, isPromo, isOutOfStock }) => {
             <div className="cart-item-image-container">
                 <div className="cart-item-image">
                     <img src={imageUrl} alt={title} />
-                    {isOutOfStock && <span className="not-in-stock-overlay">Нет в наличии</span>}
+
+                    {isOutOfStock && (
+                        <div className="out-of-stock-overlay">
+                            <span className="out-of-stock-label">
+                                Нет <br/> в наличии
+                            </span>
+                        </div>
+                    )}
                 </div>
             </div>
 

@@ -24,7 +24,7 @@ const DeliveryPreferencesModal = ({ isOpen, onClose, initialData, onSave }) => {
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content pref-modal" onClick={e => e.stopPropagation()}>
+            <div className="pref-modal" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
                     <h2 className="modal-header-title">Пожелания по доставке</h2>
                     <button className="close-btn" onClick={onClose}>

@@ -247,17 +247,29 @@ input:checked + .slider:before {
 .legal-checkbox .checkmark {
     height: 20px;
     width: 20px;
-    min-width: 20px;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 6px;
     display: inline-block;
     position: relative;
+    padding: 2px 4px 1px 4px;
 }
 
 .legal-checkbox input:checked ~ .checkmark {
     background-color: #902067;
     border-color: #902067;
+}
+
+.legal-checkbox input:checked ~ .checkmark::after {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
 }
 
 .legal-text-cart {
@@ -416,7 +428,7 @@ input:checked + .slider:before {
 }
 
 .summary-row.discount-row > span:last-child {
-    align-self: flex-end; /* Выравнивает сумму скидки вправо */
+    align-self: flex-end;
 }
 
 .summary-row.discount-row .discount-info-block {

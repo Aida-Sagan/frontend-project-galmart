@@ -76,10 +76,10 @@ export const getAddressByCoords = async (latitude, longitude) => {
  * Получение полигонов зон доставки для текущего города
  * @returns {Promise<Array>} - Массив полигонов
  */
-export const getCityPolygons = async () => {
+export const getCityPolygons = async (token = null) => {
     try {
-        const response = await $api.get(API_URLS.POINTS);
-        console.log("Результаты полигонов: ", response.data.data);
+        const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+        const response = await $api.get(API_URLS.POINTS, config);
         return response.data.data;
     } catch (error) {
         console.error("Ошибка при получении зон доставки:", error);

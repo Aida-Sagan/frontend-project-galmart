@@ -1,0 +1,148 @@
+.payment-methods-section {
+    padding: 20px 0;
+}
+.content-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #222222;
+    font-family: Arial, sans-serif;
+}
+.payment-cards-list {
+    margin-bottom: 30px;
+}
+.payment-card-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid transparent;
+    transition: border 0.2s;
+    min-height: 50px;
+    cursor: pointer;
+}
+.payment-card-item.main-card {
+    background-color: #F5F5F5;
+    border: 1px solid #902067;
+}
+.card-info {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #4E4E4E;
+}
+.main-indicator {
+    margin-right: 15px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.card-number {
+    margin-right: 15px;
+}
+.card-icon {
+    width: 30px;
+    height: 20px;
+}
+.delete-card-btn {
+    background: #E5E7EB;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.delete-card-btn:hover {
+    background-color: #d1d5db;
+}
+.delete-card-btn svg path {
+    fill: #4B5563;
+}
+.add-card-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    background-color: #902067;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.add-card-btn:hover {
+    background-color: #7a1a55;
+}
+
+/* --- Стили модального окна --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+}
+.modal-header .close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.modal-header .close-btn svg {
+    width: 20px;
+    height: 20px;
+}
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+.btn {
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.btn-cancel {
+    background-color: #902067;
+    color: white;
+    border: none;
+}
+.btn-confirm {
+    background-color: white;
+    color: #902067;
+    border: 1px solid #902067;
+}

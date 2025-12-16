@@ -65,10 +65,13 @@ const MyAddresses = ({ addresses: groupedAddresses, isLoading, error, onAddressL
     useEffect(() => {
         if (Array.isArray(groupedAddresses) && groupedAddresses.length > 0 && selectedAddressId === null) {
             for (const group of groupedAddresses) {
-                const currentAddress = group.addresses.find(a => a.is_current);
-                if (currentAddress) {
-                    setSelectedAddressId(currentAddress.id);
-                    return;
+                // ИСПРАВЛЕНИЕ: Безопасная проверка group.addresses перед вызовом find
+                if (Array.isArray(group.addresses)) {
+                    const currentAddress = group.addresses.find(a => a.is_current);
+                    if (currentAddress) {
+                        setSelectedAddressId(currentAddress.id);
+                        return;
+                    }
                 }
             }
             if (groupedAddresses[0]?.addresses?.length > 0) {
@@ -127,8 +130,7 @@ const MyAddresses = ({ addresses: groupedAddresses, isLoading, error, onAddressL
         return <p className="error-message">Ошибка при загрузке данных: {error}</p>;
     }
 
-    // ИСПРАВЛЕНИЕ: Добавление проверки Array.isArray
-    const isAddressesEmpty = !Array.isArray(groupedAddresses) || groupedAddresses.length === 0 || groupedAddresses.every(g => g.addresses && g.addresses.length === 0);
+    const isAddressesEmpty = !Array.isArray(groupedAddresses) || groupedAddresses.length === 0 || groupedAddresses.every(g => !g.addresses || g.addresses.length === 0);
 
     if (isAddressesEmpty) {
         return (
@@ -184,10 +186,10 @@ const MyAddresses = ({ addresses: groupedAddresses, isLoading, error, onAddressL
             <h2 className="content-title">Мои адреса</h2>
 
             <div className="addresses-list-profile">
-                {groupedAddresses.map((group) => (
+                {groupedAddresses?.map((group) => (
                     <div key={group.city} className="city-group">
                         <h3 className="city-title">{group.city}</h3>
-                        {group.addresses.map(address => {
+                        {group.addresses?.map(address => {
                             const isSelected = selectedAddressId === address.id;
                             const addressText = formatAddressForDisplay(address);
 

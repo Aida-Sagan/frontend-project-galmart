@@ -17,6 +17,8 @@ import OfflinePurchasesList from './Offline/OfflinePurchasesList.jsx';
 import MyAddresses from './MyAdresses/MyAddresses.jsx';
 import CheckRegistrationForm from './CheckRegistration/CheckRegistrationForm.jsx';
 import PromocodesList from './Promocodes/PromocodesList.jsx';
+import PaymentMethodsList from './Payment/PaymentMethodsList.jsx';
+import NotificationContent from './Notifications/NotificationContent.jsx';
 
 
 const EditIcon = () => (
@@ -51,157 +53,7 @@ const OrderStatusIndicator = ({status}) => {
     );
 };
 
-const notificationData = {
-    orders: [
-        { id: 1, date: '19.02.2026', title: 'Заказ №01100018957 доставляется', subtitle: 'Ваш заказ доставляется', isNew: false },
-        { id: 2, date: '19.02.2026', title: 'Заказ №01100018957 собран', subtitle: 'Ваш заказ собран, скоро передадим курьеру', isNew: true },
-        { id: 3, date: '19.02.2026', title: 'Заказ №01100018957 на сборке', subtitle: 'Собираем ваш заказ', isNew: true },
-        { id: 4, date: '19.02.2026', title: 'Заказ №01100018957 оформлен', subtitle: 'Скоро передадим на сборку', isNew: true },
-    ],
-    bonuses: [
-        { id: 5, date: '19.02.2026', title: 'Начислены бонусы за заказ', subtitle: 'Спасибо за заказ! Вам начислено 320 ₸ бонусов', isNew: false },
-        { id: 6, date: '19.02.2026', title: 'Начислены бонусы за отзыв', subtitle: 'Спасибо за отзыв! Вам начислено 200 ₸ бонусов', isNew: false },
-        { id: 7, date: '19.02.2026', title: 'Начислены бонусы за покупку', subtitle: 'Спасибо за покупку! Вам начислено 1 200 ₸ бонусов', isNew: false },
-        { id: 8, date: '19.02.2026', title: 'Возвращены бонусы', subtitle: '1 200 ₸ возвращены на ваш баланс, после возврата заказа №123456789', isNew: false },
-    ],
-    news: [
-        { id: 9, date: '19.02.2026', title: 'Миллионы в корзине', subtitle: 'Покупайте 2 любые продукции Gillette и Venus и выигрывайте призы!', isNew: false },
-        { id: 10, date: '19.02.2026', title: 'Миллионы в корзине', subtitle: 'Акция доступна до 28.12.2024', isNew: false },
-    ]
-};
-
-const NotificationContent = ({ initialTab, menuItems }) => {
-    const [activeSubTab, setActiveSubTab] = useState(initialTab);
-    const [unreadCount, setUnreadCount] = useState(12);
-
-    useEffect(() => {
-    }, []);
-
-    const subTabs = useMemo(() => [
-        { id: 'orders', title: 'Заказы', data: notificationData.orders, hasUnread: true },
-        { id: 'bonuses', title: 'Бонусы', data: notificationData.bonuses, hasUnread: false },
-        { id: 'news', title: 'Новости', data: notificationData.news, count: 12, hasUnread: true },
-    ], []);
-
-    const currentData = subTabs.find(tab => tab.id === activeSubTab)?.data || [];
-
-    return (
-        <div className="notifications-page">
-            <h1 className="content-title">Уведомления</h1>
-
-            <div className="notification-subtabs">
-                {subTabs.map(tab => (
-                    <div
-                        key={tab.id}
-                        className={`notification-chip ${activeSubTab === tab.id ? 'active' : ''}`}
-                        onClick={() => setActiveSubTab(tab.id)}
-                    >
-                        <span>{tab.title}</span>
-                        {tab.id === 'news' && (
-                            <span className="chip-badge">{tab.count}</span>
-                        )}
-                    </div>
-                ))}
-            </div>
-
-            <div className="notification-list">
-                {currentData.length > 0 ? (
-                    currentData.map(item => (
-                        <div
-                            key={item.id}
-                            className={`notification-item ${item.isNew ? 'is-new' : ''}`}
-                        >
-                            <div className="item-text">
-                                <span className="item-title">{item.title}</span>
-                                <p className="item-subtitle">{item.subtitle}</p>
-                                <span className="item-date">{item.date}</span>
-                            </div>
-                            <span className="item-arrow">&gt;</span>
-                        </div>
-                    ))
-                ) : (
-                    activeSubTab === 'bonuses' ? (
-                        <div className="no-bonuses-message">
-                            <h2 className="content-title">Пока у вас нет бонусов</h2>
-                            <p>Чтобы получать бонусы, совершайте покупки в интернет-магазине и в супермаркетах galmart</p>
-                        </div>
-                    ) : (
-                        <p className="no-data-message">Пока нет уведомлений в этом разделе.</p>
-                    )
-                )}
-            </div>
-
-            <style>{`
-                .notification-subtabs {
-                    display: flex;
-                    gap: 10px;
-                    margin-bottom: 20px;
-                }
-                .notification-chip {
-                    padding: 8px 15px;
-                    border-radius: 20px;
-                    cursor: pointer;
-                    background-color: #f0f0f0;
-                    color: #4E4E4E;
-                    font-weight: 500;
-                    display: flex;
-                    align-items: center;
-                    gap: 5px;
-                    transition: background-color 0.2s;
-                }
-                .notification-chip.active {
-                    background-color: #902067;
-                    color: #fff;
-                }
-                .chip-badge {
-                    background-color: #F59E0B;
-                    color: white;
-                    padding: 2px 7px;
-                    border-radius: 50%;
-                    font-size: 12px;
-                    font-weight: bold;
-                }
-                .notification-item {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 15px;
-                    margin-bottom: 10px;
-                    border-radius: 8px;
-                    background-color: #fff;
-                    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-                    cursor: pointer;
-                    transition: background-color 0.3s;
-                }
-                .notification-item.is-new {
-                    background-color: #F5F5F5;
-                    font-weight: 500;
-                }
-                .item-text {
-                    display: flex;
-                    flex-direction: column;
-                }
-                .item-title {
-                    font-size: 16px;
-                    font-weight: 600;
-                    color: #222;
-                }
-                .item-subtitle, .item-date {
-                    font-size: 14px;
-                    color: #666;
-                }
-                .item-date {
-                    font-size: 12px;
-                    margin-top: 5px;
-                }
-                .item-arrow {
-                    font-size: 20px;
-                    color: #902067;
-                }
-            `}</style>
-        </div>
-    );
-};
+// !!! УДАЛЕНЫ notificationData и NotificationContent !!!
 
 
 const ProfilePage = () => {
@@ -417,6 +269,13 @@ const ProfilePage = () => {
                 );
 
             case 'paymentMethods':
+                return (
+                    <PaymentMethodsList
+                        cardsData={tabContent}
+                        isLoading={tabLoading}
+                        error={tabError}
+                    />
+                );
             case 'promocodes':
                 return (
                     <PromocodesList
@@ -426,10 +285,10 @@ const ProfilePage = () => {
                     />
                 );
             case 'notifications':
+                // !!! ИСПОЛЬЗОВАНИЕ НОВОГО КОМПОНЕНТА !!!
                 return (
                     <NotificationContent
                         initialTab={'orders'}
-                        menuItems={menuItems}
                     />
                 );
             case 'support':

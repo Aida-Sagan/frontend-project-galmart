@@ -35,12 +35,11 @@ export const AuthProvider = ({ children }) => {
     const login = async (phone, code) => {
         try {
             const response = await apiLogin(phone, code);
-            const { data } = response;
-            const { is_account_exists, access, refresh } = data;
+            const userData = response.data.data;
+            const { is_account_exists, access, refresh } = userData;
 
             setToken(access);
             localStorage.setItem('refreshToken', refresh);
-
             closeLoginModal();
 
             if (is_account_exists) {

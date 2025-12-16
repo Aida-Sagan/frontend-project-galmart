@@ -29,7 +29,6 @@ export default function EnterCodeForm() {
         newCode[index] = value;
         setCode(newCode);
 
-        // Очищаем ошибку, как только пользователь начинает ввод
         if (error) {
             setError(false);
         }
@@ -104,7 +103,6 @@ export default function EnterCodeForm() {
                             onChange={(e) => handleChange(e, idx)}
                             onKeyDown={(e) => handleKeyDown(e, idx)}
                             ref={(el) => (inputsRef.current[idx] = el)}
-                            // 💡 Добавляем класс, если есть ошибка, для стилизации конкретного input
                             className={error ? 'input-error-state' : ''}
                             placeholder="---"
                             disabled={isLoading}

@@ -58,7 +58,6 @@ export default function RegistrationForm() {
                         formattedBirthDate = `${day}.${month}.${year}`;
                     }
 
-                    // Передача полей в формате, ожидаемом бэкендом: name, surname, birthday (DD.MM.YYYY)
                     const apiData = {
                         'name': values.firstName,
                         'surname': values.lastName,
@@ -66,7 +65,6 @@ export default function RegistrationForm() {
                         'address': values.address,
                     };
 
-                    // Предполагается, что в authService.js метод изменен на POST
                     await completeRegistrationApi(apiData, token);
 
                     completeRegistration();

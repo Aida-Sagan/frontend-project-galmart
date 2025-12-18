@@ -390,3 +390,13 @@ export const getSavingData = async () => {
         throw error;
     }
 };
+
+export const registerCheck = async (payload) => {
+    try {
+        const response = await $api.post(API_URLS.CHECK_REGISTRATION, payload);
+        return response.data.data || response.data;
+    } catch (error) {
+        console.error("[Service] Ошибка при регистрации чека:", error);
+        throw error;
+    }
+};

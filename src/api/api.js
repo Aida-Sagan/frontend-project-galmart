@@ -17,6 +17,7 @@ export const API_URLS = {
     ADDRESS: `/api/v2/account/address/`,
     GEOCODE: `/api/v2/account/geocode/`,
     POINTS: `/api/v2/account/points/`,
+    CHECK_REGISTRATION: `/api/v2/actions/registration/`,
 
     // Order / Cart (New Endpoints)
     GET_CART_DATA: `/api/v2/orders/basket/`,

@@ -53,7 +53,6 @@ const OrderStatusIndicator = ({status}) => {
     );
 };
 
-// !!! УДАЛЕНЫ notificationData и NotificationContent !!!
 
 
 const ProfilePage = () => {

@@ -16,22 +16,20 @@
 }
 
 .form-section {
-    background-color: #F5F5F5;
+    background: #F5F5F5;
     padding: 20px 15px;
     margin-bottom: 25px;
     border-radius: 24px;
 }
 
-/* Заголовок секции (напр., "Выбор акции") */
 .section-instruction-title {
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
     font-size: 20px;
     color: #222222;
-    margin-bottom: 5px; /* Коррекция для отступа до инструкции */
+    margin-bottom: 5px;
 }
 
-/* Описание/Инструкция (напр., "Выберите акцию для участия") */
 .section-instruction {
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
@@ -74,14 +72,12 @@
     display: none;
 }
 
-/* --- Custom Dropdown Styles (Имитация Select) --- */
 
 .custom-dropdown-container {
     position: relative;
     width: 100%;
 }
 
-/* Выбранная область (всегда отображается) */
 .dropdown-selected-area {
     display: flex;
     justify-content: space-between;
@@ -142,7 +138,6 @@
     transform: rotate(180deg);
 }
 
-/* --- Options List --- */
 .dropdown-options-list {
     position: absolute;
     top: 54px;
@@ -183,7 +178,6 @@
     color: #222222;
 }
 
-/* --- Custom Radio Buttons --- */
 
 .custom-radio-icon {
     width: 20px;
@@ -207,7 +201,6 @@
     background-color: #902067;
 }
 
-/* --- Секция Фото Чека (Галерея) --- */
 
 .photo-upload-section {
     padding-bottom: 20px;
@@ -351,3 +344,174 @@
 .btn-register-check:hover {
     background-color: #7d1c58;
 }
+
+.action-rules-link-container {
+    margin-top: 12px;
+    margin-left: 8px;
+}
+
+.action-rules-link {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 120%;
+    color: #902067;
+    text-decoration: underline;
+    text-decoration-style: solid;
+    text-underline-offset: 4px;
+    display: inline-block;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.action-rules-link:hover {
+    opacity: 0.8;
+}
+
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    font-size: 14px;
+    user-select: none;
+    color: #FBFBFB;
+
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 23px;
+    background-color: transparent;
+    border: 1px solid #E9E9E9;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+    border-color: #E9E9E9;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: #E9E9E9;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.checkbox-container .checkmark:after {
+    left: 8px;
+    top: 1px;
+    width: 5px;
+    height: 11px;
+    border: solid #1a1a1a;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+.checkbox-text{
+    color: #222;
+}
+.checkbox-text a {
+    color: #222;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.checkbox-text a:hover {
+    color: #4E4E4E;
+}
+
+.rules-agreement-section {
+    background: transparent;
+}
+
+/* Чекбокс */
+.rules-agreement-section {
+    margin: 20px 0;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #FBFBFB;
+    user-select: none;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0; width: 0;
+}
+
+
+/* Модальное окно */
+.g-modal-backdrop {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center; align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(2px);
+}
+
+.g-status-card {
+    background: #fff;
+    width: 90%; max-width: 380px;
+    padding: 40px 24px 24px;
+    border-radius: 24px;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.g-close-icon {
+    position: absolute;
+    top: 15px; right: 20px;
+    background: none; border: none;
+    font-size: 28px; color: #ccc;
+    cursor: pointer;
+}
+
+.g-status-text {
+    font-size: 16px; color: #333;
+    margin-bottom: 30px; font-weight: 500;
+}
+
+.g-confirm-btn {
+    width: 100%;
+    height: 50px;
+    border-radius: 25px;
+    border: 2px solid #902067;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.g-btn-error { background: #fff; color: #902067; }
+.g-btn-success { background: #902067; color: #fff; }

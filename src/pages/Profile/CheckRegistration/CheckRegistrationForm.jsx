@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import Loader from '../../../components/Loader/Loader.jsx';
 import CustomDropdown from './CustomActionDropdown.jsx';
+import { registerCheck } from '../../../api/services/profileService.js';
 import './styles/CheckRegistrationForm.css';
 
 const AddImageIcon = () => (
@@ -9,62 +10,91 @@ const AddImageIcon = () => (
     </svg>
 );
 
+const StatusModal = ({ isOpen, onClose, type, message }) => {
+    if (!isOpen) return null;
+    return (
+        <div className="g-modal-backdrop">
+            <div className="g-status-card">
+                <button className="g-close-icon" onClick={onClose} aria-label="Закрыть">&times;</button>
+                <div className="g-modal-content-area">
+                    <p className="g-status-text">{message}</p>
+                    <button
+                        className={`g-confirm-btn ${type === 'success' ? 'g-btn-success' : 'g-btn-error'}`}
+                        onClick={onClose}
+                    >
+                        Понятно
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const CheckRegistrationForm = ({ checkRegistrationData, isLoading, error }) => {
+    // Состояния полей
     const [selectedAction, setSelectedAction] = useState(null);
     const [selectedShop, setSelectedShop] = useState(null);
     const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
     const [promoCode, setPromoCode] = useState('');
     const [photoFiles, setPhotoFiles] = useState([null, null, null, null]);
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [acceptRules, setAcceptRules] = useState(false);
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [modalConfig, setModalConfig] = useState({ isOpen: false, type: 'success', message: '' });
 
     const actions = checkRegistrationData?.actions || [];
     const realShops = checkRegistrationData?.real_shops || [];
 
     const isActionSelected = selectedAction !== null;
     const actionDetails = useMemo(() => actions.find(a => a.id === selectedAction), [selectedAction, actions]);
-
-    const actionRequiresFields = useMemo(() => {
-        return isActionSelected && actionDetails && Array.isArray(actionDetails.fields) && actionDetails.fields.length > 0;
-    }, [isActionSelected, actionDetails]);
-
-    const showCheckDataSection = actionRequiresFields;
-    const showPhotoCheckSection = actionRequiresFields;
-
-    const actionHasMeetTimes = useMemo(() => {
-        if (!actionRequiresFields) return false;
-        return actionDetails.fields.some(field => field.meet_times && field.meet_times.length > 0);
-    }, [actionRequiresFields, actionDetails]);
-
+    const actionRequiresFields = useMemo(() => isActionSelected && actionDetails?.fields?.length > 0, [isActionSelected, actionDetails]);
+    const actionHasMeetTimes = useMemo(() => actionRequiresFields && actionDetails.fields.some(f => f.meet_times?.length > 0), [actionRequiresFields, actionDetails]);
 
     const shopsForCheckData = useMemo(() => {
         if (!actionRequiresFields) return [];
-
         const relevantShopIds = actionDetails.fields.map(field => field.shop_id);
-
         return realShops.filter(shop => relevantShopIds.includes(shop.id));
     }, [actionRequiresFields, actionDetails, realShops]);
 
-
     const availableShopsForAction = useMemo(() => {
         if (!actionHasMeetTimes) return [];
-
         return actionDetails.fields
-            .filter(field => field.meet_times && field.meet_times.length > 0)
-            .map(field => {
-                const shopDetail = realShops.find(shop => shop.id === field.shop_id);
-                return {
-                    id: field.shop_id,
-                    name: shopDetail ? shopDetail.name : field.shop_name,
-                    meet_times: field.meet_times
-                };
-            });
+            .filter(field => field.meet_times?.length > 0)
+            .map(field => ({
+                id: field.shop_id,
+                name: realShops.find(shop => shop.id === field.shop_id)?.name || field.shop_name,
+                meet_times: field.meet_times
+            }));
     }, [actionHasMeetTimes, actionDetails, realShops]);
 
     const availableTimeSlots = useMemo(() => {
         if (!selectedShop) return [];
-        const shop = availableShopsForAction.find(s => s.id === selectedShop);
-        return shop?.meet_times || [];
+        return availableShopsForAction.find(s => s.id === selectedShop)?.meet_times || [];
     }, [selectedShop, availableShopsForAction]);
 
+    // Функция полной очистки формы
+    const resetForm = () => {
+        setSelectedAction(null);
+        setSelectedShop(null);
+        setSelectedTimeSlot(null);
+        setPromoCode('');
+        setPhotoFiles([null, null, null, null]);
+        setFirstName('');
+        setLastName('');
+        setPhone('');
+        setAcceptRules(false);
+    };
+
+    // Закрытие модального окна и очистка, если успех
+    const handleCloseModal = () => {
+        if (modalConfig.type === 'success') {
+            resetForm();
+        }
+        setModalConfig(prev => ({ ...prev, isOpen: false }));
+    };
 
     const handleFileChange = (e, index) => {
         const file = e.target.files[0];
@@ -77,177 +107,142 @@ const CheckRegistrationForm = ({ checkRegistrationData, isLoading, error }) => {
         }
     };
 
-    const handleRegistrationSubmit = (e) => {
+    const handleRegistrationSubmit = async (e) => {
         e.preventDefault();
-        console.log('Данные для регистрации чека:', {
-            actionId: selectedAction,
-            promoCode,
-            shopId: selectedShop,
-            timeSlotId: selectedTimeSlot,
-            photoFiles
-        });
-        alert('Регистрация чека (имитация отправки)');
+        if (!acceptRules) {
+            setModalConfig({ isOpen: true, type: 'error', message: 'Необходимо принять правила участия' });
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            const payload = {
+                actions_id: selectedAction,
+                name: firstName,
+                second_name: lastName,
+                phone: phone,
+                code: promoCode,
+                accept_rules: acceptRules,
+                meet_time_id: selectedTimeSlot,
+                photos: photoFiles.filter(f => f !== null).map(f => f.name)
+            };
+            const response = await registerCheck(payload);
+
+            if (response.status === 201) {
+                setModalConfig({ isOpen: true, type: 'success', message: 'Чек успешно зарегистрирован!' });
+            }
+        } catch (err) {
+            let errorMsg = 'Ошибка при регистрации';
+            const serverMsg = err.response?.data?.message || "";
+            if (serverMsg.includes("duplicate key value") || serverMsg.includes("already exists")) {
+                errorMsg = `Промокод "${promoCode}" уже зарегистрирован в системе.`;
+            } else if (serverMsg) {
+                errorMsg = serverMsg;
+            }
+            setModalConfig({ isOpen: true, type: 'error', message: errorMsg });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
-    if (isLoading) {
-        return <Loader />;
-    }
-
-    if (error) {
-        return <p className="error-message">Ошибка при загрузке данных: {error}</p>;
-    }
-
-
-    const renderPhotoUploadSlots = () => {
-        return photoFiles.map((file, index) => (
-            <div key={index} className="photo-upload-slot">
-                <label htmlFor={`file-upload-${index}`} className={`upload-label ${index === 0 ? 'active-slot' : ''}`}>
-                    {file ? (
-                        <span className="file-name">{file.name}</span>
-                    ) : (
-                        index === 0 ? <AddImageIcon /> : null
-                    )}
-                </label>
-                <input
-                    id={`file-upload-${index}`}
-                    type="file"
-                    accept="image/*,.pdf"
-                    onChange={(e) => handleFileChange(e, index)}
-                    className="file-input"
-                />
-            </div>
-        ));
-    };
-
-
-    const shopOptionsForDropdown = shopsForCheckData.map(shop => ({ id: shop.id, title: shop.name }));
-    const shopForActionOptions = availableShopsForAction.map(shop => ({ id: shop.id, title: shop.name }));
-    const timeSlotOptions = availableTimeSlots.map(slot => ({
-        id: slot.id,
-        title: `${slot.date} ${slot.time_start}-${slot.time_end} (Мест: ${slot.amount})`
-    }));
-
+    if (isLoading || isSubmitting) return <Loader />;
+    if (error) return <p className="error-message">Ошибка при загрузке данных: {error}</p>;
 
     return (
-        <form onSubmit={handleRegistrationSubmit} className="check-registration-form-wrapper">
-            <h2 className="content-title">Регистрация чека</h2>
-
-            <section className="form-section">
-                <p className="section-instruction-title">Выбор акции</p>
-                <p className="section-instruction">Выберите акцию для участия</p>
-                <div className="form-group">
-                    <CustomDropdown
-                        value={selectedAction}
-                        options={actions.map(a => ({ id: a.id, title: a.title }))}
-                        onChange={(id) => {
-                            setSelectedAction(id);
-                            setSelectedShop(null);
-                            setSelectedTimeSlot(null);
-                        }}
-                        placeholder="Акция"
-                    />
-                </div>
-            </section>
-
-            <section className="form-section">
-                <p className="section-instruction-title">Личные данные</p>
-                <p className="section-instruction">Укажите данные участника</p>
-                <div className="form-group floating-label">
-                    <input id="name" type="text" placeholder="Имя" required className="form-input" />
-                    <label htmlFor="name">Имя</label>
-                </div>
-                <div className="form-group floating-label">
-                    <input id="surname" type="text" placeholder="Фамилия" required className="form-input" />
-                    <label htmlFor="surname">Фамилия</label>
-                </div>
-                <div className="form-group floating-label">
-                    <input id="phone" type="tel" placeholder="Номер телефона" required className="form-input" />
-                    <label htmlFor="phone">Номер телефона</label>
-                </div>
-            </section>
-
-            {showCheckDataSection && (
+        <>
+            <form onSubmit={handleRegistrationSubmit} className="check-registration-form-wrapper">
+                <h2 className="content-title">Регистрация чека</h2>
                 <section className="form-section">
-                    <p className="section-instruction-title">Данные о чеке</p>
-                    <p className="section-instruction">Введите промокод с чека и выберите место покупки</p>
+                    <p className="section-instruction-title">Выбор акции</p>
+                    <div className="form-group">
+                        <CustomDropdown
+                            value={selectedAction}
+                            options={actions.map(a => ({ id: a.id, title: a.title }))}
+                            onChange={(id) => { setSelectedAction(id); setSelectedShop(null); setSelectedTimeSlot(null); }}
+                            placeholder="Акция"
+                        />
+                    </div>
+                </section>
+
+                <section className="form-section">
+                    <p className="section-instruction-title">Личные данные</p>
                     <div className="form-group floating-label">
-                        <input
-                            id="code"
-                            type="text"
-                            placeholder="Код"
-                            value={promoCode}
-                            onChange={(e) => setPromoCode(e.target.value)}
-                            required
-                            className="form-input"
-                        />
-                        <label htmlFor="code">Код</label>
+                        <input type="text" placeholder="Имя" required className="form-input" value={firstName} onChange={e => setFirstName(e.target.value)} />
+                        <label>Имя</label>
                     </div>
-                    <div className="form-group">
-                        <CustomDropdown
-                            value={selectedShop}
-                            options={shopOptionsForDropdown}
-                            onChange={setSelectedShop}
-                            placeholder="Место покупки"
-                        />
+                    <div className="form-group floating-label">
+                        <input type="text" placeholder="Фамилия" required className="form-input" value={lastName} onChange={e => setLastName(e.target.value)} />
+                        <label>Фамилия</label>
+                    </div>
+                    <div className="form-group floating-label">
+                        <input type="tel" placeholder="Номер телефона" required className="form-input" value={phone} onChange={e => setPhone(e.target.value)} />
+                        <label>Номер телефона</label>
                     </div>
                 </section>
-            )}
 
-            {actionHasMeetTimes && (
-                <section className="form-section">
-                    <p className="section-instruction-title">Дополнительно</p>
-                    <p className="section-instruction">Выберите удобные для вас место и время участия в активности</p>
-
-                    <div className="form-group">
-                        <CustomDropdown
-                            value={selectedShop}
-                            options={shopForActionOptions}
-                            onChange={(id) => {
-                                setSelectedShop(id);
-                                setSelectedTimeSlot(null);
-                            }}
-                            placeholder="Место проведения"
-                            disabled={availableShopsForAction.length === 0}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <CustomDropdown
-                            value={selectedTimeSlot}
-                            options={timeSlotOptions}
-                            onChange={setSelectedTimeSlot}
-                            placeholder="Время проведения"
-                            disabled={!selectedShop || availableTimeSlots.length === 0}
-                        />
-                    </div>
-                </section>
-            )}
-
-            {showPhotoCheckSection && (
-                <section className="form-section photo-upload-section">
-
-                    <div className="photo-content-layout">
-
-                        <div className="photo-text-container">
-                            <h3 className="section-instruction-title">Фото чека</h3>
-                            <p className="section-instruction">Добавьте фото чека</p>
+                {actionRequiresFields && (
+                    <section className="form-section">
+                        <p className="section-instruction-title">Данные о чеке</p>
+                        <div className="form-group floating-label">
+                            <input type="text" placeholder="Код" value={promoCode} onChange={e => setPromoCode(e.target.value)} required className="form-input" />
+                            <label>Код</label>
                         </div>
-
-                        <div className="photo-gallery-wrapper">
-                            <div className="photo-scroll-container">
-                                {renderPhotoUploadSlots()}
-                            </div>
-
+                        <div className="form-group">
+                            <CustomDropdown
+                                value={selectedShop}
+                                options={shopsForCheckData.map(shop => ({ id: shop.id, title: shop.name }))}
+                                onChange={setSelectedShop}
+                                placeholder="Место покупки"
+                            />
                         </div>
-                    </div>
+                    </section>
+                )}
 
+                {actionHasMeetTimes && (
+                    <section className="form-section">
+                        <p className="section-instruction-title">Дополнительно</p>
+                        <div className="form-group">
+                            <CustomDropdown
+                                value={selectedShop}
+                                options={availableShopsForAction.map(shop => ({ id: shop.id, title: shop.name }))}
+                                onChange={id => { setSelectedShop(id); setSelectedTimeSlot(null); }}
+                                placeholder="Место проведения"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <CustomDropdown
+                                value={selectedTimeSlot}
+                                options={availableTimeSlots.map(slot => ({
+                                    id: slot.id,
+                                    title: `${slot.date} ${slot.time_start}-${slot.time_end}`
+                                }))}
+                                onChange={setSelectedTimeSlot}
+                                placeholder="Время проведения"
+                                disabled={!selectedShop}
+                            />
+                        </div>
+                    </section>
+                )}
+
+                <section className="form-section rules-agreement-section">
+                    <label className="checkbox-container">
+                        <input type="checkbox" checked={acceptRules} onChange={e => setAcceptRules(e.target.checked)} required />
+                        <span className="checkmark"></span>
+                        <span className="checkbox-text">
+                            Я согласен с <a href={actionDetails?.rules_link || "#"} target="_blank" rel="noopener noreferrer">правилами акции</a>
+                        </span>
+                    </label>
                 </section>
-            )}
+                <button type="submit" className="btn-register-check" disabled={isSubmitting}>Зарегистрировать чек</button>
+            </form>
 
-            <button type="submit" className="btn-register-check">
-                Зарегистрировать чек
-            </button>
-        </form>
+            <StatusModal
+                isOpen={modalConfig.isOpen}
+                onClose={handleCloseModal}
+                type={modalConfig.type}
+                message={modalConfig.message}
+            />
+        </>
     );
 };
 

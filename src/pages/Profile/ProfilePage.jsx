@@ -19,7 +19,7 @@ import CheckRegistrationForm from './CheckRegistration/CheckRegistrationForm.jsx
 import PromocodesList from './Promocodes/PromocodesList.jsx';
 import PaymentMethodsList from './Payment/PaymentMethodsList.jsx';
 import NotificationContent from './Notifications/NotificationContent.jsx';
-
+import OnlineOrdersList from './Online/OnlineOrdersList.jsx';
 
 const EditIcon = () => (
     <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -77,7 +77,8 @@ const ProfilePage = () => {
     const [tabContent, setTabContent] = useState(null);
     const [tabLoading, setTabLoading] = useState(false);
     const [tabError, setTabError] = useState(null);
-
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [viewMode, setViewMode] = useState('list');
 
     const menuItems = useMemo(() => [
         { id: 'onlineOrders', title: 'Мои онлайн заказы', path: '/profile/orders/online' },
@@ -146,6 +147,8 @@ const ProfilePage = () => {
     const handleMenuClick = (id) => {
         setActiveTab(id);
         setIsEditMode(false);
+        setViewMode('list');
+        setSelectedOrder(null);
 
         if (id === 'notifications') {
             setNotificationCount(0);
@@ -197,48 +200,7 @@ const ProfilePage = () => {
 
         switch (activeTab) {
             case 'onlineOrders':
-                return (
-                    <div className="orders-section">
-                        <h2 className="content-title">
-                            {hasOrders ? 'История заказов' : ' '}
-                        </h2>
-                        {!hasOrders && (
-                            <div className="no-orders-message">
-                                <h2 className="content-title">
-                                    Пока у вас нет заказов
-                                </h2>
-                                <p>
-                                    Совершайте покупки в приложении и на сайте и здесь появится история ваших заказов
-                                </p>
-                            </div>
-                        )}
-
-                        {hasOrders && (
-                            <div className="orders-list">
-                                {orders.map(order => (
-                                    <div key={order.id} className="order-card">
-                                        <div className="order-header">
-                                            <span className="order-number">Заказ №{order.number || order.id}</span>
-                                            <OrderStatusIndicator status={order.status} />
-                                        </div>
-                                        <p className="order-status-text">
-                                            {order.status_description || `Ваш заказ ${order.status.toLowerCase()}`}
-                                        </p>
-
-                                        <div className="order-details">
-                                            <span className="order-total">{order.total.toLocaleString()} {order.currency || '₸'}</span>
-                                            <span className="order-bonus">Бонусы: {order.bonus_accrual || 0} {order.currency || '₸'}</span>
-                                        </div>
-
-                                        <button className="details-link" onClick={() => navigate(`/profile/order/${order.id}`)}>
-                                            Подробнее о заказе
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                );
+                return <OnlineOrdersList />;
             case 'offlinePurchases':
                 return (
                     <OfflinePurchasesList

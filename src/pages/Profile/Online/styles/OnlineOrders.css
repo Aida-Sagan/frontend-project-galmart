@@ -1,0 +1,236 @@
+* {
+    font-family: 'Montserrat', sans-serif;
+    box-sizing: border-box;
+}
+
+.main-section-title {
+    font-size: 24px;
+    font-weight: 500;
+    color: #222222;
+    margin-bottom: 24px;
+}
+
+.order-card-v2 {
+    background: #F5F5F5;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.align-center { align-items: center; }
+.align-end { align-items: flex-end; }
+.mt-12 { margin-top: 12px; }
+
+/* Текстовые стили */
+.order-id {
+    font-weight: 500;
+    font-size: 16px;
+    color: #7A7A7A;
+}
+
+.order-price-top {
+    font-weight: 600;
+    font-size: 20px;
+    color: #222222;
+}
+
+.card-status-text {
+    font-weight: 700;
+    font-size: 20px;
+    color: #902067;
+    margin: 0;
+}
+
+@media (max-width: 1500px) {
+    .card-status-text {
+        font-size: 17px;
+    }
+}
+
+.order-bonuses-row {
+    font-size: 12px;
+    color: #7A7A7A;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.status-action-btn {
+    background: #FFFFFF;
+    border-radius: 32px;
+    padding: 6px 12px;
+    font-weight: 600;
+    font-size: 10px;
+    color: #222;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+}
+
+/* Полоски прогресса */
+.progress-bars-container {
+    display: flex;
+    gap: 6px;
+    margin: 8px 0;
+}
+
+.step-bar {
+    width: 60px; /* Уменьшено, чтобы строка не ломалась при малых экранах */
+    height: 6px;
+    background: #902067;
+    opacity: 0.3;
+    border-radius: 32px;
+}
+
+.card-description {
+    font-weight: 500;
+    font-size: 14px;
+    color: #4E4E4E;
+    max-width: 400px;
+    margin: 0;
+}
+
+@media (max-width: 1500px) {
+    .card-description {
+        font-size: 10px;
+    }
+}
+
+/* Картинки */
+.items-row {
+    display: flex;
+    gap: 8px;
+}
+
+.item-thumb {
+    width: 60px;
+    height: 60px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.item-thumb img {
+    width: 85%;
+    height: 85%;
+    object-fit: contain;
+}
+
+.item-more-overlay {
+    width: 60px;
+    height: 60px;
+    background: rgba(34, 34, 34, 0.66);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item-more-overlay span {
+    font-weight: 600;
+    font-size: 10px;
+    color: #FBFBFB;
+    text-align: center;
+}
+
+.back-navigation {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    font-weight: 600;
+    font-size: 14px;
+    color: #222;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.order-card-detail {
+    background: #FBFBFB;
+    border-radius: 20px;
+    padding: 24px;
+    margin: 20px 0;
+}
+
+.detail-order-number {
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.detail-info-blocks {
+    background: #F5F5F5;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.info-block-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #EAEAEA;
+}
+
+.info-block-row:last-child { border-bottom: none; }
+
+.info-block-row span { color: #7A7A7A; font-size: 14px; }
+
+.composition-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.composition-item img { width: 60px; height: 60px; object-fit: contain; }
+
+.item-info p { font-weight: 600; margin: 0; }
+.item-info span { color: #7A7A7A; font-size: 12px; }
+.item-price { margin-left: auto; font-weight: 700; }
+
+.detail-actions {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-primary {
+    background: #902067;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #902067;
+    border: 1px solid #902067;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.mt-40 { margin-top: 40px; }
+.history-card { opacity: 0.8; }

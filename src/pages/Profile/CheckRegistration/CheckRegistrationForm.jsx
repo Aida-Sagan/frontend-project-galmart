@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import Loader from '../../../components/Loader/Loader.jsx';
 import CustomDropdown from './CustomActionDropdown.jsx';
 import { registerCheck } from '../../../api/services/profileService.js';
+import InputMask from 'react-input-mask';
 import './styles/CheckRegistrationForm.css';
 
 const AddImageIcon = () => (
@@ -31,7 +32,6 @@ const StatusModal = ({ isOpen, onClose, type, message }) => {
 };
 
 const CheckRegistrationForm = ({ checkRegistrationData, isLoading, error }) => {
-    // Состояния полей
     const [selectedAction, setSelectedAction] = useState(null);
     const [selectedShop, setSelectedShop] = useState(null);
     const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
@@ -40,7 +40,7 @@ const CheckRegistrationForm = ({ checkRegistrationData, isLoading, error }) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [phone, setPhone] = useState('');
-    const [acceptRules, setAcceptRules] = useState(false);
+
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [modalConfig, setModalConfig] = useState({ isOpen: false, type: 'success', message: '' });
@@ -75,7 +75,6 @@ const CheckRegistrationForm = ({ checkRegistrationData, isLoading, error }) => {
         return availableShopsForAction.find(s => s.id === selectedShop)?.meet_times || [];
     }, [selectedShop, availableShopsForAction]);
 
-    // Функция полной очистки формы
     const resetForm = () => {
         setSelectedAction(null);
         setSelectedShop(null);
@@ -85,10 +84,8 @@ const CheckRegistrationForm = ({ checkRegistrationData, isLoading, error }) => {
         setFirstName('');
         setLastName('');
         setPhone('');
-        setAcceptRules(false);
     };
 
-    // Закрытие модального окна и очистка, если успех
     const handleCloseModal = () => {
         if (modalConfig.type === 'success') {
             resetForm();
@@ -96,23 +93,8 @@ const CheckRegistrationForm = ({ checkRegistrationData, isLoading, error }) => {
         setModalConfig(prev => ({ ...prev, isOpen: false }));
     };
 
-    const handleFileChange = (e, index) => {
-        const file = e.target.files[0];
-        if (file) {
-            setPhotoFiles(prev => {
-                const newFiles = [...prev];
-                newFiles[index] = file;
-                return newFiles;
-            });
-        }
-    };
-
     const handleRegistrationSubmit = async (e) => {
         e.preventDefault();
-        if (!acceptRules) {
-            setModalConfig({ isOpen: true, type: 'error', message: 'Необходимо принять правила участия' });
-            return;
-        }
 
         setIsSubmitting(true);
         try {
@@ -122,7 +104,6 @@ const CheckRegistrationForm = ({ checkRegistrationData, isLoading, error }) => {
                 second_name: lastName,
                 phone: phone,
                 code: promoCode,
-                accept_rules: acceptRules,
                 meet_time_id: selectedTimeSlot,
                 photos: photoFiles.filter(f => f !== null).map(f => f.name)
             };
@@ -175,8 +156,23 @@ const CheckRegistrationForm = ({ checkRegistrationData, isLoading, error }) => {
                         <label>Фамилия</label>
                     </div>
                     <div className="form-group floating-label">
-                        <input type="tel" placeholder="Номер телефона" required className="form-input" value={phone} onChange={e => setPhone(e.target.value)} />
-                        <label>Номер телефона</label>
+                        <InputMask
+                            mask="+7 (999) 999-99-99"
+                            value={phone}
+                            onChange={e => setPhone(e.target.value)}
+                        >
+                            {(inputProps) => (
+                                <input
+                                    {...inputProps}
+                                    type="tel"
+                                    id="phone"
+                                    placeholder="Номер телефона"
+                                    required
+                                    className="form-input"
+                                />
+                            )}
+                        </InputMask>
+                        <label htmlFor="phone">Номер телефона</label>
                     </div>
                 </section>
 
@@ -224,15 +220,6 @@ const CheckRegistrationForm = ({ checkRegistrationData, isLoading, error }) => {
                     </section>
                 )}
 
-                <section className="form-section rules-agreement-section">
-                    <label className="checkbox-container">
-                        <input type="checkbox" checked={acceptRules} onChange={e => setAcceptRules(e.target.checked)} required />
-                        <span className="checkmark"></span>
-                        <span className="checkbox-text">
-                            Я согласен с <a href={actionDetails?.rules_link || "#"} target="_blank" rel="noopener noreferrer">правилами акции</a>
-                        </span>
-                    </label>
-                </section>
                 <button type="submit" className="btn-register-check" disabled={isSubmitting}>Зарегистрировать чек</button>
             </form>
 

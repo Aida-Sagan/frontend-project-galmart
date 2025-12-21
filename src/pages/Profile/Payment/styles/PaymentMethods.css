@@ -81,9 +81,9 @@
 }
 .add-card-btn:hover {
     background-color: #7a1a55;
+    color: #FFFFFF;
 }
 
-/* --- Стили модального окна --- */
 .modal-overlay {
     position: fixed;
     top: 0;

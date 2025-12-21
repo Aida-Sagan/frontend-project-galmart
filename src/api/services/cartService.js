@@ -185,3 +185,13 @@ export const deleteSavedCard = async (cardId) => {
         throw error;
     }
 };
+
+export const attachNewCard = async () => {
+    try {
+        const response = await $api.post('/api/v2/account/card/');
+        return response.data?.data?.url || response.data?.url;
+    } catch (error) {
+        throw error;
+    }
+};
+

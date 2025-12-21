@@ -188,10 +188,10 @@ export const deleteSavedCard = async (cardId) => {
 
 export const attachNewCard = async () => {
     try {
-        const response = await $api.post('/api/v2/account/card/');
+        const response = await $api.post('/api/v2/account/card/', {});
         return response.data?.data?.url || response.data?.url;
     } catch (error) {
+        console.error("Ошибка при получении ссылки на привязку карты:", error);
         throw error;
     }
 };
-

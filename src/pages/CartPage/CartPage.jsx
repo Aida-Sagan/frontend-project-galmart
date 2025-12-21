@@ -3,7 +3,7 @@ import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useLocation } from '../../context/LocationContext';
 import { Link } from 'react-router-dom';
-import { deleteCart as deleteCartService, setPromocode,getSavedCards, deleteSavedCard } from '../../api/services/cartService';
+import { deleteCart as deleteCartService, setPromocode, getSavedCards, deleteSavedCard, attachNewCard } from '../../api/services/cartService';
 
 import CartItemsSection from '../../components/CartSection/CartItemsSection';
 import Container from '../../components/Container/Container';
@@ -329,11 +329,19 @@ const CartContent = () => {
     };
 
 
-    const handleAddNewCard = () => {
-        console.log("Redirect to add card flow");
-        // Implement redirection logic here (e.g., navigate('/profile/cards/add'))
+    const handleAddNewCard = async () => {
+        try {
+            const url = await attachNewCard();
+            if (url) {
+                window.location.href = url;
+            } else {
+                alert("Не удалось получить ссылку для привязки");
+            }
+        } catch (e) {
+            console.error("Ошибка привязки:", e);
+            alert("Ошибка сервера при попытке добавить карту");
+        }
     };
-
 
     const getSelectedMethodName = () => {
         if (selectedPaymentMethodId === 'apple_pay') return 'Apple Pay';

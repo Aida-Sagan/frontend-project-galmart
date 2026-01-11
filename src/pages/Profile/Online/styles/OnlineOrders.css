@@ -86,12 +86,54 @@
     margin: 8px 0;
 }
 
+/* 1. Логика закрашивания полосок */
 .step-bar {
-    width: 60px; /* Уменьшено, чтобы строка не ломалась при малых экранах */
+    width: 60px;
     height: 6px;
     background: #902067;
-    opacity: 0.3;
+    opacity: 0.2; /* Неактивные полоски - бледные */
     border-radius: 32px;
+    transition: opacity 0.3s ease;
+}
+
+.step-bar.active {
+    opacity: 1; /* Активные полоски - яркие #902067 */
+}
+
+/* 2. Позиционирование товаров вправо как в дизайне */
+.card-content-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; /* Выравнивание картинок по низу контента */
+    gap: 20px;
+}
+
+.card-info-side {
+    flex: 1; /* Инфо занимает всё свободное место */
+}
+
+.card-images-side {
+    flex-shrink: 0; /* Картинки не сжимаются */
+    display: flex;
+    justify-content: flex-end;
+}
+
+.status-block-wrapper {
+    margin-top: 16px;
+}
+
+/* 3. Стиль для пустой истории */
+.empty-state-full {
+    text-align: center;
+    padding: 40px;
+    color: #7A7A7A;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* 4. Уточнение для бонусов */
+.bonus-icon {
+    margin-left: 4px;
 }
 
 .card-description {
@@ -154,11 +196,18 @@
     gap: 8px;
     background: none;
     border: none;
-    font-weight: 600;
-    font-size: 14px;
+    font-weight: 500;
+    font-size: 12px;
     color: #222;
     cursor: pointer;
     margin-bottom: 20px;
+    background: #F5F5F5;
+    border-radius: 64px;
+    padding: 7px 10px;
+}
+
+.back-navigation:hover {
+    background: #b3b2b2;
 }
 
 .order-card-detail {
@@ -169,9 +218,10 @@
 }
 
 .detail-order-number {
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 500;
     margin-top: 10px;
+    color: #222222;
 }
 
 .detail-info-blocks {
@@ -234,3 +284,347 @@
 
 .mt-40 { margin-top: 40px; }
 .history-card { opacity: 0.8; }
+
+.msg-badge {
+    background: #C6D600;
+    color: #222;
+    border-radius: 64px;
+    padding: 2px 6px;
+    font-size: 10px;
+    margin-left: 8px;
+    font-weight: 600;
+}
+
+.order-details-wrapper {
+    max-width: 800px;
+}
+
+/* Хедер навигации */
+.details-nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.receipt-link-top {
+    font-weight: 500;
+    font-size: 13px;
+    color: #222;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    background: #F5F5F5;
+    padding: 7px 10px;
+    border-radius: 64px;
+}
+.receipt-link-top:hover {
+    background: #b3b2b2;
+}
+
+/* Карточка статуса */
+.order-status-card-bg {
+    background: #FBFBFB;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+/* Информационные блоки (Адрес, Время, Оплата) */
+.info-row-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 3px;
+    background: #F5F5F5;
+    position: relative;
+}
+
+.info-row-item:first-child {
+    border-radius: 20px 20px 0 0;
+}
+
+.info-row-item:not(:last-child) {
+    border-bottom: 1px solid #DBDBDB;
+}
+
+.info-row-item:last-child {
+    border-radius: 0 0 20px 20px;
+}
+
+.label-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label-group span {
+    font-size: 12px;
+    color: #7A7A7A;
+}
+
+.label-group strong {
+    font-size: 14px;
+    font-weight: 500;
+    color: #222;
+}
+
+.chevron-right {
+    color: #222;
+    font-size: 20px;
+}
+
+.visa-badge {
+    font-weight: 700;
+    font-style: italic;
+    margin-left: 4px;
+}
+
+/* Секция состава заказа */
+.order-content-section {
+    background: #F5F5F5;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 24px;
+    margin-top: 24px;
+}
+
+.section-subtitle {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    color: #222;
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.product-item:last-child { border-bottom: none; }
+
+.prod-img {
+    width: 60px;
+    height: 60px;
+    background: #fff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.prod-img.grey {
+    background: #F5F5F5;
+    filter: grayscale(1);
+}
+
+.prod-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.prod-name {
+    font-weight: 500;
+    font-size: 14px;
+    margin: 0 0 4px 0;
+}
+
+.prod-weight {
+    font-size: 12px;
+    color: #7A7A7A;
+}
+
+.prod-price {
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.old-p {
+    text-decoration: line-through;
+    color: #7A7A7A;
+    margin-right: 4px;
+}
+/* Финансовый блок */
+.price-calculation-block {
+    background: #FBFBFB;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 30px;
+}
+
+.calc-row {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #4E4E4E;
+}
+
+.calc-row:not(:last-of-type) {
+    border-bottom: 1px solid var(--color-divider-primary, #DBDBDB);
+}
+
+.calc-row.discount {
+    color: #7A7A7A;
+}
+
+.calc-row-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calc-row-total strong {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.total-price-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.old-total {
+    text-decoration: line-through;
+    color: #7A7A7A;
+    font-size: 16px;
+}
+
+.new-total {
+    font-size: 22px;
+    font-weight: 600;
+    color: #222;
+}
+/* Кнопки футера */
+.details-footer-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 40px;
+}
+
+.btn-primary-large {
+    background: #902067;
+    color: #fff;
+    border: none;
+    border-radius: 64px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn-primary-large:hover{
+    background: #70164f;
+}
+
+.btn-outline-cancel {
+    background: transparent;
+    border: 2px solid #902067;
+    color: #902067;
+    border-radius: 64px;
+    padding: 13px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+}
+
+.btn-outline-cancel:hover {
+    background: #902067;
+    color: #FBFBFB;
+}
+.chat-btn-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chevron-right.clickable {
+    cursor: pointer;
+    padding: 10px;
+    margin-right: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prod-weight-group,
+.prod-price-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+}
+
+.weight-old,
+.price-old {
+    text-decoration: line-through;
+    color: #7A7A7A;
+}
+
+.weight-arrow,
+.price-arrow {
+    color: #7A7A7A;
+}
+
+.weight-current {
+    color: #7A7A7A;
+}
+
+.prod-price,
+.price-current {
+    font-weight: 600;
+    font-size: 14px;
+    color: #222;
+    margin-top: 2px;
+}
+
+.prod-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.discount-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--color-divider-primary, #DBDBDB);
+}
+
+.discount-row .label-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.calc-label {
+    font-size: 14px;
+    color: #222;
+}
+
+.calc-sublabel {
+    font-size: 12px;
+    color: #7A7A7A;
+}
+
+.calc-value {
+    font-size: 14px;
+    color: #7A7A7A;
+    font-weight: 500;
+}

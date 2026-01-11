@@ -35,7 +35,7 @@ const FilterableSectionBlock = ({ collections = [] }) => {
     return (
         <section className="filterable-section">
             <div className="section-header">
-                <h2 className="section-title">{activeCollection.title}</h2>
+                <h2 className="filter-section-title">{activeCollection.title}</h2>
                 <div className="filter-buttons">
                     {collections.map((collection) => (
                         <button

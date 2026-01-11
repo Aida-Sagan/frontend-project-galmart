@@ -1,0 +1,343 @@
+/* ReturnOrderModal.css */
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+}
+
+.return-modal-container {
+    background: #fff;
+    width: 95%;
+    max-width: 460px; /* Оптимально для мобильного вида как в дизайне */
+    max-height: 90vh;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.return-modal-header {
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.return-modal-header h2 {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+    color: #222;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #7A7A7A;
+    cursor: pointer;
+}
+
+.return-modal-content {
+    overflow-y: auto;
+    padding: 0px 20px;
+}
+
+/* Селектор типа (Возврат/Замена) */
+.request-type-selector {
+    background: #F5F5F5;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.type-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    cursor: pointer;
+}
+
+.option-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.option-text strong {
+    font-size: 15px;
+    color: #7A7A7A;
+    transition: color 0.3s;
+}
+
+.option-text span {
+    font-size: 12px;
+    color: #7A7A7A;
+}
+
+.type-option.active .option-text strong {
+    color: #222222; /* Выделение по ТЗ */
+}
+
+.radio-circle {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #DBDBDB;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.type-option.active .radio-circle {
+    border-color: #902067;
+}
+
+.type-option.active .radio-circle::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background: #902067;
+    border-radius: 50%;
+}
+
+.divider-line {
+    height: 1px;
+    background: #F0F0F0;
+    margin: 0 16px;
+}
+
+/* Список товаров */
+.return-items-list {
+    background: #F5F5F5;
+    border-radius: 20px;
+    padding: 8px 16px;
+    margin-bottom: 20px;
+}
+
+.return-item-row {
+    display: flex;
+    align-items: center;
+    padding: 16px 0;
+    gap: 12px;
+    transition: opacity 0.3s;
+}
+
+.return-item-row:not(:last-child) {
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.return-item-row.dimmed {
+    opacity: 0.7;
+}
+
+.return-item-row.selected {
+    opacity: 1;
+}
+
+.custom-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #902067;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-checkbox.checked {
+    background: #902067;
+}
+
+.custom-checkbox.checked::after {
+    content: "✓";
+    color: white;
+    font-size: 12px;
+}
+
+.item-img-box {
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.item-info-main {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item-info-main p {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+    max-width: 140px;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    background: #F2F2F2;
+    border-radius: 10px;
+    padding: 2px 8px;
+    gap: 12px;
+}
+
+.quantity-controls button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #222;
+    cursor: pointer;
+}
+
+.quantity-controls button:disabled {
+    color: #DBDBDB;
+    cursor: not-allowed;
+}
+
+/* Фото и комментарии */
+.photo-upload-section{
+    background: #F5F5F5;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.comment-section{
+    background: #F5F5F5;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.photo-upload-section h3, .comment-section h3 {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0 0 4px 0;
+    color: #222;
+}
+
+.comment-section p{
+    font-size: 14px;
+    color: #4E4E4E;
+    font-weight: 500;
+}
+
+
+.photo-upload-section p {
+    font-size: 12px;
+    color: #7A7A7A;
+    margin-bottom: 12px;
+}
+
+.photo-grid {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.upload-box {
+    width: 64px;
+    height: 64px;
+    background: #902067;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+}
+
+.photo-preview {
+    width: 64px;
+    height: 64px;
+    background: #F5F5F5;
+    border-radius: 12px;
+    border: 1px solid #DBDBDB;
+    position: relative;
+    overflow: hidden;
+}
+
+.photo-preview .remove-photo {
+    position: absolute;
+    top: 2px; right: 2px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border-radius: 50%;
+    width: 16px; height: 16px;
+    font-size: 10px;
+    border: none;
+}
+
+textarea {
+    width: 100%;
+    min-height: 100px;
+    border: none;
+    background: #FBFBFB;
+    border-radius: 32px;
+    padding: 16px;
+    resize: none;
+    font-size: 14px;
+    color: #222;
+    margin-top: 8px;
+}
+
+.return-modal-footer {
+    padding: 16px 20px 24px;
+}
+
+.btn-submit-request {
+    width: 100%;
+    padding: 18px;
+    border-radius: 64px;
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-submit-request:disabled {
+    background-color: #DBDBDB !important;
+    cursor: not-allowed;
+}
+
+.upload-box, .photo-preview-item, .photo-placeholder {
+    width: 77px;
+    height: 98px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.photo-placeholder {
+    background-color: transparent;
+    border: 1px solid #DBDBDB;
+}
+
+.photo-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+.btn-submit-request:disabled {
+    background-color: #DBDBDB !important;
+    cursor: not-allowed;
+}

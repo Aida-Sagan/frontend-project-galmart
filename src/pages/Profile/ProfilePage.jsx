@@ -20,6 +20,8 @@ import PromocodesList from './Promocodes/PromocodesList.jsx';
 import PaymentMethodsList from './Payment/PaymentMethodsList.jsx';
 import NotificationContent from './Notifications/NotificationContent.jsx';
 import OnlineOrdersList from './Online/OnlineOrdersList.jsx';
+import SupportContent from './Support/SupportContent.jsx';
+
 
 const EditIcon = () => (
     <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -246,19 +248,13 @@ const ProfilePage = () => {
                     />
                 );
             case 'notifications':
-                // !!! ИСПОЛЬЗОВАНИЕ НОВОГО КОМПОНЕНТА !!!
                 return (
                     <NotificationContent
                         initialTab={'orders'}
                     />
                 );
             case 'support':
-                return (
-                    <div className="content-placeholder">
-                        <h2 className="content-title">Поддержка</h2>
-                        <p>Раздел поддержки в разработке.</p>
-                    </div>
-                );
+                return <SupportContent />;
             default:
                 return <div className="content-placeholder">Выберите пункт меню или редактируйте профиль.</div>;
         }

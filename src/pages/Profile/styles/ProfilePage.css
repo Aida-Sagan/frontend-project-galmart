@@ -154,7 +154,6 @@
     transition: background-color 0.2s;
     border: none;
     text-align: left;
-    margin-bottom: 4px;
 }
 
 .profile-nav .nav-item:hover:not(.active) {
@@ -176,6 +175,10 @@
 
 .nav-item.active:nth-child(1) {
     border-radius: 39px 41px 0 0px;
+}
+
+.nav-item.active:nth-child(8){
+    border-radius: 0px 0px 34px 34px;
 }
 
 .profile-nav .nav-item .item-count {

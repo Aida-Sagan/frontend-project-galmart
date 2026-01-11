@@ -130,15 +130,13 @@
 .attach-btn-circle { background-color: #FFFFFF; }
 .send-btn-circle { background-color: #902067; }
 
-/* Контейнер области ввода */
 .input-area-container {
-    background-color: #F5F5F5; /* Фон блока ввода */
+    background-color: #F5F5F5;
     border-radius: 24px;
     padding: 16px 24px;
-    margin-top: 16px; /* РАЗЪЕДИНЕНИЕ БЛОКОВ */
+    margin-top: 16px;
 }
 
-/* Стили пузырей сообщений (белый и розовый остаются на сером фоне) */
 .message-bubble {
     max-width: 80%;
     padding: 16px;

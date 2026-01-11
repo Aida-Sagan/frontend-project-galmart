@@ -9,11 +9,15 @@ import { fetchHomePageData } from '../../api/services/homepageService';
 import Loader from '../../components/Loader/Loader.jsx';
 import ScrollToTopButton from '../../components/ScrollToTopButton/ScrollToTopButton';
 import { useLocation } from '../../context/LocationContext.jsx';
+import MobileStub from '../MobileStub/MobileStub.jsx';
+
 import './styles/MainPage.css';
 
 export default function MainPage() {
     const [pageData, setPageData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [showMobileStub, setShowMobileStub] = useState(false);
+
 
     const {
         city,
@@ -21,6 +25,13 @@ export default function MainPage() {
     } = useLocation();
 
     useEffect(() => {
+        const isMobile = window.innerWidth <= 480;
+        const hasSeenStub = sessionStorage.getItem('hasSeenMobileStub');
+
+        if (isMobile && !hasSeenStub) {
+            setShowMobileStub(true);
+        }
+
         const loadPageData = async () => {
             if (isLocationLoading) return;
 
@@ -40,6 +51,15 @@ export default function MainPage() {
         loadPageData();
 
     }, [city, isLocationLoading]);
+
+    const handleContinueToWeb = () => {
+        sessionStorage.setItem('hasSeenMobileStub', 'true');
+        setShowMobileStub(false);
+    };
+
+    if (showMobileStub) {
+        return <MobileStub onContinue={handleContinueToWeb} />;
+    }
 
 
     if (loading || isLocationLoading) {

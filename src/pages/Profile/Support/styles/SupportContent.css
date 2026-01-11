@@ -144,7 +144,6 @@
     position: relative;
 }
 
-/* Поле ввода внутри белого инпута */
 .chat-input-area {
     display: flex;
     gap: 12px;

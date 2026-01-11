@@ -1,0 +1,123 @@
+.mobile-stub-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #FFFFFF;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    width: 100%;
+    height: 100vh;
+}
+
+.mobile-stub-top {
+    height: 50vh;
+    background-color: #B54A92;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 1;
+    flex-shrink: 0;
+}
+
+.mobile-stub-top::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #EFD6E7;
+    clip-path: polygon(0 100%, 0 0, 50% 100%, 100% 0, 100% 100%);
+    z-index: 99;
+}
+
+.phone-mockup {
+    width: 75%;
+    max-width: 260px;
+    margin-bottom: -38%;
+    z-index: 2;
+}
+
+.phone-mockup img {
+    width: 100%;
+    display: block;
+    object-fit: contain;
+}
+
+.mobile-stub-content {
+    flex: 1;
+    background: linear-gradient(180deg, #EFD6E7 0%, #FFFFFF 100%);
+    padding: 60px 24px 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 3;
+}
+
+.stub-logo-badge {
+    position: absolute;
+    top: -65px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 130px;
+    z-index: 10;
+}
+
+.stub-logo-badge img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.stub-brand-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    color: #222222;
+    margin-top: 10px;
+}
+
+.stub-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #4E4E4E;
+    line-height: 1.4;
+    margin: 15px 0 30px;
+    max-width: 280px;
+}
+
+.stub-buttons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 340px;
+}
+
+.btn-install {
+    background: #902067;
+    color: #FFFFFF;
+    border: none;
+    padding: 18px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-web-version {
+    background: transparent;
+    color: #902067;
+    border: 1.5px solid #902067;
+    padding: 18px;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+}

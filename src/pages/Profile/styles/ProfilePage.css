@@ -42,17 +42,15 @@
 
 .profile-layout {
     display: flex;
-    gap: 40px; /* Расстояние между сайдбаром и контентом */
+    gap: 40px;
 }
 
 
-/* --- Сайдбар (Меню) --- */
 .profile-sidebar {
     width: 280px;
     flex-shrink: 0;
 }
 
-/* Блок с именем и телефоном */
 .profile-user-info {
     background-color:#F5F5F5;
     border-radius: 16px;
@@ -72,7 +70,7 @@
 
 .profile-user-info .user-name {
     font-size: 20px;
-    font-weight: 500; /* Полужирный */
+    font-weight: 500;
     color: var(--primary-text);
 }
 

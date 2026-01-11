@@ -302,9 +302,9 @@ const ProfilePage = () => {
                                     )}
                                 </div>
                             ))}
-                            <button onClick={logout} className="nav-item logout-link">
-                                Выйти
-                            </button>
+                            {/*<button onClick={logout} className="nav-item logout-link">*/}
+                            {/*    Выйти*/}
+                            {/*</button>*/}
                         </nav>
                     </div>
 

@@ -8,12 +8,11 @@ const OnlineOrdersList = () => {
     const [selectedOrder, setSelectedOrder] = useState(null);
 
     const statusConfig = {
-        // ТЕКУЩИЕ СТАТУСЫ
+
         'Не оплачен': { steps: 0, color: '#902067', desc: 'Для оформления заказа необходимо произвести оплату', action: 'Оплатить заказ' },
         'Оформлен': {
             steps: 1,
             color: '#902067',
-            // Разные трактовки для одного статуса
             variants: {
                 selfEdit: {
                     desc: 'Что-то забыли? Вы можете дополнить заказ, пока он не передан на сборку',
@@ -59,7 +58,6 @@ const OnlineOrdersList = () => {
     const historyOrders = mockOrders.filter(o => o.isHistory);
 
     const handleOrderClick = (order) => {
-        // Определяем финальный конфиг для детальной страницы
         let finalConfig = statusConfig[order.status];
         if (order.status === 'Оформлен') {
             const variant = order.canEditSelf ? finalConfig.variants.selfEdit : finalConfig.variants.viaManager;
@@ -71,7 +69,6 @@ const OnlineOrdersList = () => {
     };
 
     if (view === 'details' && selectedOrder) {
-        // Передаем корректный вариант оформления в детализацию
         let currentConfig = statusConfig[selectedOrder.status];
         if (selectedOrder.status === 'Оформлен') {
             const variant = selectedOrder.canEditSelf ? currentConfig.variants.selfEdit : currentConfig.variants.viaManager;
@@ -88,7 +85,7 @@ const OnlineOrdersList = () => {
         <div className="online-orders-container">
             {currentOrders.length > 0 && (
                 <>
-                    <h2 className="main-section-title">Текущие заказы</h2>
+                    <h2 className="main-section-title">Мои онлайн заказы</h2>
                     {currentOrders.map(order => renderOrderCard(order, statusConfig, handleOrderClick))}
                 </>
             )}

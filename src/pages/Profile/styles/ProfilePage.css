@@ -99,7 +99,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: 119px;
+    min-height: 174px;
     margin-bottom: 24px;
 
     position: relative;
@@ -113,8 +113,11 @@
     right: 0;
     width: 100px;
     height: 100%;
-    background: radial-gradient(circle at 100% 100%, transparent 50%, rgba(255, 255, 255, 0.15) 50%);
     opacity: 0.8;
+    background-image: url('../../../assets/svg/bonusFlower.svg');
+    background-repeat: no-repeat;
+    background-position: center right;
+    background-size: contain;
 }
 
 
@@ -127,7 +130,7 @@
 
 .profile-balance-widget .balance-amount {
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 500;
     margin-top: 0;
 }
 

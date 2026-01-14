@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './styles/OnlineOrders.css';
 import OrderDetails from './OrderDetails';
 import apricotImg from '../../../assets/items/fruits_png.png';
+import { getOnlineOrdersData } from '../../../api/services/ordersService.js';
 
 const OnlineOrdersList = () => {
     const [view, setView] = useState('list');
     const [selectedOrder, setSelectedOrder] = useState(null);
 
-    const statusConfig = {
+    const [orders, setOrders] = useState({ active: [], history: [], all: [] });
+    const [loading, setLoading] = useState(true);
 
+    const statusConfig = {
         'Не оплачен': { steps: 0, color: '#902067', desc: 'Для оформления заказа необходимо произвести оплату', action: 'Оплатить заказ' },
         'Оформлен': {
             steps: 1,
@@ -28,8 +31,6 @@ const OnlineOrdersList = () => {
         'Собран': { steps: 3, color: '#902067', desc: 'Ваш заказ собран, скоро передадим курьеру', action: 'В чат с менеджером' },
         'Доставляется': { steps: 4, color: '#902067', desc: 'Ваш заказ привезёт Мираз', action: 'Связаться с курьером' },
         'Ожидает оценки': { steps: 5, color: '#902067', desc: 'Ваш заказ доставлен. Пожалуйста, оцените нашу работу', action: 'Оценить работу' },
-
-        // ИСТОРИЯ
         'Завершен': { steps: 5, color: '#222', desc: 'Ваш заказ завершен', action: 'Подробнее о заказе' },
         'Отменен': { steps: 0, color: '#222', desc: 'Ваш заказ отменен', action: 'Подробнее о заказе' },
         'Отменен курьером': { steps: 0, color: '#222', desc: 'Ваш заказ отменен курьером', action: 'Подробнее о заказе' },
@@ -37,29 +38,32 @@ const OnlineOrdersList = () => {
         'Частичный возврат': { steps: 0, color: '#222', desc: 'По вашему заказу произведен частичный возврат', action: 'Подробнее о заказе' }
     };
 
-    const mockOrders = [
-        { id: 1, number: '01100018957', total: 18048, bonuses: 180, status: 'Не оплачен', isHistory: false },
-        // Вариант Оформлен №1 (самостоятельно)
-        { id: 2, number: '01100018958', total: 18048, bonuses: 180, status: 'Оформлен', isHistory: false, canEditSelf: true },
-        // Вариант Оформлен №2 (через менеджера)
-        { id: 12, number: '01100018959', total: 18048, bonuses: 180, status: 'Оформлен', isHistory: false, canEditSelf: false },
-        { id: 3, number: '01100018960', total: 18048, bonuses: 180, status: 'На сборке', isHistory: false },
-        { id: 4, number: '01100018961', total: 18048, bonuses: 180, status: 'Собран', isHistory: false },
-        { id: 5, number: '01100018962', total: 18048, bonuses: 180, status: 'Доставляется', isHistory: false },
-        { id: 6, number: '01100018963', total: 18048, bonuses: 180, status: 'Ожидает оценки', isHistory: false },
-        { id: 7, number: '01100018964', total: 18048, bonuses: 180, status: 'Завершен', isHistory: true },
-        { id: 8, number: '01100018965', total: 18048, bonuses: 180, status: 'Отменен', isHistory: true },
-        { id: 9, number: '01100018966', total: 18048, bonuses: 180, status: 'Отменен курьером', isHistory: true },
-        { id: 10, number: '01100018967', total: 18048, bonuses: 180, status: 'Полный возврат', isHistory: true },
-        { id: 11, number: '01100018968', total: 18048, bonuses: 180, status: 'Частичный возврат', isHistory: true }
-    ];
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const data = await getOnlineOrdersData();
+                const historyNames = ['Завершен', 'Отменен', 'Отменен курьером', 'Полный возврат', 'Частичный возврат'];
 
-    const currentOrders = mockOrders.filter(o => !o.isHistory);
-    const historyOrders = mockOrders.filter(o => o.isHistory);
+                const formattedData = {
+                    active: data.all.filter(o => !historyNames.includes(o.status)),
+                    history: data.all.filter(o => historyNames.includes(o.status)),
+                    all: data.all
+                };
+
+                setOrders(formattedData);
+            } catch (error) {
+                console.error("Ошибка в компоненте OnlineOrdersList:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchOrders();
+    }, []);
 
     const handleOrderClick = (order) => {
-        let finalConfig = statusConfig[order.status];
+        let finalConfig = statusConfig[order.status] || statusConfig['Оформлен'];
         if (order.status === 'Оформлен') {
+            // Если бэк не шлет флаг редактирования, по умолчанию ставим viaManager
             const variant = order.canEditSelf ? finalConfig.variants.selfEdit : finalConfig.variants.viaManager;
             finalConfig = { ...finalConfig, ...variant };
         }
@@ -68,8 +72,16 @@ const OnlineOrdersList = () => {
         setView('details');
     };
 
+    if (loading) {
+        return <div className="empty-state-full">Загрузка заказов...</div>;
+    }
+
+    if (orders.all.length === 0) {
+        return <div className="empty-state-full">Пока у вас нет заказов</div>;
+    }
+
     if (view === 'details' && selectedOrder) {
-        let currentConfig = statusConfig[selectedOrder.status];
+        let currentConfig = statusConfig[selectedOrder.status] || statusConfig['Оформлен'];
         if (selectedOrder.status === 'Оформлен') {
             const variant = selectedOrder.canEditSelf ? currentConfig.variants.selfEdit : currentConfig.variants.viaManager;
             currentConfig = { ...currentConfig, ...variant };
@@ -77,23 +89,19 @@ const OnlineOrdersList = () => {
         return <OrderDetails order={selectedOrder} config={currentConfig} onBack={() => setView('list')} />;
     }
 
-    if (mockOrders.length === 0) {
-        return <div className="empty-state-full">Пока у вас нет заказов</div>;
-    }
-
     return (
         <div className="online-orders-container">
-            {currentOrders.length > 0 && (
+            {orders.active.length > 0 && (
                 <>
                     <h2 className="main-section-title">Мои онлайн заказы</h2>
-                    {currentOrders.map(order => renderOrderCard(order, statusConfig, handleOrderClick))}
+                    {orders.active.map(order => renderOrderCard(order, statusConfig, handleOrderClick))}
                 </>
             )}
 
-            {historyOrders.length > 0 && (
+            {orders.history.length > 0 && (
                 <>
                     <h2 className="main-section-title mt-40">История заказов</h2>
-                    {historyOrders.map(order => renderOrderCard(order, statusConfig, handleOrderClick, true))}
+                    {orders.history.map(order => renderOrderCard(order, statusConfig, handleOrderClick, true))}
                 </>
             )}
         </div>
@@ -101,9 +109,9 @@ const OnlineOrdersList = () => {
 };
 
 const renderOrderCard = (order, statusConfig, onOrderClick, isHistory = false) => {
-    let config = statusConfig[order.status];
+    // Получаем конфиг по текстовому статусу из бэка
+    let config = statusConfig[order.status] || { steps: 0, color: '#902067', desc: order.status, action: 'Подробнее' };
 
-    // Логика выбора трактовки для "Оформлен"
     if (order.status === 'Оформлен') {
         const variant = order.canEditSelf ? config.variants.selfEdit : config.variants.viaManager;
         config = { ...config, ...variant };
@@ -112,8 +120,9 @@ const renderOrderCard = (order, statusConfig, onOrderClick, isHistory = false) =
     return (
         <div key={order.id} className={`order-card-v2 ${isHistory ? 'history-card' : ''}`} onClick={() => onOrderClick(order)}>
             <div className="card-row">
-                <span className="order-id">Заказ №{order.number}</span>
-                <span className="order-price-top">{order.total.toLocaleString()} ₸</span>
+                {/* Заменяем order.number на order_number из вашего API JSON */}
+                <span className="order-id">Заказ №{order.order_number || order.number}</span>
+                <span className="order-price-top">{order.total.toLocaleString()} {order.currency || '₸'}</span>
             </div>
 
             <div className="card-row align-center">
@@ -140,6 +149,7 @@ const renderOrderCard = (order, statusConfig, onOrderClick, isHistory = false) =
                     <p className="card-description">{config.desc}</p>
                 </div>
                 <div className="items-row">
+                    {/* Здесь в будущем можно будет мапить order.items, пока оставили заглушки */}
                     <div className="item-thumb"><img src={apricotImg} alt="1" /></div>
                     <div className="item-thumb"><img src={apricotImg} alt="1" /></div>
                     <div className="item-thumb"><img src={apricotImg} alt="1" /></div>

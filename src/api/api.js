@@ -28,5 +28,11 @@ export const API_URLS = {
     CREATE_ORDER: `/api/v2/orders/order/`,
     APPLY_PROMOCODE: '/api/v2/promocode_my/apply/',
 
+    // Orders & History
+    ORDER_HISTORY: `/api/v2/orders/order/history/`, // Онлайн заказы
+    OFFLINE_ORDERS: `/api/v2/bonus/transaction/1`, // Оффлайн заказы (через бонусы)
+    ORDER_DETAILS: (id) => `/api/v2/orders/order/${id}/`, // Метод для деталей
+    ORDER_REVIEW: (id) => `/api/v2/orders/order/${id}/review/`,
+
 
 };

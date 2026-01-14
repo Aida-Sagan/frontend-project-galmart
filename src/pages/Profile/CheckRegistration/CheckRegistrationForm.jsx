@@ -16,7 +16,7 @@ const StatusModal = ({ isOpen, onClose, type, message }) => {
     return (
         <div className="g-modal-backdrop">
             <div className="g-status-card">
-                <button className="g-close-icon" onClick={onClose} aria-label="Закрыть">&times;</button>
+                <button className="g-close-icon" onClick={onClose}>&times;</button>
                 <div className="g-modal-content-area">
                     <p className="g-status-text">{message}</p>
                     <button
@@ -40,17 +40,14 @@ const CheckRegistrationForm = ({ checkRegistrationData, isLoading, error }) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [phone, setPhone] = useState('');
-
-
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [modalConfig, setModalConfig] = useState({ isOpen: false, type: 'success', message: '' });
 
     const actions = checkRegistrationData?.actions || [];
     const realShops = checkRegistrationData?.real_shops || [];
 
-    const isActionSelected = selectedAction !== null;
     const actionDetails = useMemo(() => actions.find(a => a.id === selectedAction), [selectedAction, actions]);
-    const actionRequiresFields = useMemo(() => isActionSelected && actionDetails?.fields?.length > 0, [isActionSelected, actionDetails]);
+    const actionRequiresFields = useMemo(() => !!selectedAction && actionDetails?.fields?.length > 0, [selectedAction, actionDetails]);
     const actionHasMeetTimes = useMemo(() => actionRequiresFields && actionDetails.fields.some(f => f.meet_times?.length > 0), [actionRequiresFields, actionDetails]);
 
     const shopsForCheckData = useMemo(() => {
@@ -86,36 +83,34 @@ const CheckRegistrationForm = ({ checkRegistrationData, isLoading, error }) => {
         setPhone('');
     };
 
-    const handleCloseModal = () => {
-        if (modalConfig.type === 'success') {
-            resetForm();
-        }
-        setModalConfig(prev => ({ ...prev, isOpen: false }));
-    };
-
     const handleRegistrationSubmit = async (e) => {
         e.preventDefault();
-
         setIsSubmitting(true);
+
         try {
             const payload = {
-                actions_id: selectedAction,
+                actions_id: selectedAction ? Number(selectedAction) : null,
                 name: firstName,
                 second_name: lastName,
-                phone: phone,
+                phone: phone.replace(/\D/g, ''),
                 code: promoCode,
-                meet_time_id: selectedTimeSlot,
+                meet_time_id: selectedTimeSlot ? Number(selectedTimeSlot) : null,
                 photos: photoFiles.filter(f => f !== null).map(f => f.name)
             };
+
             const response = await registerCheck(payload);
 
-            if (response.status === 201) {
+            if (response.status === 201 || response.status === 200) {
                 setModalConfig({ isOpen: true, type: 'success', message: 'Чек успешно зарегистрирован!' });
             }
         } catch (err) {
             let errorMsg = 'Ошибка при регистрации';
-            const serverMsg = err.response?.data?.message || "";
-            if (serverMsg.includes("duplicate key value") || serverMsg.includes("already exists")) {
+            const serverData = err.response?.data;
+            const serverMsg = serverData?.message || "";
+
+            if (typeof serverData === 'string' && serverData.includes("invalid literal")) {
+                errorMsg = "Некорректный формат данных. Убедитесь, что все поля заполнены правильно.";
+            } else if (serverMsg.includes("duplicate") || serverMsg.includes("already exists")) {
                 errorMsg = `Промокод "${promoCode}" уже зарегистрирован в системе.`;
             } else if (serverMsg) {
                 errorMsg = serverMsg;
@@ -202,7 +197,7 @@ const CheckRegistrationForm = ({ checkRegistrationData, isLoading, error }) => {
                                 value={selectedShop}
                                 options={availableShopsForAction.map(shop => ({ id: shop.id, title: shop.name }))}
                                 onChange={id => { setSelectedShop(id); setSelectedTimeSlot(null); }}
-                                placeholder="Место проведения"
+                                placeholder="Место покупки"
                             />
                         </div>
                         <div className="form-group">
@@ -225,7 +220,10 @@ const CheckRegistrationForm = ({ checkRegistrationData, isLoading, error }) => {
 
             <StatusModal
                 isOpen={modalConfig.isOpen}
-                onClose={handleCloseModal}
+                onClose={() => {
+                    if (modalConfig.type === 'success') resetForm();
+                    setModalConfig(prev => ({ ...prev, isOpen: false }));
+                }}
                 type={modalConfig.type}
                 message={modalConfig.message}
             />

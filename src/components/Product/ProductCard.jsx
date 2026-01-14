@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ReactComponent as HeartIcon } from '../../assets/svg/like.svg';
 import { ReactComponent as HeartLikedIcon } from '../../assets/svg/liked.svg';
@@ -30,16 +30,19 @@ const ProductCard = ({ product }) => {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
     const { favoriteIds, addFavoriteId, removeFavoriteId, isLoading: isLoadingFavorites } = useFavorites();
-    const { items: cartItems, updateCartItemQuantity, isLoading: isLoadingCart } = useCart();
-
-    const isFavorite = favoriteIds.has(id);
+    const { items: cartItems, updateCartItemQuantity } = useCart();
 
     const cartItem = cartItems.find(item => item.id === id);
+    const contextQuantity = cartItem ? Number(cartItem.count) : 0;
 
-    const quantity = cartItem ? Number(cartItem.count) : 0;
+    const [localQuantity, setLocalQuantity] = useState(contextQuantity);
 
-    const addedToCart = quantity > 0;
+    useEffect(() => {
+        setLocalQuantity(contextQuantity);
+    }, [contextQuantity]);
 
+    const isFavorite = favoriteIds.has(id);
+    const addedToCart = localQuantity > 0;
     const isGalmart = flags.includes('galmart_production');
     const isEco = flags.includes('eco');
     const hasBonus = flags.includes('bonus');
@@ -55,7 +58,6 @@ const ProductCard = ({ product }) => {
         callback();
     };
 
-
     const handleToggleFavorite = async (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -65,7 +67,6 @@ const ProductCard = ({ product }) => {
         }
 
         const willBeFavorite = !isFavorite;
-
         if (willBeFavorite) {
             addFavoriteId(id);
         } else {
@@ -86,7 +87,8 @@ const ProductCard = ({ product }) => {
 
     const handleAddToCart = (e) => {
         checkAuthAndRun(() => {
-            if (quantity === 0) {
+            if (localQuantity === 0) {
+                setLocalQuantity(1);
                 updateCartItemQuantity(id, 1, product);
             }
         }, e);
@@ -94,8 +96,9 @@ const ProductCard = ({ product }) => {
 
     const handleIncrement = (e) => {
         checkAuthAndRun(() => {
-            const newQuantity = quantity + 1;
+            const newQuantity = localQuantity + 1;
             if (newQuantity <= inventory) {
+                setLocalQuantity(newQuantity);
                 updateCartItemQuantity(id, newQuantity, product);
             }
         }, e);
@@ -103,20 +106,17 @@ const ProductCard = ({ product }) => {
 
     const handleDecrement = (e) => {
         checkAuthAndRun(() => {
-            const newQuantity = quantity - 1;
-
-            if (quantity > 0) {
+            if (localQuantity > 0) {
+                const newQuantity = localQuantity - 1;
+                setLocalQuantity(newQuantity);
                 updateCartItemQuantity(id, newQuantity, product);
             }
         }, e);
     };
 
     const getTotalPrice = () => {
-        return (unit_price * quantity).toLocaleString('ru-RU');
+        return (unit_price * localQuantity).toLocaleString('ru-RU');
     };
-
-    const isUpdatingCart = isLoadingCart;
-
 
     const imageUrl = photos[0];
     const productUrl = `/product/${id}`;
@@ -153,14 +153,13 @@ const ProductCard = ({ product }) => {
                             <button
                                 className={`add-to-cart-btn ${addedToCart ? 'expanded' : ''}`}
                                 onClick={handleAddToCart}
-                                disabled={isUpdatingCart}
                             >
                                 {addedToCart ? (
                                     <>
                                         <span className="minus" onClick={handleDecrement}><MinusIcon /></span>
                                         <div className="cart-info">
                                             <span className="price-in-cart">{getTotalPrice()} {currency}</span>
-                                            <span className="quantity-in-cart">{quantity} {unit}</span>
+                                            <span className="quantity-in-cart">{localQuantity} {unit}</span>
                                         </div>
                                         <span className="plus" onClick={handleIncrement}><PlusIcon /></span>
                                     </>

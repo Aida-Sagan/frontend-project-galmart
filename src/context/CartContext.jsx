@@ -5,7 +5,9 @@ import {
     setDeliveryTime as setDeliveryTimeService,
     getDeliveryTimes as getDeliveryTimesService,
     setOrder as setOrderService,
-    deleteCart as deleteCartApi
+    deleteCart as deleteCartApi,
+    getSavedCards as getSavedCardsApi,
+    deleteSavedCard as deleteSavedCardApi
 } from '../api/services/cartService';
 import { useLocation } from './LocationContext';
 import { useAuth } from './AuthContext';
@@ -14,11 +16,23 @@ const CartContext = createContext(null);
 
 export const CartProvider = ({ children }) => {
     const { isAuthenticated } = useAuth();
+    const { city } = useLocation();
+
     const [cartData, setCartData] = useState(null);
+    const [savedCards, setSavedCards] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isCardsLoading, setIsCardsLoading] = useState(false);
     const [cartError, setCartError] = useState(null);
 
-    const { city } = useLocation();
+    // Храним ID выбранного метода оплаты прямо в контексте
+    const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState(() => {
+        return localStorage.getItem('selectedPaymentMethodId') || 'apple_pay';
+    });
+
+    // Синхронизируем выбор с localStorage при каждом изменении
+    useEffect(() => {
+        localStorage.setItem('selectedPaymentMethodId', selectedPaymentMethodId);
+    }, [selectedPaymentMethodId]);
 
     const fetchCart = useCallback(async () => {
         if (!isAuthenticated) {
@@ -29,81 +43,90 @@ export const CartProvider = ({ children }) => {
         setIsLoading(true);
         try {
             const response = await getCartData();
-
-
             const dataToSave = response.data || response;
-
             setCartData(dataToSave);
             setCartError(null);
         } catch (error) {
-            console.error("Ошибка загрузки корзины:", error);
             setCartError("Не удалось загрузить корзину.");
         } finally {
             setIsLoading(false);
         }
     }, [isAuthenticated]);
 
+    const fetchCards = useCallback(async () => {
+        if (!isAuthenticated) {
+            setSavedCards([]);
+            return;
+        }
+        setIsCardsLoading(true);
+        try {
+            const cards = await getSavedCardsApi();
+            const cardsList = cards || [];
+            setSavedCards(cardsList);
+
+            const currentMethodIsCard = !['apple_pay', 'kaspi'].includes(selectedPaymentMethodId);
+            const cardStillExists = cardsList.some(c => c.id === selectedPaymentMethodId);
+
+            if (cardsList.length > 0 && (!cardStillExists && currentMethodIsCard)) {
+                const favoriteCard = cardsList.find(c => c.is_favorite) || cardsList[0];
+                setSelectedPaymentMethodId(favoriteCard.id);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsCardsLoading(false);
+        }
+    }, [isAuthenticated, selectedPaymentMethodId]);
+
+    const deleteCard = async (cardId) => {
+        try {
+            await deleteSavedCardApi(cardId);
+            setSavedCards(prev => prev.filter(card => card.id !== cardId));
+            if (selectedPaymentMethodId === cardId) {
+                setSelectedPaymentMethodId('apple_pay');
+            }
+        } catch (error) {
+            throw error;
+        }
+    };
+
     useEffect(() => {
         if (isAuthenticated && city) {
             fetchCart();
+            fetchCards();
         }
-    }, [isAuthenticated, city, fetchCart]);
-
+    }, [isAuthenticated, city, fetchCart, fetchCards]);
 
     const updateCartItemQuantity = async (itemId, newCount, productDetails = {}) => {
-        if (!isAuthenticated) {
-            console.warn("Пользователь не авторизован. Действие отменено.");
-            return;
-        }
-
+        if (!isAuthenticated) return;
         const previousCartData = cartData;
         setCartError(null);
-
         setCartData(prev => {
             if (!prev || !prev.items) return prev;
-
             let updatedItems = [];
             const existingItem = prev.items.find(item => item.id === itemId);
-
             if (existingItem) {
-                updatedItems = prev.items.map(item => {
-                    if (item.id === itemId) {
-                        return { ...item, quantity: newCount, count: newCount };
-                    }
-                    return item;
-                });
+                updatedItems = prev.items.map(item => item.id === itemId ? { ...item, quantity: newCount, count: newCount } : item);
             } else {
-                updatedItems = [...prev.items, { ...productDetails, id: itemId, quantity: newCount }];
+                updatedItems = [...prev.items, { ...productDetails, id: itemId, quantity: newCount, count: newCount }];
             }
-
             const newTotal = updatedItems.reduce((acc, i) => acc + (i.unit_price * i.quantity), 0);
-
             return { ...prev, items: updatedItems, total_price: newTotal };
         });
-
         try {
             await updateCartApi(newCount, itemId);
             await fetchCart();
         } catch (error) {
             setCartData(previousCartData);
-            console.error("Ошибка API:", error);
         }
-    };
-
-    const removeCartItem = (itemId) => {
-        updateCartItemQuantity(itemId, 0);
     };
 
     const clearCart = async () => {
         if (!isAuthenticated) return;
-
-        setCartData({ ...cartData, items: [], total_price: 0 });
-
         try {
             await deleteCartApi(false);
             await fetchCart();
         } catch (error) {
-            console.error("Ошибка очистки корзины:", error);
             await fetchCart();
         }
     };
@@ -113,8 +136,7 @@ export const CartProvider = ({ children }) => {
             const response = await getDeliveryTimesService();
             return response.data;
         } catch (error) {
-            console.error("Ошибка получения времени доставки:", error);
-            setCartError("Не удалось получить доступное время доставки.");
+            setCartError("Не удалось получить время доставки.");
             throw error;
         }
     };
@@ -125,7 +147,6 @@ export const CartProvider = ({ children }) => {
             setCartData(response.data);
             setCartError(null);
         } catch (error) {
-            console.error("Ошибка установки времени доставки:", error);
             setCartError("Не удалось установить время доставки.");
             throw error;
         }
@@ -137,21 +158,23 @@ export const CartProvider = ({ children }) => {
             await fetchCart();
             return response.data;
         } catch (error) {
-            console.error("Ошибка создания заказа:", error);
-            // set OrderError здесь больше не вызывается, чтобы не блокировать модальное окно ошибки.
             throw error;
         }
     };
 
-
     const value = {
         cartData,
         isLoading,
+        savedCards,
+        isCardsLoading,
+        selectedPaymentMethodId,
+        setSelectedPaymentMethodId,
         cartError,
         items: cartData?.items || [],
         fetchCart,
+        fetchCards,
+        deleteCard,
         updateCartItemQuantity,
-        removeCartItem,
         clearCart,
         getDeliveryTimesApi,
         setDeliveryTimeApi,
@@ -161,6 +184,4 @@ export const CartProvider = ({ children }) => {
     return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 
-export const useCart = () => {
-    return useContext(CartContext);
-};
+export const useCart = () => useContext(CartContext);

@@ -49,16 +49,24 @@
 .radio-circle.active { border-color: #902067; }
 .radio-dot { width: 10px; height: 10px; border-radius: 50%; background: #902067; }
 
-
 .card-icon {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 2px 6px;
-    font-size: 10px;
-    font-weight: bold;
-    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 57px;
+    padding: 2px 4px;
+
+    flex-shrink: 0;
+    box-sizing: border-box;
 }
 
+.card-icon svg {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
 
 .delete-card-btn {
     background: none;
@@ -67,7 +75,6 @@
     padding: 4px;
 }
 
-.delete-card-btn:hover svg { stroke: #ff4d4f; }
 
 .add-card-btn {
     width: 100%;
@@ -76,21 +83,30 @@
     background: transparent;
     padding: 14px;
     border-radius: 64px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     margin-bottom: 10px;
+    font-size: 14px;
 }
 .save-btn, .modal-btn.primary {
     width: 100%;
     background: #902067;
-    color: white;
+    color: #FBFBFB;
     padding: 14px;
     border-radius: 64px;
-    font-weight: 600;
+    font-weight: 500;
     border: none;
     cursor: pointer;
     margin-bottom: 10px;
+    font-size: 14px;
 }
+
+.save-btn:hover, .modal-btn.primary:hover{
+    background: #781954;
+    color: #FBFBFB!important;
+}
+
+
 .modal-btn.secondary-outline {
     width: 100%;
     background: transparent;
@@ -98,16 +114,27 @@
     color: #902067;
     padding: 14px;
     border-radius: 64px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
+    font-size: 14px;
 }
-.confirm-text { text-align: center;
+
+.modal-btn.secondary-outline:hover {
+    background: #902067;
+    color: #FBFBFB;
+}
+
+.confirm-text {
+    text-align: center;
     margin: 20px 0;
-    color: #555;
-    line-height: 1.5;
+    color: #7A7A7A;
 }
+
 .confirm-actions {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0px;
+}
+span.card-number-highlight {
+    margin-left: 10px;
 }

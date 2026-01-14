@@ -1,9 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useLocation } from '../../context/LocationContext';
-import { Link } from 'react-router-dom';
-import { deleteCart as deleteCartService, setPromocode, getSavedCards, deleteSavedCard, attachNewCard } from '../../api/services/cartService';
+import { setPromocode, attachNewCard } from '../../api/services/cartService';
 
 import CartItemsSection from '../../components/CartSection/CartItemsSection';
 import Container from '../../components/Container/Container';
@@ -16,12 +16,13 @@ import ReplacementModal from './ReplacementModal/ReplacementModal';
 import PaymentMethodModal from './PaymentMethodModal/PaymentMethodModal';
 import OrderFailureModal from './OrderFailureModal';
 
+import { ReactComponent as VisaIcon } from '../../assets/svg/visa.svg';
+import { ReactComponent as MastercardIcon } from '../../assets/svg/mastercard.svg';
+import { ReactComponent as CheckboxIcon } from '../../assets/svg/checkbox.svg';
+
 import './style/CartPage.css';
 import authRequiredIcon from '../../assets/is_exists.png';
 import cartEmpty from '../../assets/cartEmpty.png';
-import { ReactComponent as CheckboxIcon } from '../../assets/svg/checkbox.svg';
-
-
 
 const TrashIcon = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -36,40 +37,26 @@ const ChevronRight = () => (
     </svg>
 );
 
-const CartSkeleton = () => {
-    return (
-        <div className="cart-content animate-pulse">
-            <div className="cart-page-header">
-                <div className="skeleton-box" style={{ width: '200px', height: '40px', borderRadius: '8px' }}></div>
-                <div className="skeleton-box" style={{ width: '150px', height: '20px', borderRadius: '4px' }}></div>
-            </div>
-            <div className="cart-layout">
-                <div className="cart-items-column">
-                    {[1, 2, 3].map((item) => (
-                        <div key={item} className="skeleton-box" style={{ width: '100%', height: '140px', marginBottom: '16px', borderRadius: '16px' }}></div>
-                    ))}
-                </div>
-                <div className="cart-checkout-column">
-                    <div className="skeleton-box" style={{ width: '100%', height: '100px', marginBottom: '16px', borderRadius: '16px' }}></div>
-                    <div className="skeleton-box" style={{ width: '100%', height: '150px', marginBottom: '16px', borderRadius: '16px' }}></div>
-                    <div className="skeleton-box" style={{ width: '100%', height: '300px', borderRadius: '16px' }}></div>
-                </div>
-            </div>
-            <style>{`
-                .skeleton-box {
-                    background: #f0f0f0;
-                    background: linear-gradient(90deg, #f0f0f0 25%, #f8f8f8 50%, #f0f0f0 75%);
-                    background-size: 200% 100%;
-                    animation: skeleton-loading 1.5s infinite;
-                }
-                @keyframes skeleton-loading {
-                    0% { background-position: 200% 0; }
-                    100% { background-position: -200% 0; }
-                }
-            `}</style>
+const CartSkeleton = () => (
+    <div className="cart-content animate-pulse">
+        <div className="cart-page-header">
+            <div className="skeleton-box" style={{ width: '200px', height: '40px', borderRadius: '8px' }}></div>
+            <div className="skeleton-box" style={{ width: '150px', height: '20px', borderRadius: '4px' }}></div>
         </div>
-    );
-};
+        <div className="cart-layout">
+            <div className="cart-items-column">
+                {[1, 2, 3].map((item) => (
+                    <div key={item} className="skeleton-box" style={{ width: '100%', height: '140px', marginBottom: '16px', borderRadius: '16px' }}></div>
+                ))}
+            </div>
+            <div className="cart-checkout-column">
+                <div className="skeleton-box" style={{ width: '100%', height: '100px', marginBottom: '16px', borderRadius: '16px' }}></div>
+                <div className="skeleton-box" style={{ width: '100%', height: '150px', marginBottom: '16px', borderRadius: '16px' }}></div>
+                <div className="skeleton-box" style={{ width: '100%', height: '300px', borderRadius: '16px' }}></div>
+            </div>
+        </div>
+    </div>
+);
 
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, text }) => {
     if (!isOpen) return null;
@@ -80,8 +67,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, text }) => {
                 <h2>{title}</h2>
                 <p>{text}</p>
                 <div className="modal-actions">
-                    <button className="modal-btn secondary" onClick={onConfirm}>
-                        Очистить корзину</button>
+                    <button className="modal-btn secondary" onClick={onConfirm}>Очистить корзину</button>
                     <button className="modal-btn primary" onClick={onClose}>Отмена</button>
                 </div>
             </div>
@@ -89,25 +75,28 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, text }) => {
     );
 };
 
-const UnauthorizedCartPlaceholder = () => {
-    return (
-        <div className="favorites-placeholder">
-            <img src={authRequiredIcon} alt="Войдите в аккаунт" className="placeholder-image" />
-            <h2 className="placeholder-title">Войдите или зарегистрируйтесь</h2>
-            <p className="placeholder-subtitle">Чтобы добавлять товары в корзину необходима авторизация</p>
-            <Link to="/login" className="auth-button">Войти</Link>
-        </div>
-    );
-};
+const UnauthorizedCartPlaceholder = () => (
+    <div className="favorites-placeholder">
+        <img src={authRequiredIcon} alt="Войдите в аккаунт" className="placeholder-image" />
+        <h2 className="placeholder-title">Войдите или зарегистрируйтесь</h2>
+        <p className="placeholder-subtitle">Чтобы добавлять товары в корзину необходима авторизация</p>
+        <Link to="/login" className="auth-button">Войти</Link>
+    </div>
+);
 
 const CartContent = () => {
     const {
         cartData,
         isLoading,
-        cartError,
         items,
+        savedCards,
+        isCardsLoading,
+        selectedPaymentMethodId,
+        setSelectedPaymentMethodId,
+        deleteCard,
         setOrderApi,
-        fetchCart
+        fetchCart,
+        clearCart
     } = useCart();
 
     const { city, loading: isLocationLoading, selectedAddress } = useLocation();
@@ -120,64 +109,11 @@ const CartContent = () => {
     const [isPreferencesModalOpen, setIsPreferencesModalOpen] = useState(false);
     const [isReplacementModalOpen, setIsReplacementModalOpen] = useState(false);
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-    const [savedCards, setSavedCards] = useState([]);
-    const [selectedPaymentMethodId, setSelectedPaymentMethodId] = useState('apple_pay');
     const [isOrderFailureModalOpen, setIsOrderFailureModalOpen] = useState(false);
     const [orderFailureMessage, setOrderFailureMessage] = useState('');
 
-    const checkboxMessage = cartData?.checkbox_message || " ";
-
-    useEffect(() => {
-        if (city) {
-            fetchCart();
-        }
-    }, [city, selectedAddress, fetchCart]);
-
-    const itemsPrice = cartData?.items_price || 0;
-    const deliveryCost = cartData?.delivery_price || 0;
-    const freeDeliveryThreshold = cartData?.free_delivery || 10000;
-
-    const bonusesBalance = cartData?.bonuses?.balance || 0;
-    const currency = cartData?.currency || '₸';
-
-
-    const discount = cartData?.applied_promocode?.amount || 0;
-    const promoCodeName = cartData?.applied_promocode?.code;
-    const bonusesSpent = cartData?.bonuses?.spent || 0;
-    const oldTotal = cartData?.old_total || 0;
-    const finalTotal = cartData?.total || (itemsPrice + deliveryCost - discount - bonusesSpent);
-
-
-    const handleApplyPromocode = async (code) => {
-        // eslint-disable-next-line no-useless-catch
-        try {
-            await setPromocode(code);
-            await fetchCart();
-        } catch (error) {
-            throw error;
-        }
-    };
-
-    const handleSaveReplacementAction = (actionText) => {
-        setCheckoutDetails(prev => ({
-            ...prev,
-            replaceItemsAction: actionText
-        }));
-    };
-
-
-    const addressString =
-        selectedAddress?.full_address ||
-        selectedAddress?.base_address ||
-        selectedAddress?.address ||
-        cartData?.address?.full_address ||
-        cartData?.address_string ||
-        city?.name;
-
     const [checkoutDetails, setCheckoutDetails] = useState({
-        paymentMethod: 'Картой онлайн',
         useBonuses: false,
-        promoCode: '',
         comment: '',
         replaceItemsAction: 'Позвонить и заменить',
         deliveryTimePreferences: 'on_time',
@@ -185,30 +121,47 @@ const CartContent = () => {
         acceptPriceChanges: false,
     });
 
+    useEffect(() => {
+        if (city) fetchCart();
+    }, [city, selectedAddress, fetchCart]);
 
-    const deliveryProgress = freeDeliveryThreshold > 0
-        ? Math.min((itemsPrice / freeDeliveryThreshold) * 100, 100)
-        : 100;
+    const itemsPrice = cartData?.items_price || 0;
+    const deliveryCost = cartData?.delivery_price || 0;
+    const freeDeliveryThreshold = cartData?.free_delivery || 10000;
+    const bonusesBalance = cartData?.bonuses?.balance || 0;
+    const currency = cartData?.currency || '₸';
+    const discount = cartData?.applied_promocode?.amount || 0;
+    const promoCodeName = cartData?.applied_promocode?.code;
+    const bonusesSpent = cartData?.bonuses?.spent || 0;
+    const oldTotal = cartData?.old_total || 0;
+    const finalTotal = cartData?.total || (itemsPrice + deliveryCost - discount - bonusesSpent);
+    const checkboxMessage = cartData?.checkbox_message || " ";
 
+    const handleApplyPromocode = async (code) => {
+        await setPromocode(code);
+        await fetchCart();
+    };
+
+    const handleSaveReplacementAction = (actionText) => {
+        setCheckoutDetails(prev => ({ ...prev, replaceItemsAction: actionText }));
+    };
+
+    const addressString = selectedAddress?.full_address || selectedAddress?.base_address || selectedAddress?.address || cartData?.address?.full_address || cartData?.address_string || city?.name;
+
+    const deliveryProgress = freeDeliveryThreshold > 0 ? Math.min((itemsPrice / freeDeliveryThreshold) * 100, 100) : 100;
     const hasOutOfStockItems = items?.some(item => item.out_of_stock) || false;
 
     const isCheckoutReady = useMemo(() => {
         const hasAddress = !!(selectedAddress || cartData?.address);
-        const hasCard = true;
         const hasProducts = items?.length > 0;
-        return hasAddress && hasCard && checkoutDetails.acceptPriceChanges && hasProducts;
-    }, [checkoutDetails, selectedAddress, cartData, items?.length]);
+        return hasAddress && checkoutDetails.acceptPriceChanges && hasProducts;
+    }, [checkoutDetails.acceptPriceChanges, selectedAddress, cartData, items?.length]);
 
     const deliveryTimeRaw = cartData?.delivery_time;
-    let displayDeliveryTime = null;
-
-    if (deliveryTimeRaw) {
-        if (typeof deliveryTimeRaw === 'string') {
-            displayDeliveryTime = deliveryTimeRaw;
-        } else if (typeof deliveryTimeRaw === 'object') {
-            displayDeliveryTime = deliveryTimeRaw.time || deliveryTimeRaw.title || "Время выбрано";
-        }
-    }
+    const displayDeliveryTime = useMemo(() => {
+        if (!deliveryTimeRaw) return null;
+        return typeof deliveryTimeRaw === 'string' ? deliveryTimeRaw : (deliveryTimeRaw.time || deliveryTimeRaw.title || "Время выбрано");
+    }, [deliveryTimeRaw]);
 
     const handleSavePreferences = (newPrefs) => {
         setCheckoutDetails(prev => ({
@@ -219,63 +172,16 @@ const CartContent = () => {
     };
 
     const getPreferencesText = () => {
-        const timeText = checkoutDetails.deliveryTimePreferences === 'on_time'
-            ? 'В указанное время'
-            : 'По возможности раньше';
-
-        if (checkoutDetails.leaveAtDoor) {
-            return `${timeText}, оставить у двери`;
-        }
-        return timeText;
-    };
-
-    const handleTimeSaveSuccess = () => {
-        fetchCart();
-    };
-
-    useEffect(() => {
-        const fetchCards = async () => {
-
-            try {
-                const cards = await getSavedCards();
-                setSavedCards(cards || []);
-            } catch (e) {
-                console.error("Failed to load cards", e);
-            }
-        };
-        fetchCards();
-    }, []);
-
-    const handleClearCartClick = async () => {
-        try {
-            // false = удалить все (не только недоступные)
-            await deleteCartService(false);
-            setIsClearCartModalOpen(false);
-            await fetchCart();
-        } catch (error) {
-            console.error("Ошибка при очистке корзины:", error);
-            alert("Не удалось очистить корзину");
-        }
-    };
-
-    const handleClearUnavailableClick = async () => {
-        try {
-            await deleteCartService(true);
-            setIsUnavailableModalOpen(false);
-            await fetchCart();
-        } catch (error) {
-            console.error("Ошибка при удалении недоступных:", error);
-        }
+        const timeText = checkoutDetails.deliveryTimePreferences === 'on_time' ? 'В указанное время' : 'По возможности раньше';
+        return checkoutDetails.leaveAtDoor ? `${timeText}, оставить у двери` : timeText;
     };
 
     const handleOrderSubmit = () => {
         if (!isCheckoutReady) return;
 
-
         let replaceActionKey = 'call';
         if (checkoutDetails.replaceItemsAction === 'Не звонить и заменить') replaceActionKey = 'replace';
         if (checkoutDetails.replaceItemsAction === 'Не заменять') replaceActionKey = 'remove';
-
 
         const orderDetails = {
             bonuses: checkoutDetails.useBonuses ? 1 : 0,
@@ -286,80 +192,41 @@ const CartContent = () => {
             paymentMethodId: selectedPaymentMethodId,
         };
 
-        setOrderApi(orderDetails)
-            .then(data => {
-                console.log("Заказ успешно создан:", data);
-            })
-            .catch(error => {
-                console.error("Ошибка при создании заказа:", error);
-
-                let message = "Произошла ошибка при оплате заказа. Пожалуйста, попробуйте снова.";
-
-                if (error && error.response && error.response.data && error.response.data.message) {
-                    message = error.response.data.message;
-                } else if (error instanceof Error) {
-                    message = error.message;
-                }
-
-                setOrderFailureMessage(message);
-                setIsOrderFailureModalOpen(true);
-            });
+        setOrderApi(orderDetails).catch(error => {
+            const message = error?.response?.data?.message || error.message || "Произошла ошибка при оплате заказа.";
+            setOrderFailureMessage(message);
+            setIsOrderFailureModalOpen(true);
+        });
     };
-
-    const handleModalClose = () => {
-        setIsAddressModalOpen(false);
-
-        fetchCart();
-    };
-
-    const handleDeleteCard = async (cardId) => {
-        try {
-            await deleteSavedCard(cardId);
-
-            const updatedCards = await getSavedCards();
-            setSavedCards(updatedCards || []);
-
-            if (selectedPaymentMethodId === cardId) {
-                setSelectedPaymentMethodId('apple_pay');
-            }
-        } catch (error) {
-            console.error("Failed to delete card", error);
-            alert("Не удалось удалить карту");
-        }
-    };
-
 
     const handleAddNewCard = async () => {
         try {
             const url = await attachNewCard();
-            if (url) {
-                window.location.href = url;
-            } else {
-                alert("Не удалось получить ссылку для привязки");
-            }
+            if (url) window.location.href = url;
         } catch (e) {
-            console.error("Ошибка привязки:", e);
-            alert("Ошибка сервера при попытке добавить карту");
+            alert("Ошибка при попытке добавить карту");
         }
     };
 
     const getSelectedMethodName = () => {
-        if (selectedPaymentMethodId === 'apple_pay') return 'Apple Pay';
-        if (selectedPaymentMethodId === 'kaspi') return 'Kaspi.kz';
-
+        if (isCardsLoading) return { name: "Загрузка..." };
         const card = savedCards.find(c => c.id === selectedPaymentMethodId);
         if (card) {
-            const last4 = card.pan || card.mask || card.number?.slice(-4) || '****';
-            return `.... ${last4} ${card.type || ''}`;
+            const last4 = card.name?.slice(-4) || '****';
+            const system = (card.type || 'visa').toLowerCase();
+            return {
+                name: `•••• ${last4}`,
+                icon: system === 'visa' ? <VisaIcon /> : <MastercardIcon />,
+                isCard: true,
+                system
+            };
         }
 
-        return 'Выбрать способ оплаты';
+        return { name: 'Выбрать способ оплаты' };
     };
-
 
     if (isLocationLoading) return <Loader />;
     if (isLoading) return <CartSkeleton />;
-
 
     if (!cartData || (items.length === 0 && !isLoading)) {
         return (
@@ -370,6 +237,8 @@ const CartContent = () => {
             </div>
         );
     }
+
+    const currentMethod = getSelectedMethodName();
 
     return (
         <div className="cart-content">
@@ -383,30 +252,23 @@ const CartContent = () => {
             <div className="cart-layout">
                 <div className="cart-items-column">
                     <CartItemsSection />
-
                     {hasOutOfStockItems && (
                         <div className="out-of-stock-section">
                             <div className="out-of-stock-header">
                                 <h2>Нет в наличии</h2>
-                                <button onClick={() => setIsUnavailableModalOpen(true)} className="clear-unavailable-link">
-                                    Очистить список
-                                </button>
+                                <button onClick={() => setIsUnavailableModalOpen(true)} className="clear-unavailable-link">Очистить список</button>
                             </div>
                         </div>
                     )}
                 </div>
 
                 <div className="cart-checkout-column">
-
                     <div className="checkout-widget">
                         <div className="widget-header">
                             <h3>Доставка {deliveryCost > 0 ? `${deliveryCost} ${currency}` : 'Бесплатно'}</h3>
                         </div>
                         <div className="delivery-progress-text">
-                            {itemsPrice < freeDeliveryThreshold
-                                ? `До бесплатной доставки ${(freeDeliveryThreshold - itemsPrice).toLocaleString()} ${currency}`
-                                : 'Для вас доставка будет бесплатной'
-                            }
+                            {itemsPrice < freeDeliveryThreshold ? `До бесплатной доставки ${(freeDeliveryThreshold - itemsPrice).toLocaleString()} ${currency}` : 'Для вас доставка будет бесплатной'}
                         </div>
                         <div className="delivery-progress-bar">
                             <div className="progress-fill" style={{ width: `${deliveryProgress}%` }}></div>
@@ -417,29 +279,21 @@ const CartContent = () => {
                         <div className="widget-row border-bottom" onClick={() => setIsAddressModalOpen(true)}>
                             <div className="widget-info">
                                 <span className="label">Адрес доставки</span>
-                                <span className={addressString ? "value" : "value red-text"}>
-                                    {addressString || "Выберите адрес"}
-                                </span>
+                                <span className={addressString ? "value" : "value red-text"}>{addressString || "Выберите адрес"}</span>
                             </div>
                             <ChevronRight />
                         </div>
-
                         <div className="widget-row" onClick={() => setIsDeliveryTimeModalOpen(true)}>
                             <div className="widget-info">
                                 <span className="label">Время доставки</span>
-                                <span className={displayDeliveryTime ? "value" : "value red-text"}>
-                                {displayDeliveryTime || "Время доставки не указано"}
-                            </span>
+                                <span className={displayDeliveryTime ? "value" : "value red-text"}>{displayDeliveryTime || "Время доставки не указано"}</span>
                             </div>
                             <ChevronRight />
                         </div>
                     </div>
 
                     <div className="checkout-widget clickable-widget">
-                        <div
-                            className="widget-row"
-                            onClick={() => setIsReplacementModalOpen(true)}
-                        >
+                        <div className="widget-row" onClick={() => setIsReplacementModalOpen(true)}>
                             <div className="widget-info">
                                 <span className="widget-info-text">Замена товаров</span>
                                 <span className="sub-label">{checkoutDetails.replaceItemsAction}</span>
@@ -447,22 +301,12 @@ const CartContent = () => {
                             <ChevronRight />
                         </div>
                         <div className="widget-input-wrapper">
-                            <input
-                                type="text"
-                                placeholder="Напишите, если что-то не нашли"
-                                className="widget-input"
-                                value={checkoutDetails.comment}
-                                onChange={(e) => setCheckoutDetails({...checkoutDetails, comment: e.target.value})}
-                            />
+                            <input type="text" placeholder="Напишите, если что-то не нашли" className="widget-input" value={checkoutDetails.comment} onChange={(e) => setCheckoutDetails({...checkoutDetails, comment: e.target.value})} />
                         </div>
                     </div>
 
-                    {/* 4. Preferences Block */}
                     <div className="checkout-widget clickable-widget">
-                        <div
-                            className="widget-row"
-                            onClick={() => setIsPreferencesModalOpen(true)}
-                        >
+                        <div className="widget-row" onClick={() => setIsPreferencesModalOpen(true)}>
                             <div className="widget-info">
                                 <span className="widget-info-text ">Пожелания по доставке</span>
                                 <span className="sub-label">{getPreferencesText()}</span>
@@ -471,59 +315,38 @@ const CartContent = () => {
                         </div>
                     </div>
 
-                    {/* 5. Payment Block */}
                     <div className="checkout-widget">
-                        <div className="widget-header">
-                            <h3>Способ оплаты</h3>
-                        </div>
-                        <div
-                            className="widget-row clickable-row border-bottom"
-                            onClick={() => setIsPaymentModalOpen(true)}
-                        >
+                        <div className="widget-header"><h3>Способ оплаты</h3></div>
+                        <div className="widget-row clickable-row border-bottom" onClick={() => setIsPaymentModalOpen(true)}>
                             <div className="widget-info">
                                 <span className="label">Способ оплаты</span>
-                                <span className="value">
-                                {getSelectedMethodName()}
-                                    {savedCards.some(c => c.id === selectedPaymentMethodId) && (
-                                        <span style={{border:'1px solid #ccc', padding:'0 4px', borderRadius:'4px', fontSize:'10px', marginLeft: '5px'}}>
-                                         CARD
-                                     </span>
+                                <div className="payment-value-container" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <span className="value">{currentMethod.name}</span>
+                                    {currentMethod.isCard && (
+                                        <div className={`card-icon ${currentMethod.system}`} >
+                                            {currentMethod.icon}
+                                        </div>
                                     )}
-                            </span>
+                                </div>
                             </div>
                             <ChevronRight />
                         </div>
 
-                        {/* Bonuses Switch */}
                         <div className="widget-row clickable-row border-bottom">
                             <div className="widget-info">
                                 <span className="label">Списать бонусы</span>
-                                <span className="sub-label" style={{color: '#902067'}}>
-                                    {checkoutDetails.useBonuses
-                                        ? `Списать ${bonusesBalance} бонусов`
-                                        : `Баланс: ${bonusesBalance} бонусов`}
-                                </span>
+                                <span className="sub-label" style={{color: '#902067'}}>{checkoutDetails.useBonuses ? `Списать ${bonusesBalance} бонусов` : `Баланс: ${bonusesBalance} бонусов`}</span>
                             </div>
                             <label className="toggle-switch">
-                                <input
-                                    type="checkbox"
-                                    checked={checkoutDetails.useBonuses}
-                                    onChange={() => setCheckoutDetails({...checkoutDetails, useBonuses: !checkoutDetails.useBonuses})}
-                                    disabled={bonusesBalance === 0}
-                                />
+                                <input type="checkbox" checked={checkoutDetails.useBonuses} onChange={() => setCheckoutDetails({...checkoutDetails, useBonuses: !checkoutDetails.useBonuses})} disabled={bonusesBalance === 0} />
                                 <span className="slider round"></span>
                             </label>
                         </div>
-                        <div
-                            className="widget-row clickable-row"
-                            onClick={() => setIsPromoModalOpen(true)}
-                        >
+                        <div className="widget-row clickable-row" onClick={() => setIsPromoModalOpen(true)}>
                             <div className="widget-info">
                                 <span className="label">Промокод</span>
                                 {cartData?.applied_promocode?.code ? (
-                                    <span className="sub-label" style={{color: '#902067'}}>
-                                        {cartData.applied_promocode.code} (Применен)
-                                    </span>
+                                    <span className="sub-label" style={{color: '#902067'}}>{cartData.applied_promocode.code} (Применен)</span>
                                 ) : (
                                     <span className="sub-label">Введите промокод</span>
                                 )}
@@ -532,21 +355,10 @@ const CartContent = () => {
                         </div>
                     </div>
 
-                    {/* 6. Total Summary Block */}
                     <div className="checkout-widget summary-widget">
-                        <div className="widget-header">
-                            <h3>Сумма к оплате</h3>
-                        </div>
-                        <div className="summary-row">
-                            <span>Сумма заказа</span>
-                            <span>{itemsPrice.toLocaleString()} {currency}</span>
-                        </div>
-                        <div className="summary-row">
-                            <span>Доставка</span>
-                            <span>{deliveryCost > 0 ? `${deliveryCost} ${currency}` : '0 ' + currency}</span>
-                        </div>
-
-                        {/* Отображаем Скидку */}
+                        <div className="widget-header"><h3>Сумма к оплате</h3></div>
+                        <div className="summary-row"><span>Сумма заказа</span><span>{itemsPrice.toLocaleString()} {currency}</span></div>
+                        <div className="summary-row"><span>Доставка</span><span>{deliveryCost > 0 ? `${deliveryCost} ${currency}` : '0 ' + currency}</span></div>
                         {discount > 0 && (
                             <div className="summary-row discount-row">
                                 <span>Скидка</span>
@@ -554,128 +366,33 @@ const CartContent = () => {
                                 <span>-{discount.toLocaleString()} {currency}</span>
                             </div>
                         )}
-
-                        {/* Отображаем Оплачено бонусами */}
-                        {bonusesSpent > 0 && (
-                            <div className="summary-row bonus-spent-row">
-                                <span>Оплачено бонусами</span>
-                                <span>-{bonusesSpent.toLocaleString()} {currency}</span>
-                            </div>
-                        )}
-
-
+                        {bonusesSpent > 0 && <div className="summary-row bonus-spent-row"><span>Оплачено бонусами</span><span>-{bonusesSpent.toLocaleString()} {currency}</span></div>}
                         <div className="summary-total-row">
                             <span>Итого</span>
                             <span className="final-total-value">
-                                {/* Отображение старой цены */}
-                                {oldTotal > finalTotal && oldTotal > 0 && (
-                                    <span className="old-total-price">
-                                        {oldTotal.toLocaleString()} {currency} &rarr;
-                                    </span>
-                                )}
+                                {oldTotal > finalTotal && oldTotal > 0 && <span className="old-total-price">{oldTotal.toLocaleString()} {currency} &rarr; </span>}
                                 {finalTotal.toLocaleString()} {currency}
                             </span>
                         </div>
-
-
                         <label className="legal-checkbox">
-                            <input
-                                type="checkbox"
-                                checked={checkoutDetails.acceptPriceChanges}
-                                onChange={(e) => setCheckoutDetails({...checkoutDetails, acceptPriceChanges: e.target.checked})}
-                            />
-                            <span className="checkmark">
-                                <CheckboxIcon />
-                            </span>
-                            <span className="legal-text-cart">
-                                {checkboxMessage}
-                            </span>
+                            <input type="checkbox" checked={checkoutDetails.acceptPriceChanges} onChange={(e) => setCheckoutDetails({...checkoutDetails, acceptPriceChanges: e.target.checked})} />
+                            <span className="checkmark"><CheckboxIcon /></span>
+                            <span className="legal-text-cart">{checkboxMessage}</span>
                         </label>
-
-                        <button
-                            className="checkout-submit-btn"
-                            disabled={!isCheckoutReady}
-                            onClick={handleOrderSubmit}
-                        >
-                            Оплатить {finalTotal.toLocaleString()} {currency}
-                        </button>
+                        <button className="checkout-submit-btn" disabled={!isCheckoutReady} onClick={handleOrderSubmit}>Оплатить {finalTotal.toLocaleString()} {currency}</button>
                     </div>
-
                 </div>
             </div>
 
-            <OrderFailureModal
-                isOpen={isOrderFailureModalOpen}
-                onClose={() => setIsOrderFailureModalOpen(false)}
-                onGoToOrders={() => {
-                    setIsOrderFailureModalOpen(false);
-                }}
-                errorMessage={orderFailureMessage}
-            />
-
-
-            <PaymentMethodModal
-                isOpen={isPaymentModalOpen}
-                onClose={() => setIsPaymentModalOpen(false)}
-                selectedMethodId={selectedPaymentMethodId}
-                onSelect={setSelectedPaymentMethodId}
-
-                cards={savedCards}
-                onDeleteCard={handleDeleteCard}
-                onAddCard={handleAddNewCard}
-            />
-            <ReplacementModal
-                isOpen={isReplacementModalOpen}
-                onClose={() => setIsReplacementModalOpen(false)}
-                initialValue={checkoutDetails.replaceItemsAction}
-                onSave={handleSaveReplacementAction}
-            />
-
-            <DeliveryPreferencesModal
-                isOpen={isPreferencesModalOpen}
-                onClose={() => setIsPreferencesModalOpen(false)}
-                initialData={{
-                    deliveryTimePreferences: checkoutDetails.deliveryTimePreferences,
-                    leaveAtDoor: checkoutDetails.leaveAtDoor
-                }}
-                onSave={handleSavePreferences}
-            />
-
-            <PromoCodeModal
-                isOpen={isPromoModalOpen}
-                onClose={() => setIsPromoModalOpen(false)}
-                onApply={handleApplyPromocode}
-            />
-
-            <DeliveryTimeModal
-                isOpen={isDeliveryTimeModalOpen}
-                onClose={() => setIsDeliveryTimeModalOpen(false)}
-                onSaveSuccess={handleTimeSaveSuccess}
-            />
-
-            <ConfirmationModal
-                isOpen={isUnavailableModalOpen}
-                onClose={() => setIsUnavailableModalOpen(false)}
-                onConfirm={handleClearUnavailableClick}
-                title="Удалить недоступные товары?"
-                text="Вы уверены, что хотите удалить товары, которых нет в наличии?"
-            />
-
-            <ConfirmationModal
-                isOpen={isClearCartModalOpen}
-                onClose={() => setIsClearCartModalOpen(false)}
-                onConfirm={handleClearCartClick}
-                title="Очистить корзину?"
-                text="Вы уверены, что хотите удалить все товары из корзины?"
-            />
-
-
-            {isAddressModalOpen && (
-                <LocationModal
-                    onClose={handleModalClose}
-                    onCitySelect={() => {}}
-                />
-            )}
+            <OrderFailureModal isOpen={isOrderFailureModalOpen} onClose={() => setIsOrderFailureModalOpen(false)} errorMessage={orderFailureMessage} />
+            <PaymentMethodModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} selectedMethodId={selectedPaymentMethodId} onSelect={setSelectedPaymentMethodId} cards={savedCards} onDeleteCard={deleteCard} onAddCard={handleAddNewCard} />
+            <ReplacementModal isOpen={isReplacementModalOpen} onClose={() => setIsReplacementModalOpen(false)} initialValue={checkoutDetails.replaceItemsAction} onSave={handleSaveReplacementAction} />
+            <DeliveryPreferencesModal isOpen={isPreferencesModalOpen} onClose={() => setIsPreferencesModalOpen(false)} initialData={{ deliveryTimePreferences: checkoutDetails.deliveryTimePreferences, leaveAtDoor: checkoutDetails.leaveAtDoor }} onSave={handleSavePreferences} />
+            <PromoCodeModal isOpen={isPromoModalOpen} onClose={() => setIsPromoModalOpen(false)} onApply={handleApplyPromocode} />
+            <DeliveryTimeModal isOpen={isDeliveryTimeModalOpen} onClose={() => setIsDeliveryTimeModalOpen(false)} onSaveSuccess={() => fetchCart()} />
+            <ConfirmationModal isOpen={isUnavailableModalOpen} onClose={() => setIsUnavailableModalOpen(false)} onConfirm={() => fetchCart()} title="Удалить недоступные товары?" text="Вы уверены?" />
+            <ConfirmationModal isOpen={isClearCartModalOpen} onClose={() => setIsClearCartModalOpen(false)} onConfirm={() => { clearCart(); setIsClearCartModalOpen(false); }} title="Очистить корзину?" text="Вы уверены?" />
+            {isAddressModalOpen && <LocationModal onClose={handleModalClose} onCitySelect={() => {}} />}
         </div>
     );
 };
@@ -684,9 +401,7 @@ const CartPage = () => {
     const { isAuthenticated } = useAuth();
     return (
         <Container>
-            <div className="cart-page-wrapper">
-                {isAuthenticated ? <CartContent /> : <UnauthorizedCartPlaceholder />}
-            </div>
+            <div className="cart-page-wrapper">{isAuthenticated ? <CartContent /> : <UnauthorizedCartPlaceholder />}</div>
         </Container>
     );
 };

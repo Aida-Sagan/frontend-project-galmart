@@ -59,3 +59,14 @@ export const getOrderInfo = async (orderId) => {
         throw error;
     }
 };
+
+// Добавьте в ordersService.js
+export const changeOrder = async (orderId, action = 'cancel') => {
+    try {
+        const response = await $api.post(API_URLS.ORDER_ACTION(orderId), { action });
+        return response.data;
+    } catch (error) {
+        console.error(`[Service] Ошибка при изменении заказа ${orderId}:`, error);
+        throw error;
+    }
+};

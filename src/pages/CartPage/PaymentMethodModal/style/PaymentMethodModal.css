@@ -138,3 +138,14 @@
 span.card-number-highlight {
     margin-left: 10px;
 }
+
+.error-message-block {
+    background-color: #fff0f0;
+    color: #e02d2d;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid #ffdada;
+}

@@ -63,7 +63,6 @@ const OnlineOrdersList = () => {
     const handleOrderClick = (order) => {
         let finalConfig = statusConfig[order.status] || statusConfig['Оформлен'];
         if (order.status === 'Оформлен') {
-            // Если бэк не шлет флаг редактирования, по умолчанию ставим viaManager
             const variant = order.canEditSelf ? finalConfig.variants.selfEdit : finalConfig.variants.viaManager;
             finalConfig = { ...finalConfig, ...variant };
         }
@@ -86,7 +85,7 @@ const OnlineOrdersList = () => {
             const variant = selectedOrder.canEditSelf ? currentConfig.variants.selfEdit : currentConfig.variants.viaManager;
             currentConfig = { ...currentConfig, ...variant };
         }
-        return <OrderDetails order={selectedOrder} config={currentConfig} onBack={() => setView('list')} />;
+        return <OrderDetails order={selectedOrder} config={currentConfig} onBack={() => window.location.reload()} />;
     }
 
     return (
@@ -100,8 +99,13 @@ const OnlineOrdersList = () => {
 
             {orders.history.length > 0 && (
                 <>
-                    <h2 className="main-section-title mt-40">История заказов</h2>
-                    {orders.history.map(order => renderOrderCard(order, statusConfig, handleOrderClick, true))}
+                    {orders.active.length === 0 && (
+                        <h2 className="main-section-title">История заказов</h2>
+                    )}
+
+                    <div className={orders.active.length > 0 ? "mt-40" : ""}>
+                        {orders.history.map(order => renderOrderCard(order, statusConfig, handleOrderClick, true))}
+                    </div>
                 </>
             )}
         </div>
@@ -109,7 +113,6 @@ const OnlineOrdersList = () => {
 };
 
 const renderOrderCard = (order, statusConfig, onOrderClick, isHistory = false) => {
-    // Получаем конфиг по текстовому статусу из бэка
     let config = statusConfig[order.status] || { steps: 0, color: '#902067', desc: order.status, action: 'Подробнее' };
 
     if (order.status === 'Оформлен') {
@@ -120,7 +123,6 @@ const renderOrderCard = (order, statusConfig, onOrderClick, isHistory = false) =
     return (
         <div key={order.id} className={`order-card-v2 ${isHistory ? 'history-card' : ''}`} onClick={() => onOrderClick(order)}>
             <div className="card-row">
-                {/* Заменяем order.number на order_number из вашего API JSON */}
                 <span className="order-id">Заказ №{order.order_number || order.number}</span>
                 <span className="order-price-top">{order.total.toLocaleString()} {order.currency || '₸'}</span>
             </div>
@@ -149,7 +151,6 @@ const renderOrderCard = (order, statusConfig, onOrderClick, isHistory = false) =
                     <p className="card-description">{config.desc}</p>
                 </div>
                 <div className="items-row">
-                    {/* Здесь в будущем можно будет мапить order.items, пока оставили заглушки */}
                     <div className="item-thumb"><img src={apricotImg} alt="1" /></div>
                     <div className="item-thumb"><img src={apricotImg} alt="1" /></div>
                     <div className="item-thumb"><img src={apricotImg} alt="1" /></div>

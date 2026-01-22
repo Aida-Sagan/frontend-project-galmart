@@ -81,6 +81,8 @@ const ProfilePage = () => {
     const [tabError, setTabError] = useState(null);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [viewMode, setViewMode] = useState('list');
+    const [isMobileContentOpen, setIsMobileContentOpen] = useState(window.innerWidth > 768);
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
     const menuItems = useMemo(() => [
         { id: 'onlineOrders', title: 'Мои онлайн заказы', path: '/profile/orders/online' },
@@ -91,6 +93,7 @@ const ProfilePage = () => {
         { id: 'promocodes', title: 'Промокоды', path: '/profile/promocodes' },
         { id: 'notifications', title: 'Уведомления', path: '/profile/notifications', count: notificationCount },
         { id: 'support', title: 'Поддержка', path: '/profile/support', count: 12 },
+
     ], [notificationCount]);
 
     const fetcherMap = useMemo(() => ({
@@ -151,10 +154,10 @@ const ProfilePage = () => {
         setIsEditMode(false);
         setViewMode('list');
         setSelectedOrder(null);
+        setIsMobileContentOpen(true);
 
         if (id === 'notifications') {
             setNotificationCount(0);
-        } else if (notificationCount === 0) {
         }
     };
 
@@ -170,6 +173,14 @@ const ProfilePage = () => {
         fetchUserProfile();
     };
 
+    const handleLogoutClick = () => {
+        setIsLogoutModalOpen(true);
+    };
+
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
 
     if (!isAuthenticated || profileLoading || profileData === null) {
         return <Loader />;
@@ -263,10 +274,8 @@ const ProfilePage = () => {
 
     return (
         <Container>
-            <div className="profile-page-wrapper">
-
+            <div className={`profile-page-wrapper ${isMobileContentOpen ? 'mobile-content-active' : ''}`}>
                 <div className="profile-layout">
-
                     <div className="profile-sidebar">
                         <div className="profile-user-info">
                             <div className="user-name-wrapper">
@@ -298,18 +307,57 @@ const ProfilePage = () => {
                                     )}
                                 </div>
                             ))}
-                            {/*<button onClick={logout} className="nav-item logout-link">*/}
-                            {/*    Выйти*/}
-                            {/*</button>*/}
+                            <button onClick={handleLogoutClick} className="logout-profile-btn">
+                                Выйти из профиля
+                            </button>
                         </nav>
                     </div>
 
-                    <div className="profile-content-area">
+                    <div className={`profile-content-area ${isMobileContentOpen ? 'visible' : ''}`}>
+                        {/* Кнопка "Назад" только для мобилок (innerWidth <= 768) */}
+                        {isMobileContentOpen && window.innerWidth <= 768 && (
+                            <button
+                                className="mobile-back-btn"
+                                onClick={() => setIsMobileContentOpen(false)}
+                                style={{
+                                    marginBottom: '16px',
+                                    border: 'none',
+                                    background: '#F5F5F5',
+                                    padding: '12px',
+                                    borderRadius: '12px',
+                                    width: '100%',
+                                    textAlign: 'left',
+                                    fontWeight: '600',
+                                    color: '#902067'
+                                }}
+                            >
+                                ← Назад к меню
+                            </button>
+                        )}
                         {renderContent()}
                     </div>
                 </div>
             </div>
+
+            {isLogoutModalOpen && (
+                <div className="modal-overlay" onClick={() => setIsLogoutModalOpen(false)}>
+                    <div className="logout-modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button className="modal-close-icon" onClick={() => setIsLogoutModalOpen(false)}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M18 6L6 18M6 6l12 12" stroke="#222" strokeWidth="2" strokeLinecap="round"/>
+                            </svg>
+                        </button>
+                        <h3 className="logout-modal-title">Выйти из профиля?</h3>
+                        <p className="logout-modal-text">Вы действительно хотите выйти из профиля?</p>
+                        <div className="logout-modal-actions">
+                            <button className="btn-primary-large" onClick={handleLogout}>Выйти</button>
+                            <button className="btn-outline-cancel" onClick={() => setIsLogoutModalOpen(false)}>Не выходить</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </Container>
+
     );
 };
 

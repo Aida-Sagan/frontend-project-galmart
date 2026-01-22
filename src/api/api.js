@@ -33,6 +33,8 @@ export const API_URLS = {
     OFFLINE_ORDERS: `/api/v2/bonus/transaction/1`, // Оффлайн заказы (через бонусы)
     ORDER_DETAILS: (id) => `/api/v2/orders/order/${id}/`, // Метод для деталей
     ORDER_REVIEW: (id) => `/api/v2/orders/order/${id}/review/`,
-
+    ORDER_ACTION: (id) => `/api/v2/orders/order/${id}/action/`, // Для отмены
+    ORDER_RETURN: (id) => `/api/v2/orders/order/${id}/return/`,
+    ORDER_REVIEW_ITEMS: `/api/v2/orders/order/review_items`,
 
 };

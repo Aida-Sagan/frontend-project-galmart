@@ -392,7 +392,7 @@ const CartContent = () => {
             <DeliveryTimeModal isOpen={isDeliveryTimeModalOpen} onClose={() => setIsDeliveryTimeModalOpen(false)} onSaveSuccess={() => fetchCart()} />
             <ConfirmationModal isOpen={isUnavailableModalOpen} onClose={() => setIsUnavailableModalOpen(false)} onConfirm={() => fetchCart()} title="Удалить недоступные товары?" text="Вы уверены?" />
             <ConfirmationModal isOpen={isClearCartModalOpen} onClose={() => setIsClearCartModalOpen(false)} onConfirm={() => { clearCart(); setIsClearCartModalOpen(false); }} title="Очистить корзину?" text="Вы уверены?" />
-            {isAddressModalOpen && <LocationModal onClose={handleModalClose} onCitySelect={() => {}} />}
+            {isAddressModalOpen && <LocationModal onClose={() => setIsAddressModalOpen(false)} onCitySelect={() => {}} />}
         </div>
     );
 };

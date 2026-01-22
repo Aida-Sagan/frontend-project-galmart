@@ -16,7 +16,6 @@
     border-radius: 20px;
     padding: 24px;
     margin-bottom: 20px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -267,7 +266,7 @@
 
 .btn-primary {
     background: #902067;
-    color: white;
+    color: #FBFBFB;
     border: none;
     padding: 15px;
     border-radius: 12px;
@@ -298,10 +297,6 @@
     font-weight: 600;
 }
 
-.order-details-wrapper {
-    max-width: 800px;
-}
-
 /* Хедер навигации */
 .details-nav-header {
     display: flex;
@@ -326,15 +321,23 @@
     background: #b3b2b2;
 }
 
-/* Карточка статуса */
+.receipt-link {
+    background: #F5F5F5;
+    padding: 7px 10px;
+    border-radius: 64px;
+}
+
+.receipt-link:hover {
+    background: #b3b2b2;
+}
+
 .order-status-card-bg {
     background: #FBFBFB;
     border-radius: 20px;
-    padding: 24px;
+    padding: 20px;
     margin-bottom: 24px;
 }
 
-/* Информационные блоки (Адрес, Время, Оплата) */
 .info-row-item {
     display: flex;
     justify-content: space-between;
@@ -363,14 +366,15 @@
 }
 
 .label-group span {
-    font-size: 12px;
-    color: #7A7A7A;
+    font-size: 17px;
+    color: #222222;
 }
 
+
 .label-group strong {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    color: #222;
+    color: #7A7A7A;
 }
 
 .chevron-right {
@@ -457,10 +461,11 @@
 }
 /* Финансовый блок */
 .price-calculation-block {
-    background: #FBFBFB;
+    background: #F5F5F5;
     border-radius: 20px;
     padding: 24px;
     margin-bottom: 30px;
+    margin-top: 20px;
 }
 
 .calc-row {
@@ -630,4 +635,102 @@
     font-size: 14px;
     color: #7A7A7A;
     font-weight: 500;
+}
+
+.modal-overlay-cancel {
+    /* Фиксируем на весь экран */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+
+.cancel-confirm-modal {
+    background-color: #ffffff;
+    padding: 32px;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.modal-close-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cancel-modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #222222;
+    margin-bottom: 12px;
+    margin-top: 0;
+}
+
+.cancel-modal-text {
+    font-size: 16px;
+    color: #7A7A7A;
+    margin-bottom: 32px;
+    line-height: 1.4;
+}
+
+.cancel-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+
+.cancel-confirm-modal .btn-primary-large {
+    background-color: #902067;
+    color: #FBFBFB;
+    padding: 16px;
+    border-radius: 64px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    border: 2px solid #902067;
+}
+
+.cancel-confirm-modal .btn-outline-cancel {
+    background-color: transparent;
+    border: 2px solid #902067;
+    color: #9D2163;
+    padding: 16px;
+    border-radius: 64px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary-large:hover {
+    background-color: #701a50;
+}
+.cancel-confirm-modal .btn-outline-cancel:hover {
+    background-color: #902067;
+    color: #FBFBFB;
+}
+
+.status-info-description {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-style: Medium;
+    font-size: 14px;
+    color:  #4E4E4E;
+
 }

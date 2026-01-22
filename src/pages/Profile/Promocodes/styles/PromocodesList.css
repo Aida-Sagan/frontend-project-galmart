@@ -11,12 +11,12 @@
     margin-bottom: 20px;
 }
 
-.section-title {
+.section-title-new-promocode{
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
     font-size: 17px;
     color: #222222;
-    margin-bottom: 15px;
+    margin-top: 0;
 }
 
 /* --- Блок 1: Новый промокод --- */
@@ -26,6 +26,7 @@
     padding: 20px 15px;
     margin-bottom: 25px;
     border-radius: 24px;
+    margin-top: 15px;
 }
 
 .new-promocode-form {
@@ -105,13 +106,13 @@
     font-size: 20px;
     color: #222222;
     margin-bottom: 5px;
+    margin-top: 0;
 }
 
-.card-description {
+.card-description-new-promo {
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
-    font-size: 14px;
-    line-height: 120%;
+    font-size: 11px;
     color: #7A7A7A;
     margin-bottom: 15px;
 }

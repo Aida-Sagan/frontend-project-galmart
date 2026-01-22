@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import Loader from '../../../components/Loader/Loader.jsx';
+import { applyPromocode } from '../../../api/services/profileService.js';
 import './styles/PromocodesList.css';
 
 const CopyIcon = () => (
@@ -27,6 +28,7 @@ const mockInfluencerPromocodes = [
 const PromocodesList = ({ promocodesData, isLoading, error }) => {
     const [newPromoCode, setNewPromoCode] = useState('');
     const [copyStatus, setCopyStatus] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // const influencerPromocodes = promocodesData?.favorites || mockInfluencerPromocodes;
     const influencerPromocodes =
@@ -44,18 +46,28 @@ const PromocodesList = ({ promocodesData, isLoading, error }) => {
         }
     }, []);
 
-    const handleAddPromoCode = (e) => {
+    const handleAddPromoCode = async (e) => {
         e.preventDefault();
-        if (newPromoCode.trim()) {
-            console.log('Добавлен новый промокод:', newPromoCode);
+        const code = newPromoCode.trim();
+        if (!code) return;
+
+        setIsSubmitting(true);
+        try {
+            await applyPromocode(code);
+            alert('Промокод успешно применен!');
             setNewPromoCode('');
-            alert('Промокод добавлен (имитация)');
+
+
+            window.location.reload();
+        } catch (err) {
+            const message = err.response?.data?.message || 'Ошибка при активации промокода';
+            alert(message);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
-    if (isLoading) {
-        return <Loader />;
-    }
+    if (isLoading) return <Loader />;
 
     if (error) {
         return <p className="error-message">Ошибка при загрузке данных: {error}</p>;
@@ -67,7 +79,7 @@ const PromocodesList = ({ promocodesData, isLoading, error }) => {
 
             {/* Блок 1: Новый промокод */}
             <section className="new-promocode-section">
-                <h3 className="section-title">Новый промокод</h3>
+                <h3 className="section-title-new-promocode">Новый промокод</h3>
                 <form onSubmit={handleAddPromoCode} className="new-promocode-form">
                     <div className="form-group promocode-input-wrapper">
                         <input
@@ -78,8 +90,12 @@ const PromocodesList = ({ promocodesData, isLoading, error }) => {
                             className="form-input"
                         />
                     </div>
-                    <button type="submit" className="btn-add-promocode" disabled={!newPromoCode.trim()}>
-                        Добавить
+                    <button
+                        type="submit"
+                        className="btn-add-promocode"
+                        disabled={!newPromoCode.trim() || isSubmitting}
+                    >
+                        {isSubmitting ? '...' : 'Добавить'}
                     </button>
                 </form>
             </section>
@@ -88,8 +104,8 @@ const PromocodesList = ({ promocodesData, isLoading, error }) => {
             <div className="influencer-promocodes-grid">
                 {influencerPromocodes.map(promo => (
                     <div key={promo.id} className="promocode-card">
-                        <h3 className="card-title">{promo.title}</h3>
-                        <p className="card-description">{promo.description}</p>
+                        <h3 className="card-title">{promo.title || 'Промокод'}</h3>
+                        <p className="card-description-new-promo">{promo.description}</p>
 
                         <div className="promocode-code-wrapper">
                             <span className="promocode-code">{promo.code}</span>

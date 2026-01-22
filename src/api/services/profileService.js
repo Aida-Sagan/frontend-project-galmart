@@ -74,6 +74,20 @@ export const getAllPromocodes = async () => {
 };
 
 
+export const applyPromocode = async (code) => {
+    try {
+        const response = await $api.get(API_URLS.APPLY_PROMOCODE, {
+            params: { code }
+        });
+        const data = response.data.data || response.data;
+        console.log("[Service] applyPromocode success:", data);
+        return data;
+    } catch (error) {
+        console.error("[Service] Ошибка при применении промокода:", error);
+        throw error;
+    }
+};
+
 export const getCheckRegisterPageData = async () => {
     try {
         const response = await $api.get('/api/v2/actions/registration/');

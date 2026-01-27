@@ -1,180 +1,235 @@
-/* NotificationContent.css */
+/* Основной контейнер */
+.notifications-page {
+    width: 100%;
+    font-family: 'Montserrat', sans-serif;
+}
 
+/* Заголовок и кнопка настроек */
 .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
-.settings-btn {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+
+.content-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #222;
+    margin: 0;
+}
+
+.settings-text-btn {
     background: none;
     border: none;
-    color: #902067;
-    font-weight: 500;
-    cursor: pointer;
-    font-size: 16px;
-}
-.notification-subtabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-.notification-chip {
-    padding: 8px 15px;
-    border-radius: 20px;
-    cursor: pointer;
-    background-color: #f0f0f0;
-    color: #222222;
     display: flex;
     align-items: center;
-    gap: 5px;
-    transition: background-color 0.2s, color 0.2s;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    color: #222;
 }
-.notification-chip span{
-    font-weight: 600!important;
+
+/* Чипы (Вкладки/Subtabs) */
+.notification-subtabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
 }
-.notification-chip.active-default {
+
+.notif-chip-v2 {
+    background: #F5F5F5;
+    padding: 10px 24px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    color: #222;
+}
+
+/* Активное состояние вкладок (Лаймовый из дизайна) */
+.notif-chip-v2.active {
     background-color: #C6D600;
-    color: #222222;
 }
-.notification-chip.active-news {
-    background-color: #C3E613;
-    color: #4E4E4E;
-}
-.chip-badge {
+
+/* Бейджи внутри чипов */
+.notif-badge {
     background-color: #C6D600;
-    color: #222222;
-    padding: 2px 7px;
+    color: #222;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
     border-radius: 50%;
-    font-size: 12px;
-    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
 }
-.notification-item {
+
+/* На активном чипе бейдж становится белым или сохраняет контраст */
+.notif-chip-v2.active .notif-badge {
+    background-color: #fff;
+}
+
+/* Список уведомлений */
+.notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Карточка уведомления (дизайн как на макете) */
+.notification-card-v2 {
+    background-color: #F5F5F5; /* Фон из дизайна */
+    border-radius: 24px; /* Большой радиус скругления */
+    padding: 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
-    margin-bottom: 10px;
-    border-radius: 12px;
-    background-color: #F5F5F5;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.2s;
 }
-.notification-item.is-new {
-    background-color: #E9E9E9;
-    font-weight: 500;
+
+.notification-card-v2:hover {
+    background-color: #efefef;
 }
-.item-text {
+
+.card-content-left {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    gap: 4px;
 }
-.item-date {
+
+.notif-date {
     font-size: 12px;
     color: #7A7A7A;
-    margin-bottom: 5px;
     font-weight: 500;
 }
-.item-title {
-    font-size: 16px;
-    font-weight: 500;
+
+.notif-title {
+    font-size: 18px;
+    font-weight: 600;
     color: #222;
+    margin: 4px 0;
 }
-.item-subtitle {
+
+.notif-text {
     font-size: 14px;
-    color: #666;
+    color: #7A7A7A;
+    margin: 0;
+    line-height: 1.4;
 }
-.item-arrow {
-    font-size: 20px;
-    color: #902067;
-    flex-shrink: 0;
+
+/* Стрелочка вправо */
+.card-arrow-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+/* Сообщение при отсутствии данных */
 .no-data-message-container {
-    padding: 20px;
-    border-radius: 12px;
-    background-color: #f5f5f5;
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #F5F5F5;
+    border-radius: 24px;
 }
 
 /* --- Стили модального окна настроек --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
 
-.settings-row {
+.modal-content {
+    background: white;
+    padding: 32px;
+    border-radius: 32px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+}
+
+.modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-right: 10px;
-}
-.settings-text {
-    flex-grow: 1;
-    max-width: 80%;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-}
-.settings-text h4 {
-    font-size: 16px;
-    margin: 0 0 5px 0;
-    color: #222;
-    font-weight: 500;
-}
-.settings-text p {
-    font-size: 14px;
-    margin: 0;
-    color: #666;
-    line-height: 1.4;
-}
-.settings-text .note {
-    font-size: 12px;
-    margin-top: 10px;
-    color: #999;
+    margin-bottom: 24px;
 }
 
-/* Стилизация Toggle Switch (Тумблер) */
+.close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Переключатель (Toggle) */
 .toggle-switch {
     position: relative;
-    display: inline-block;
-    width: 45px;
-    height: 25px;
-    margin-left: 10px;
-    flex-shrink: 0;
+    width: 48px;
+    height: 24px;
 }
+
 .toggle-switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
+
 .slider {
     position: absolute;
     cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #E9E9E9;
     transition: .4s;
+    border-radius: 34px;
 }
+
 .slider:before {
     position: absolute;
     content: "";
-    height: 20px;
-    width: 20px;
-    left: 2px;
-    bottom: 2px;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
     background-color: white;
     transition: .4s;
+    border-radius: 50%;
 }
+
 input:checked + .slider {
     background-color: #902067;
 }
+
 input:checked + .slider:before {
-    transform: translateX(20px);
+    transform: translateX(24px);
 }
-.slider.round {
-    border-radius: 25px;
+
+/* Новые (непрочитанные) уведомления — более тёмный фон */
+.notification-card-v2.unread {
+    background-color: #E9E9E9;
 }
-.slider.round:before {
-    border-radius: 50%;
+
+/* Прочитанные уведомления — стандартный светлый фон */
+.notification-card-v2.read {
+    background-color: #F5F5F5;
+}
+
+/* Стили активного чипса (лаймовый) */
+.notif-chip-v2.active {
+    background-color: #C6D600;
 }

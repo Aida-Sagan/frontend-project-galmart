@@ -218,15 +218,6 @@ input:checked + .slider:before {
     background-color: #F3F3F5;
 }
 
-.summary-total-row {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 16px;
-    margin-bottom: 20px;
-    font-size: 20px;
-    font-weight: 700;
-    color: #222;
-}
 
 /* Чекбокс соглашения */
 .legal-checkbox {
@@ -245,8 +236,8 @@ input:checked + .slider:before {
 }
 
 .legal-checkbox .checkmark {
-    height: 20px;
-    width: 20px;
+    height: 25px;
+    width: 25px;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -276,7 +267,14 @@ input:checked + .slider:before {
     font-size: 10px;
     color: #222222;
     font-weight: 500;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat', sans-serif!important;
+}
+
+/*кнопки в модалке*/
+.modal-btn.secondary{
+    font-weight: 500!important;
+    font-size: 14px!important;
+    padding: 13px 20px!important;
 }
 
 /* Кнопка оплаты */
@@ -390,19 +388,17 @@ input:checked + .slider:before {
     align-items: center;
     padding: 12px 0;
     font-size: 16px;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 24px;
-    color: #222;
+    color: #4E4E4E;
     border-bottom: 1px solid #EBEBEB;
 }
 
 /* Отмена разделителя для последней строки перед "Итого" */
-/* Предполагая, что "Оплачено бонусами" или "Скидка" являются последними перед "Итого" */
 .summary-widget .summary-row:last-of-type {
     border-bottom: none;
 }
 
-/* Специальный стиль для строки "Итого" */
 .summary-widget .summary-total-row {
     display: flex;
     justify-content: space-between;
@@ -413,37 +409,56 @@ input:checked + .slider:before {
     color: #222;
     margin-top: 16px;
     padding-top: 16px;
-    border-top: 1px solid #EBEBEB; /* Разделитель перед Итого */
+    border-top: 1px solid #EBEBEB;
     padding-bottom: 0;
+    margin-bottom: 20px;
+}
+
+.final-total-value{
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    flex-direction: row;
+    align-self: baseline;
+}
+
+.old-total-price{
+    color: #7A7A7A;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    text-decoration: line-through;
+    text-decoration-color: #7A7A7A;
+    text-decoration-thickness: 1px;
 }
 
 /* Стиль для строки Скидка, которая включает имя промокода */
 .summary-row.discount-row {
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.summary-row.discount-row > span:first-child {
-    font-weight: 700;
-}
-
-.summary-row.discount-row > span:last-child {
-    align-self: flex-end;
-}
-
-.summary-row.discount-row .discount-info-block {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    gap: 4px;
+    width: 100%;
 }
 
-.summary-row.discount-row .discount-amount {
-    color: #902067;
-    font-weight: 700;
+/* Контейнер для Скидки и Суммы */
+.discount-main-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    width: 100%;
 }
 
-.summary-row.discount-row .promo-name {
+/* Стили из вашего предыдущего кода */
+.discount-label {
+    color: #4E4E4E;
+}
+
+.discount-value {
+    color: #4E4E4E;
+
+}
+
+.promo-name {
     font-size: 14px;
     color: #A3A3A3;
     font-weight: 400;
+    align-self: baseline;
 }

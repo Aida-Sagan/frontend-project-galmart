@@ -1,139 +1,128 @@
 .payment-methods-section {
-    padding: 20px 0;
-}
-.content-title {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #222222;
-    font-family: Arial, sans-serif;
-}
-.payment-cards-list {
-    margin-bottom: 30px;
-}
-.payment-card-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    border: 1px solid transparent;
-    transition: border 0.2s;
-    min-height: 50px;
-    cursor: pointer;
-}
-.payment-card-item.main-card {
-    background-color: #F5F5F5;
-    border: 1px solid #902067;
-}
-.card-info {
-    display: flex;
-    align-items: center;
-    font-size: 16px;
-    color: #4E4E4E;
-}
-.main-indicator {
-    margin-right: 15px;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.card-number {
-    margin-right: 15px;
+    width: 55%;
 }
 
-.delete-card-btn {
-    background: #E5E7EB;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-.add-card-btn {
-    width: 100%;
-    padding: 15px;
-    border-radius: 12px;
-    background-color: #902067;
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-.add-card-btn:hover {
-    background-color: #7a1a55;
-    color: #FFFFFF;
-}
-
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-.modal-header h3 {
-    margin: 0;
+.content-title-payment {
     font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 15px;
+    margin-top: 0;
+    color: #222;
 }
-.modal-header .close-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-.modal-header .close-btn svg {
-    width: 20px;
-    height: 20px;
-}
-.modal-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+
+.payment-cards-list{
+    background-color: #F5F5F5;
+    margin-bottom: 16px;
+    border-radius: 24px;
     margin-top: 20px;
 }
-.btn {
-    padding: 15px;
-    border-radius: 12px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+
+.modal-content .logout-modal-text{
+    text-align: start;
 }
-.btn-cancel {
-    background-color: #902067;
-    color: white;
-    border: none;
+
+.cards-container-gray {
+    background-color: #F5F5F5;
+    border-radius: 24px;
+    overflow: hidden;
+    margin-bottom: 24px;
 }
-.btn-confirm {
+
+/* Строка одной карты */
+.payment-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    position: relative;
+}
+
+/* Разделительная линия между картами (кроме последней) */
+.payment-card-row:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 24px;
+    right: 24px;
+    height: 1px;
+    background-color: #E9E9E9;
+}
+
+.card-info-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Кастомный Radio Button */
+.radio-indicator {
+    width: 22px;
+    height: 22px;
+    border: 2px solid #902067;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.radio-indicator.active {
     background-color: white;
-    color: #902067;
-    border: 1px solid #902067;
+}
+
+.radio-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #902067;
+    border-radius: 50%;
+}
+
+.card-number-text {
+    font-size: 18px;
+    font-weight: 500;
+    color: #222;
+}
+
+.card-brand-logo {
+    height: 24px;
+    width: auto;
+    margin-left: 8px;
+}
+
+/* Кнопка удаления (белый кружок) */
+.delete-icon-btn {
+    background: #FBFBFB;
+    border: none;
+    border-radius: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 8px 15px;
+}
+
+.delete-icon-btn:hover{
+    background: #dddddd;
+}
+/* Кнопка "Добавить карту" */
+.add-card-full-btn {
+    width: 100%;
+    background-color: #902067;
+    color: #FBFBFB;
+    border: none;
+    padding: 18px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.add-card-full-btn:hover {
+    opacity: 0.9;
+}
+
+.no-cards-padding {
+    padding: 40px;
+    text-align: center;
+    color: #7A7A7A;
 }

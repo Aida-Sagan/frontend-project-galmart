@@ -12,15 +12,17 @@
     margin-top: 10px;
 }
 
+.input-wrapper-promocode {
+    padding: 0;
+}
 .promo-input {
-    width: 92%;
-    padding: 14px 16px;
-    border: 1px solid #E0E0E0;
-    border-radius: 64px;
-    background: #F5F5F5;
-    font-size: 16px;
-    outline: none;
-    transition: border 0.2s;
+    width: 100%!important;
+    padding: 14px 16px!important;
+    border-radius: 64px!important;
+    background: #F5F5F5!important;
+    font-size: 16px!important;
+    outline: none!important;
+    transition: border 0.2s!important;
 }
 
 .promo-input:focus {

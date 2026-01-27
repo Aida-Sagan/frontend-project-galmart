@@ -4,12 +4,28 @@ import OrderDetails from './OrderDetails';
 import apricotImg from '../../../assets/items/fruits_png.png';
 import { getOnlineOrdersData } from '../../../api/services/ordersService.js';
 
+const STATUS_MAP = {
+    'new': 'Не оплачен',
+    'payed': 'Оформлен',
+    'prepare': 'На сборке',
+    'ready': 'Собран',
+    'deliver': 'Доставляется',
+    'need_review': 'Ожидает оценки',
+    'completed': 'Завершен',
+    'canceled': 'Отменен',
+    'courier_cancel': 'Отменен курьером',
+    'full_return': 'Полный возврат',
+    'part_return': 'Частичный возврат'
+};
+
 const OnlineOrdersList = () => {
     const [view, setView] = useState('list');
     const [selectedOrder, setSelectedOrder] = useState(null);
 
     const [orders, setOrders] = useState({ active: [], history: [], all: [] });
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
+
 
     const statusConfig = {
         'Не оплачен': { steps: 0, color: '#902067', desc: 'Для оформления заказа необходимо произвести оплату', action: 'Оплатить заказ' },
@@ -42,12 +58,18 @@ const OnlineOrdersList = () => {
         const fetchOrders = async () => {
             try {
                 const data = await getOnlineOrdersData();
+
                 const historyNames = ['Завершен', 'Отменен', 'Отменен курьером', 'Полный возврат', 'Частичный возврат'];
 
+                const allMapped = (data.all || []).map(order => ({
+                    ...order,
+                    status: STATUS_MAP[order.status] || order.status
+                }));
+
                 const formattedData = {
-                    active: data.all.filter(o => !historyNames.includes(o.status)),
-                    history: data.all.filter(o => historyNames.includes(o.status)),
-                    all: data.all
+                    active: allMapped.filter(o => !historyNames.includes(o.status)),
+                    history: allMapped.filter(o => historyNames.includes(o.status)),
+                    all: allMapped
                 };
 
                 setOrders(formattedData);
@@ -59,6 +81,13 @@ const OnlineOrdersList = () => {
         };
         fetchOrders();
     }, []);
+
+    const filterOrders = (orderList) => {
+        return orderList.filter(order => {
+            const num = (order.order_number || order.number || '').toString();
+            return num.toLowerCase().includes(searchQuery.toLowerCase());
+        });
+    };
 
     const handleOrderClick = (order) => {
         let finalConfig = statusConfig[order.status] || statusConfig['Оформлен'];
@@ -88,14 +117,41 @@ const OnlineOrdersList = () => {
         return <OrderDetails order={selectedOrder} config={currentConfig} onBack={() => window.location.reload()} />;
     }
 
+    const filteredActive = filterOrders(orders.active);
+    const filteredHistory = filterOrders(orders.history);
+
     return (
         <div className="online-orders-container">
             {orders.active.length > 0 && (
-                <>
+                <div className="orders-header-row">
                     <h2 className="main-section-title">Мои онлайн заказы</h2>
-                    {orders.active.map(order => renderOrderCard(order, statusConfig, handleOrderClick))}
-                </>
+
+                    <div className="search-container-v2">
+                        <svg
+                            width="22"
+                            height="22"
+                            viewBox="0 0 22 22"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="search-icon-v2"
+                        >
+                            <path d="M10.0625 1.83252C14.6058 1.83256 18.2891 5.51574 18.2891 10.0591C18.289 12.0765 17.5596 13.9233 16.3545 15.354L19.9629 18.9624C20.2381 19.2378 20.2382 19.6842 19.9629 19.9595C19.6876 20.2348 19.2412 20.2347 18.9658 19.9595L15.3584 16.3521C13.9277 17.5572 12.08 18.2856 10.0625 18.2856C5.51915 18.2856 1.83597 14.6024 1.83594 10.0591C1.83594 5.51571 5.51913 1.83252 10.0625 1.83252ZM10.0625 3.24268C6.29799 3.24268 3.24609 6.29458 3.24609 10.0591C3.24613 13.8236 6.29802 16.8755 10.0625 16.8755C11.9481 16.8755 13.6539 16.1106 14.8887 14.8726C16.1192 13.6388 16.8789 11.9382 16.8789 10.0591C16.8789 6.2946 13.827 3.24271 10.0625 3.24268Z" fill="#7A7A7A"/>
+                        </svg>
+                        <input
+                            type="text"
+                            className="search-input-v2"
+                            placeholder="Искать заказ"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                </div>
             )}
+            {filteredActive.length > 0 ? (
+                filteredActive.map(order => renderOrderCard(order, statusConfig, handleOrderClick))
+            ) : searchQuery && orders.active.length > 0 ? (
+                <p className="no-results">Активных заказов не найдено</p>
+            ) : null}
 
             {orders.history.length > 0 && (
                 <>

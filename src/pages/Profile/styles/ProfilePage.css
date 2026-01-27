@@ -381,17 +381,6 @@
     cursor: pointer;
 }
 
-.btn-outline-cancel {
-    background: none;
-    border: 1px solid #902067;
-    color: #902067;
-    padding: 16px;
-    border-radius: 20px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
 
 .logout-profile-btn {
     font-family: "Montserrat", sans-serif!important;
@@ -460,27 +449,23 @@
     }
 
     .profile-layout {
+        display: flex;
         flex-direction: column;
         position: relative;
+        gap: 24px;
     }
 
     .profile-sidebar {
         width: 100%;
-        display: block;
-    }
-
-    /* Когда открыт контент (заказы и т.д.), скрываем меню */
-    .mobile-content-active .profile-sidebar {
-        display: none;
+        display: block!important;
     }
 
     .profile-content-area {
         display: none;
         width: 100%;
-        padding: 0;
     }
 
-    .profile-content-area.visible {
+    .mobile-content-active .profile-content-area.visible {
         display: block;
     }
 
@@ -505,14 +490,16 @@
         padding: 15px 20px;
     }
 
-    /* Стили как на макете image_337f9e.png */
+    .mobile-back-btn {
+        display: none !important;
+    }
+
     .profile-nav {
         border-radius: 20px;
     }
 
     .nav-item.active {
-        background-color: transparent;
-        color: #902067;
+        background-color: #f0f0f0;
         font-weight: 600;
     }
 }

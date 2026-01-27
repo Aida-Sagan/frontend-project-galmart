@@ -27,6 +27,13 @@
     justify-content: space-between;
     width: 100%;
 }
+@media (max-width: 768px) {
+    .card-row.align-end.mt-16{
+        flex-direction: column!important;
+        align-items: baseline;
+        gap: 15px;
+    }
+}
 
 .align-center { align-items: center; }
 .align-end {
@@ -205,7 +212,7 @@
     margin-bottom: 20px;
     background: #F5F5F5;
     border-radius: 64px;
-    padding: 7px 10px;
+    padding: 10px 20px;
 }
 
 .back-navigation:hover {
@@ -323,7 +330,7 @@
 
 .receipt-link {
     background: #F5F5F5;
-    padding: 7px 10px;
+    padding: 10px 14px;
     border-radius: 64px;
 }
 
@@ -478,7 +485,7 @@
 }
 
 .calc-row:not(:last-of-type) {
-    border-bottom: 1px solid var(--color-divider-primary, #DBDBDB);
+    border-bottom: 1px solid #DBDBDB;
 }
 
 .calc-row.discount {
@@ -612,7 +619,7 @@
     align-items: flex-start;
     padding-bottom: 12px;
     margin-bottom: 12px;
-    border-bottom: 1px solid var(--color-divider-primary, #DBDBDB);
+    border-bottom: 1px solid #DBDBDB;
 }
 
 .discount-row .label-group {
@@ -729,8 +736,65 @@
 .status-info-description {
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
-    font-style: Medium;
     font-size: 14px;
     color:  #4E4E4E;
 
+}
+
+/* Контейнер для заголовка и поиска */
+.orders-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 24px;
+    gap: 20px;
+}
+
+/* Общий контейнер поиска */
+.search-container-v2 {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #F5F5F5;
+    border-radius: 50px;
+    padding: 10px 20px;
+    flex: 0 1 400px;
+    height: 48px;
+    font-family: "Montserrat", sans-serif;
+}
+
+.search-icon-v2 {
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+/* Поле ввода */
+.search-input-v2 {
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-family: inherit;
+    font-size: 16px;
+    color: #222;
+    border: none!important;
+    padding: 0!important;
+}
+
+/* Стили плейсхолдера */
+.search-input-v2::placeholder {
+    color: #7A7A7A;
+    opacity: 1;
+}
+
+/* Адаптация под мобильные устройства */
+@media (max-width: 768px) {
+    .orders-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .search-container-v2 {
+        width: 100%;
+        flex: none;
+    }
 }

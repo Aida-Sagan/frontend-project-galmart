@@ -8,8 +8,24 @@ import OrderFailureModal from '../../CartPage/OrderFailureModal';
 import { getOrderDetails, changeOrder } from '../../../api/services/ordersService.js';
 import { useCart } from '../../../context/CartContext';
 
+
+const STATUS_MAP = {
+    'new': 'Не оплачен',
+    'payed': 'Оформлен',
+    'prepare': 'На сборке',
+    'ready': 'Собран',
+    'deliver': 'Доставляется',
+    'need_review': 'Ожидает оценки',
+    'completed': 'Завершен',
+    'canceled': 'Отменен',
+    'courier_cancel': 'Отменен курьером',
+    'full_return': 'Полный возврат',
+    'part_return': 'Частичный возврат'
+};
+
 const OrderDetails = ({ order, config, onBack }) => {
-    const { setOrderApi } = useCart(); // Достаем метод оплаты из контекста
+    const { setOrderApi } = useCart();
+
     const [isLocationOpen, setIsLocationOpen] = useState(false);
     const [isTimeOpen, setIsTimeOpen] = useState(false);
     const [isPaymentOpen, setIsPaymentOpen] = useState(false);
@@ -31,7 +47,11 @@ const OrderDetails = ({ order, config, onBack }) => {
         const fetchDetails = async () => {
             try {
                 const data = await getOrderDetails(order.id);
-                setFullOrderData(data);
+                const mappedData = {
+                    ...data,
+                    status: STATUS_MAP[data.status] || data.status
+                };
+                setFullOrderData(mappedData);
             } catch (error) {
                 console.error("Ошибка при загрузке деталей заказа:", error);
             } finally {
@@ -76,18 +96,36 @@ const OrderDetails = ({ order, config, onBack }) => {
         }
     };
 
-    const getStatusInfo = () => {
-        if (isCanceled) return { title: 'Отменен', desc: 'Ваш заказ отменен', color: '#222222' };
+    // const getStatusInfo = () => {
+    //     if (isCanceled) return { title: 'Отменен', desc: 'Ваш заказ отменен', color: '#222222' };
+    //
+    //     if (displayData.return_request) {
+    //         const r = displayData.return_request;
+    //         if (r.status === 'pending') return { title: 'Завершен', desc: 'Ваша заявка на возврат/замену в обработке', color: '#222' };
+    //         if (r.status === 'approved') return { title: 'Завершен', desc: 'Ваша заявка на возврат/замену одобрена', color: '#222' };
+    //         if (r.status === 'rejected') return { title: 'Завершен', desc: 'Ваша заявка на возврат/замену отклонена', color: '#222' };
+    //     }
+    //
+    //     return {
+    //         title: displayData.status === 'payed' ? 'Оплачен' : displayData.status,
+    //         desc: config.desc,
+    //         color: config.color
+    //     };
+    // };
 
-        if (displayData.return_request) {
-            const r = displayData.return_request;
-            if (r.status === 'pending') return { title: 'Завершен', desc: 'Ваша заявка на возврат/замену в обработке', color: '#222' };
-            if (r.status === 'approved') return { title: 'Завершен', desc: 'Ваша заявка на возврат/замену одобрена', color: '#222' };
-            if (r.status === 'rejected') return { title: 'Завершен', desc: 'Ваша заявка на возврат/замену отклонена', color: '#222' };
+    const getStatusInfo = () => {
+        if (isCanceled || displayData.status === 'Отменен') {
+            return { title: 'Отменен', desc: 'Ваш заказ отменен', color: '#222222' };
+        }
+
+        // Обработка возвратов
+        const historyStatuses = ['Завершен', 'Полный возврат', 'Частичный возврат'];
+        if (historyStatuses.includes(displayData.status)) {
+            return { title: displayData.status, desc: config.desc, color: '#222' };
         }
 
         return {
-            title: displayData.status === 'payed' ? 'Оплачен' : displayData.status,
+            title: displayData.status,
             desc: config.desc,
             color: config.color
         };
@@ -133,59 +171,76 @@ const OrderDetails = ({ order, config, onBack }) => {
 
     const renderActionButtons = () => {
         const status = displayData.status;
-        const chatCount = displayData.chat_messages_count || 0;
 
-        // 1. Оплата
-        if (status === 'Не оплачен' || status === 'unpaid') {
+        if (status === 'Не оплачен') {
             return (
                 <>
                     <button className="btn-primary-large" onClick={handlePayment}>Оплатить заказ</button>
-                    <button className="btn-outline-cancel" onClick={() => setIsCancelConfirmOpen(true)}>
-                        Отменить заказ
-                    </button>
+                    <button className="btn-outline-cancel" onClick={() => setIsCancelConfirmOpen(true)}>Отменить заказ</button>
                 </>
             );
         }
 
-        // 2. Сборка / Собран (Только чат)
-        if (['prepare', 'ready', 'На сборке', 'Собран'].includes(status)) {
+        if (['На сборке', 'Собран'].includes(status)) {
+            const messageCount = displayData.unread_count || 0;
+
             return (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
-                    <button
-                        className="btn-primary-large"
-                        onClick={() => window.open(`https://wa.me/${displayData.manager_phone || ''}`, '_blank')}
-                        style={{ backgroundColor: '#902067', position: 'relative' }}
-                    >
-                        В чат с менеджером
-                        {chatCount > 0 && <span className="msg-badge">{chatCount}</span>}
-                    </button>
-                </div>
+                <button
+                    className="btn-primary-large"
+                    style={{
+                        backgroundColor: '#902067',
+                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '10px'
+                    }}
+                    onClick={() => {
+                        const phone = displayData.manager_phone?.replace(/\D/g, '');
+                        if (phone) {
+                            window.open(`https://wa.me/${phone}`, '_blank');
+                        }
+                    }}
+                >
+                    В чат с менеджером
+
+                    {messageCount > 0 && (
+                        <span style={{
+                            backgroundColor: '#C6D600',
+                            color: '#000',
+                            borderRadius: '50%',
+                            padding: '2px 8px',
+                            fontSize: '14px',
+                            fontWeight: 'bold',
+                            minWidth: '20px',
+                            textAlign: 'center'
+                        }}>
+                    {messageCount}
+                </span>
+                    )}
+                </button>
             );
         }
 
-// 3. Оформлен / Оплачен (Только отмена)
-        if (['payed', 'Оформлен'].includes(status)) {
+        if (status === 'Оформлен') {
             return (
-                <button
-                    className="btn-outline-cancel"
-                    onClick={() => setIsCancelConfirmOpen(true)}
-                    style={{ width: '100%' }}
-                >
+                <button className="btn-outline-cancel" onClick={() => setIsCancelConfirmOpen(true)} style={{ width: '100%' }}>
                     Отменить заказ
                 </button>
             );
         }
 
-        if (status === 'deliver' || status === 'Доставляется') {
+        if (status === 'Доставляется') {
             return (
                 <button
                     className="btn-primary-large"
                     onClick={() => {
-                        const phone = displayData.courier_phone || '';
-                        window.location.href = `whatsapp://send?phone=${phone}`;
-                        setTimeout(() => {
-                            window.open(`https://wa.me/${phone}`, '_blank');
-                        }, 500);
+                        const phone = displayData.manager_phone;
+                        if (phone) {
+                            window.open(`https://wa.me/${phone.replace(/\D/g, '')}`, '_blank');
+                        } else {
+                            console.warn("Phone number is missing");
+                        }
                     }}
                 >
                     Связаться с курьером
@@ -193,27 +248,19 @@ const OrderDetails = ({ order, config, onBack }) => {
             );
         }
 
-        if (status === 'need_review' || status === 'Ожидает оценки') {
+        if (status === 'Ожидает оценки') {
             return (
                 <div style={{ display: 'flex', gap: '12px', width: '100%' }}>
-                    <button
-                        className="btn-outline-cancel"
-                        style={{ flex: 1, borderColor: '#902067', color: '#902067' }}
-                        onClick={() => setIsReturnModalOpen(true)}
-                    >
-                        Оформить возврат/замену
+                    <button className="btn-outline-cancel" style={{ flex: 1, borderColor: '#902067', color: '#902067' }}
+                            onClick={() => setIsReturnModalOpen(true)}>
+                        Возврат/замену
                     </button>
-                    <button
-                        className="btn-primary-large"
-                        style={{ flex: 1 }}
-                        onClick={() => setIsShowReview(true)}
-                    >
-                        Оценить заказ
+                    <button className="btn-primary-large" style={{ flex: 1 }} onClick={() => setIsShowReview(true)}>
+                        Оценить
                     </button>
                 </div>
             );
         }
-
         return null;
     };
 
@@ -227,12 +274,11 @@ const OrderDetails = ({ order, config, onBack }) => {
 
     return (
         <div className="order-details-wrapper">
-            <div className="details-nav-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="details-nav-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <button className="back-navigation" onClick={onBack} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fillRule="evenodd" clipRule="evenodd" d="M8.53033 7.46967C8.82322 7.76256 8.82322 8.23744 8.53033 8.53033L5.81066 11.25H20.5C20.9142 11.25 21.25 11.5858 21.25 12C21.25 12.4142 20.9142 12.75 20.5 12.75H5.81066L8.53033 15.4697C8.82322 15.7626 8.82322 16.2374 8.53033 16.5303C8.23744 16.8232 7.76256 16.8232 7.46967 16.5303L3.46967 12.5303C3.17678 12.2374 3.17678 11.7626 3.46967 11.4697L7.46967 7.46967C7.76256 7.17678 8.23744 7.17678 8.53033 7.46967Z" fill="#222222"/>
                     </svg>
-                    Вернуться к заказам
                 </button>
 
                 <div

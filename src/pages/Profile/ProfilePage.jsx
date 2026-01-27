@@ -1,11 +1,11 @@
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useProfile } from '../../context/ProfileContext';
 import EditProfileForm from '../Profile/EditProfile/EditProfileForm.jsx';
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Container from '../../components/Container/Container';
 import Loader from '../../components/Loader/Loader.jsx';
-import './styles/ProfilePage.css';
 import {
     getOfflineOrdersData,
     getUserPaymentsCards,
@@ -21,6 +21,7 @@ import PaymentMethodsList from './Payment/PaymentMethodsList.jsx';
 import NotificationContent from './Notifications/NotificationContent.jsx';
 import OnlineOrdersList from './Online/OnlineOrdersList.jsx';
 import SupportContent from './Support/SupportContent.jsx';
+import './styles/ProfilePage.css';
 
 
 const EditIcon = () => (
@@ -154,7 +155,14 @@ const ProfilePage = () => {
         setIsEditMode(false);
         setViewMode('list');
         setSelectedOrder(null);
-        setIsMobileContentOpen(true);
+        if (window.innerWidth <= 768) {
+            setIsMobileContentOpen(true);
+            setTimeout(() => {
+                document.querySelector('.profile-content-area')?.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        } else {
+            setIsMobileContentOpen(true);
+        }
 
         if (id === 'notifications') {
             setNotificationCount(0);
@@ -324,14 +332,16 @@ const ProfilePage = () => {
                                     border: 'none',
                                     background: '#F5F5F5',
                                     padding: '12px',
-                                    borderRadius: '12px',
-                                    width: '100%',
+                                    borderRadius: '32px',
+                                    width: '14%',
                                     textAlign: 'left',
                                     fontWeight: '600',
                                     color: '#902067'
                                 }}
                             >
-                                ← Назад к меню
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8.53033 7.46967C8.82322 7.76256 8.82322 8.23744 8.53033 8.53033L5.81066 11.25H20.5C20.9142 11.25 21.25 11.5858 21.25 12C21.25 12.4142 20.9142 12.75 20.5 12.75H5.81066L8.53033 15.4697C8.82322 15.7626 8.82322 16.2374 8.53033 16.5303C8.23744 16.8232 7.76256 16.8232 7.46967 16.5303L3.46967 12.5303C3.17678 12.2374 3.17678 11.7626 3.46967 11.4697L7.46967 7.46967C7.76256 7.17678 8.23744 7.17678 8.53033 7.46967Z" fill="#222222"/>
+                                </svg>
                             </button>
                         )}
                         {renderContent()}

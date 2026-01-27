@@ -203,6 +203,7 @@ const CartContent = () => {
         try {
             const url = await attachNewCard();
             if (url) window.location.href = url;
+            // eslint-disable-next-line no-unused-vars
         } catch (e) {
             alert("Ошибка при попытке добавить карту");
         }
@@ -359,18 +360,28 @@ const CartContent = () => {
                         <div className="widget-header"><h3>Сумма к оплате</h3></div>
                         <div className="summary-row"><span>Сумма заказа</span><span>{itemsPrice.toLocaleString()} {currency}</span></div>
                         <div className="summary-row"><span>Доставка</span><span>{deliveryCost > 0 ? `${deliveryCost} ${currency}` : '0 ' + currency}</span></div>
-                        {discount > 0 && (
-                            <div className="summary-row discount-row">
-                                <span>Скидка</span>
-                                {promoCodeName && <span className="promo-name">По промокоду {promoCodeName}</span>}
-                                <span>-{discount.toLocaleString()} {currency}</span>
+
+                        <div className="summary-row discount-row">
+                            <div className="discount-main-line">
+                                <span className="discount-label">Скидка</span>
+                                <span className="discount-value">
+                                    -{discount.toLocaleString()} {currency}
+                                </span>
                             </div>
-                        )}
+                            {promoCodeName && (
+                                <span className="promo-name">По промокоду {promoCodeName}</span>
+                            )}
+                        </div>
+
                         {bonusesSpent > 0 && <div className="summary-row bonus-spent-row"><span>Оплачено бонусами</span><span>-{bonusesSpent.toLocaleString()} {currency}</span></div>}
                         <div className="summary-total-row">
                             <span>Итого</span>
                             <span className="final-total-value">
-                                {oldTotal > finalTotal && oldTotal > 0 && <span className="old-total-price">{oldTotal.toLocaleString()} {currency} &rarr; </span>}
+                                {oldTotal > finalTotal && oldTotal > 0 && <span className="old-total-price">{oldTotal.toLocaleString()} {currency} </span>}
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path fillRule="evenodd" clipRule="evenodd" d="M15.9697 7.46967C15.6768 7.76256 15.6768 8.23744 15.9697 8.53033L18.6893 11.25H4C3.58579 11.25 3.25 11.5858 3.25 12C3.25 12.4142 3.58579 12.75 4 12.75H18.6893L15.9697 15.4697C15.6768 15.7626 15.6768 16.2374 15.9697 16.5303C16.2626 16.8232 16.7374 16.8232 17.0303 16.5303L21.0303 12.5303C21.3232 12.2374 21.3232 11.7626 21.0303 11.4697L17.0303 7.46967C16.7374 7.17678 16.2626 7.17678 15.9697 7.46967Z" fill="#222222"/>
+                                </svg>
+
                                 {finalTotal.toLocaleString()} {currency}
                             </span>
                         </div>
@@ -391,7 +402,8 @@ const CartContent = () => {
             <PromoCodeModal isOpen={isPromoModalOpen} onClose={() => setIsPromoModalOpen(false)} onApply={handleApplyPromocode} />
             <DeliveryTimeModal isOpen={isDeliveryTimeModalOpen} onClose={() => setIsDeliveryTimeModalOpen(false)} onSaveSuccess={() => fetchCart()} />
             <ConfirmationModal isOpen={isUnavailableModalOpen} onClose={() => setIsUnavailableModalOpen(false)} onConfirm={() => fetchCart()} title="Удалить недоступные товары?" text="Вы уверены?" />
-            <ConfirmationModal isOpen={isClearCartModalOpen} onClose={() => setIsClearCartModalOpen(false)} onConfirm={() => { clearCart(); setIsClearCartModalOpen(false); }} title="Очистить корзину?" text="Вы уверены?" />
+            <ConfirmationModal isOpen={isClearCartModalOpen} onClose={() => setIsClearCartModalOpen(false)} onConfirm={() => { clearCart(); setIsClearCartModalOpen(false); }} title="Очистить корзину?" text="Вы уверены, что хотите
+удалить корзину? Товары придется выбирать заново" />
             {isAddressModalOpen && <LocationModal onClose={() => setIsAddressModalOpen(false)} onCitySelect={() => {}} />}
         </div>
     );

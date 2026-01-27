@@ -17,19 +17,17 @@ const PromoCodeModal = ({ isOpen, onClose, onApply }) => {
 
         try {
             await onApply(code);
-            setCode(''); // Очистить поле после успеха
+            setCode('');
             onClose();
         } catch (err) {
             console.error("Promo error:", err);
 
-            // --- ЛОГИКА ПЕРЕВОДА ОШИБОК НА КЛИЕНТЕ ---
             let errorMessage = "Произошла ошибка при применении промокода";
 
             if (err.response) {
                 const status = err.response.status;
                 const detail = err.response.data?.detail || "";
 
-                // 1. Проверка по статус-коду (самый надежный способ без изменения API)
                 if (status === 404) {
                     errorMessage = "Промокод не найден";
                 } else if (status === 400) {
@@ -75,14 +73,14 @@ const PromoCodeModal = ({ isOpen, onClose, onApply }) => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="promo-form">
-                    <div className="input-wrapper">
+                    <div className="input-wrapper-promocode">
                         <input
                             type="text"
                             placeholder="Введите промокод"
                             value={code}
                             onChange={(e) => {
                                 setCode(e.target.value);
-                                setError(null); // Убираем ошибку при вводе
+                                setError(null);
                             }}
                             className={`promo-input ${error ? 'error' : ''}`}
                         />

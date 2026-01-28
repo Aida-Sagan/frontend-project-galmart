@@ -7,7 +7,8 @@ import OrderReview from './OrderReview.jsx';
 import OrderFailureModal from '../../CartPage/OrderFailureModal';
 import { getOrderDetails, changeOrder } from '../../../api/services/ordersService.js';
 import { useCart } from '../../../context/CartContext';
-
+import ManagerChatContent from '../ManagerChat/ManagerChatContent.jsx';
+import './styles/OrderDetails.css';
 
 const STATUS_MAP = {
     'new': 'Не оплачен',
@@ -16,6 +17,7 @@ const STATUS_MAP = {
     'ready': 'Собран',
     'deliver': 'Доставляется',
     'need_review': 'Ожидает оценки',
+
     'completed': 'Завершен',
     'canceled': 'Отменен',
     'courier_cancel': 'Отменен курьером',
@@ -40,8 +42,9 @@ const OrderDetails = ({ order, config, onBack }) => {
     const [orderFailureMessage, setOrderFailureMessage] = useState('');
 
     const displayData = fullOrderData || order;
-    const isCanceled = displayData.status === 'canceled' || displayData.status === 'Отменен';
-    const isEditable = displayData.status === 'Не оплачен' && !isCanceled;
+    const [showChat, setShowChat] = useState(false);
+
+    const historyStatuses = ['Завершен', 'Отменен', 'Отменен курьером', 'Полный возврат', 'Частичный возврат'];
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -60,6 +63,55 @@ const OrderDetails = ({ order, config, onBack }) => {
         };
         fetchDetails();
     }, [order.id]);
+
+
+    if (showChat) {
+        return (
+            <ManagerChatContent
+                chatKey={displayData.key}
+                orderNumber={displayData.order_number}
+                onBack={() => setShowChat(false)}
+            />
+        );
+    }
+
+    const renderProductItem = (item, idx, type = 'normal') => (
+        <div className="product-item" key={idx}>
+            <div className="prod-img" style={{ position: 'relative' }}>
+                <img src={item.photos?.[0]} alt="" style={{ width: '100%', borderRadius: '8px' }} />
+                {type === 'unavailable' && (
+                    <div className="unavailable-overlay" style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(251, 251, 251, 0.6)',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        padding: '4px'
+                    }}>
+                        <span style={{
+                            color: '#FFFFFF',
+                            fontSize: '12px',
+                            fontWeight: '700',
+                            textShadow: '0px 0px 4px rgba(0,0,0,0.5)'
+                        }}>Нет в наличии</span>
+                    </div>
+                )}
+            </div>
+            <div className="prod-info">
+                <p className="prod-name">{item.title}</p>
+                <div className="prod-weight-group">
+                    <span className="weight-current">{item.quantity}</span>
+                </div>
+                <div className="prod-price">{item.total_price} {displayData.currency}</div>
+            </div>
+        </div>
+    );
 
     const handlePayment = () => {
         const orderDetails = {
@@ -80,7 +132,8 @@ const OrderDetails = ({ order, config, onBack }) => {
             await changeOrder(displayData.id, 'cancel');
             setIsCancelConfirmOpen(false);
             const updatedData = await getOrderDetails(order.id);
-            setFullOrderData(updatedData);
+            const mappedData = { ...updatedData, status: STATUS_MAP[updatedData.status] || updatedData.status };
+            setFullOrderData(mappedData);
             // eslint-disable-next-line no-unused-vars
         } catch (e) {
             alert("Не удалось отменить заказ");
@@ -91,47 +144,56 @@ const OrderDetails = ({ order, config, onBack }) => {
         try {
             console.log("Отзыв отправлен:", reviewData);
             setIsShowReview(false);
+            // eslint-disable-next-line no-unused-vars
         } catch (e) {
             alert("Ошибка при отправке отзыва");
         }
     };
 
+
     // const getStatusInfo = () => {
-    //     if (isCanceled) return { title: 'Отменен', desc: 'Ваш заказ отменен', color: '#222222' };
+    //     if (isCanceled || displayData.status === 'Отменен') {
+    //         return { title: 'Отменен', desc: 'Ваш заказ отменен', color: '#222222' };
+    //     }
     //
-    //     if (displayData.return_request) {
-    //         const r = displayData.return_request;
-    //         if (r.status === 'pending') return { title: 'Завершен', desc: 'Ваша заявка на возврат/замену в обработке', color: '#222' };
-    //         if (r.status === 'approved') return { title: 'Завершен', desc: 'Ваша заявка на возврат/замену одобрена', color: '#222' };
-    //         if (r.status === 'rejected') return { title: 'Завершен', desc: 'Ваша заявка на возврат/замену отклонена', color: '#222' };
+    //     // Обработка возвратов
+    //     const historyStatuses = ['Завершен', 'Полный возврат', 'Частичный возврат'];
+    //     if (historyStatuses.includes(displayData.status)) {
+    //         return { title: displayData.status, desc: config.desc, color: '#222' };
     //     }
     //
     //     return {
-    //         title: displayData.status === 'payed' ? 'Оплачен' : displayData.status,
+    //         title: displayData.status,
     //         desc: config.desc,
     //         color: config.color
     //     };
     // };
-
     const getStatusInfo = () => {
-        if (isCanceled || displayData.status === 'Отменен') {
-            return { title: 'Отменен', desc: 'Ваш заказ отменен', color: '#222222' };
-        }
+        const status = displayData.status;
+        let info = { title: status, desc: config.desc, color: config.color || '#222' };
 
-        // Обработка возвратов
-        const historyStatuses = ['Завершен', 'Полный возврат', 'Частичный возврат'];
-        if (historyStatuses.includes(displayData.status)) {
-            return { title: displayData.status, desc: config.desc, color: '#222' };
+        if (status === 'Завершен') {
+            info.desc = 'Ваш заказ завершен';
+        } else if (status === 'Отменен') {
+            info.desc = 'Ваш заказ отменен';
+            info.color = '#222222';
+        } else if (status === 'Отменен курьером') {
+            info.desc = 'Ваш заказ отменен курьером';
+            info.color = '#222222';
+        } else if (status === 'Полный возврат') {
+            info.desc = 'По вашему заказу произведен полный возврат. Денежные средства поступят на вашу карту согласно условиям обработки возврата средств обслуживающим банком.';
+            info.color = '#222222';
+        } else if (status === 'Частичный возврат') {
+            info.desc = 'По вашему заказу произведен частичный возврат. Денежные средства поступят на вашу карту согласно условиям обработки возврата средств обслуживающим банком.';
+            info.color = '#222222';
         }
-
-        return {
-            title: displayData.status,
-            desc: config.desc,
-            color: config.color
-        };
+        return info;
     };
 
     const statusInfo = getStatusInfo();
+    const isCanceled = displayData.status === 'Отменен' || displayData.status === 'Отменен курьером';
+    const isEditable = displayData.status === 'Не оплачен';
+
 
     const getReplacementText = (type) => {
         const types = {
@@ -195,12 +257,7 @@ const OrderDetails = ({ order, config, onBack }) => {
                         justifyContent: 'center',
                         gap: '10px'
                     }}
-                    onClick={() => {
-                        const phone = displayData.manager_phone?.replace(/\D/g, '');
-                        if (phone) {
-                            window.open(`https://wa.me/${phone}`, '_blank');
-                        }
-                    }}
+                    onClick={() => setShowChat(true)}
                 >
                     В чат с менеджером
 
@@ -256,11 +313,27 @@ const OrderDetails = ({ order, config, onBack }) => {
                         Возврат/замену
                     </button>
                     <button className="btn-primary-large" style={{ flex: 1 }} onClick={() => setIsShowReview(true)}>
-                        Оценить
+                        Оценить заказ
                     </button>
                 </div>
             );
         }
+
+        if (status === 'Завершен') {
+            // Кнопка блокируется, если уже была отправлена заявка на возврат
+            const isReturnDisabled = !!displayData.return_request;
+            return (
+                <button
+                    className="btn-outline-cancel"
+                    disabled={isReturnDisabled}
+                    style={{ width: '100%', borderColor: '#902067', color: isReturnDisabled ? '#7A7A7A' : '#902067' }}
+                    onClick={() => setIsReturnModalOpen(true)}
+                >
+                    Оформить возврат/замену
+                </button>
+            );
+        }
+
         return null;
     };
 
@@ -271,6 +344,8 @@ const OrderDetails = ({ order, config, onBack }) => {
     if (loading && !fullOrderData) {
         return <div className="order-details-wrapper">Загрузка данных заказа...</div>;
     }
+
+    const showProgress = !historyStatuses.includes(displayData.status);
 
     return (
         <div className="order-details-wrapper">
@@ -297,7 +372,7 @@ const OrderDetails = ({ order, config, onBack }) => {
 
             <div className="order-status-card-bg">
                 <h2 className="card-status-text" style={{ color: statusInfo.color }}>{statusInfo.title}</h2>
-                {!isCanceled && (
+                {showProgress && (
                     <div className="progress-bars-container">
                         {[1, 2, 3, 4, 5].map((step) => (
                             <div key={step} className={`step-bar ${step <= config.steps ? 'active' : ''}`} />
@@ -333,43 +408,49 @@ const OrderDetails = ({ order, config, onBack }) => {
                 </div>
             </div>
 
+            {/* Основной состав заказа */}
             <div className="order-content-section">
                 <h3 className="section-subtitle">Состав заказа</h3>
                 <div className="composition-list">
-                    {displayData.items?.map((item, idx) => (
-                        <div className="product-item" key={idx}>
-                            <div className="prod-img">
-                                <img src={item.photos?.[0]} alt="" style={{width: '100%', borderRadius: '8px'}} />
-                            </div>
-                            <div className="prod-info">
-                                <p className="prod-name">{item.title}</p>
-                                <div className="prod-weight-group">
-                                    <span className="weight-current">{item.quantity}</span>
-                                </div>
-                                <div className="prod-price">{item.total_price} {displayData.currency}</div>
-                            </div>
-                        </div>
-                    ))}
+                    {displayData.items?.map((item, idx) => renderProductItem(item, idx))}
                 </div>
 
-                {displayData.unavailable_items?.length > 0 && (
+                {/*/!* Акционные товары (если есть в API) *!/*/}
+                {/*{displayData.action_items?.length > 0 && (*/}
+                {/*    <div style={{ marginTop: '24px' }}>*/}
+                {/*        <h3 className="section-subtitle">Акционные товары</h3>*/}
+                {/*        <div className="composition-list">*/}
+                {/*            {displayData.action_items.map((item, idx) => renderProductItem(item, idx))}*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*)}*/}
+
+                {/* НЕТ В НАЛИЧИИ (статус Собран или наличие данных) */}
+                {(displayData.status === 'Собран' || displayData.unavailable_items?.length > 0) && displayData.unavailable_items?.length > 0 && (
                     <div style={{ marginTop: '24px' }}>
                         <h3 className="section-subtitle">Нет в наличии</h3>
                         <div className="composition-list">
-                            {displayData.unavailable_items?.map((item, idx) => (
-                                <div className="product-item" key={idx}>
-                                    <div className="prod-img">
-                                        <img src={item.photos?.[0]} alt="" style={{width: '100%', borderRadius: '8px'}} />
-                                    </div>
-                                    <div className="prod-info">
-                                        <p className="prod-name">{item.title}</p>
-                                        <div className="prod-weight-group">
-                                            <span className="weight-current">{item.quantity}</span>
-                                        </div>
-                                        <div className="prod-price">{item.total_price} {displayData.currency}</div>
-                                    </div>
-                                </div>
-                            ))}
+                            {displayData.unavailable_items.map((item, idx) => renderProductItem(item, idx, 'unavailable'))}
+                        </div>
+                    </div>
+                )}
+
+                {/* ЗАМЕНЕННЫЕ ТОВАРЫ */}
+                {(displayData.status === 'Собран' || displayData.changed_items?.length > 0) && displayData.changed_items?.length > 0 && (
+                    <div style={{ marginTop: '24px' }}>
+                        <h3 className="section-subtitle">Замененные товары</h3>
+                        <div className="composition-list">
+                            {displayData.changed_items.map((item, idx) => renderProductItem(item, idx))}
+                        </div>
+                    </div>
+                )}
+
+                {/* ПРОИЗВЕДЕН ВОЗВРАТ (если есть в API) */}
+                {displayData.returned_items?.length > 0 && (
+                    <div style={{ marginTop: '24px' }}>
+                        <h3 className="section-subtitle">Произведен возврат</h3>
+                        <div className="composition-list">
+                            {displayData.returned_items.map((item, idx) => renderProductItem(item, idx))}
                         </div>
                     </div>
                 )}
@@ -415,6 +496,19 @@ const OrderDetails = ({ order, config, onBack }) => {
                         <span>Оплачено бонусами</span>
                         <span>-{displayData.bonuses_used?.toLocaleString()} {displayData.currency}</span>
                     </div>
+                )}
+
+                {(displayData.status === 'Полный возврат' || displayData.status === 'Частичный возврат' || displayData.returned_money || displayData.returned_bonuses) && (
+                    <>
+                        <div className="calc-row" style={{ marginTop: '12px', color: '#902067', fontWeight: '500' }}>
+                            <span>Возврат на карту</span>
+                            <span>{displayData.returned_money?.toLocaleString() || 0} {displayData.currency}</span>
+                        </div>
+                        <div className="calc-row" style={{ color: '#902067', fontWeight: '500' }}>
+                            <span>Возврат бонусами</span>
+                            <span>{displayData.returned_bonuses?.toLocaleString() || 0} {displayData.currency}</span>
+                        </div>
+                    </>
                 )}
 
                 <div className="calc-row-total">

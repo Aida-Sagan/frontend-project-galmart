@@ -70,3 +70,13 @@ export const changeOrder = async (orderId, action = 'cancel') => {
         throw error;
     }
 };
+
+export const getChatHistory = async (key) => {
+    try {
+        const response = await $api.get(`/api/v2/chat/messages/${key}/`);
+        return response.data.data || response.data;
+    } catch (error) {
+        console.error("Ошибка при загрузке истории чата:", error);
+        throw error;
+    }
+};

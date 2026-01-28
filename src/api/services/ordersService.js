@@ -80,3 +80,33 @@ export const getChatHistory = async (key) => {
         throw error;
     }
 };
+
+/**
+ * Оформление заявки на возврат или замену товаров
+ * @param {string|number} orderId - ID заказа
+ * @param {Object} returnData - Объект с данными (items, reason, и т.д.)
+ */
+export const orderReturn = async (orderId, returnData) => {
+    try {
+        const response = await $api.post(API_URLS.ORDER_RETURN(orderId), returnData);
+        return response.data;
+    } catch (error) {
+        console.error(`[Service] Ошибка при оформлении возврата заказа ${orderId}:`, error);
+        throw error;
+    }
+};
+
+/**
+ * Отправка отзыва и оценки заказа
+ * @param {string|number} orderId - ID заказа
+ * @param {Object} reviewData - Объект с данными отзыва (оценка, комментарий и т.д.)
+ */
+export const sendOrderReview = async (orderId, reviewData) => {
+    try {
+        const response = await $api.post(API_URLS.ORDER_REVIEW(orderId), reviewData);
+        return response.data;
+    } catch (error) {
+        console.error(`[Service] Ошибка при отправке отзыва для заказа ${orderId}:`, error);
+        throw error;
+    }
+};

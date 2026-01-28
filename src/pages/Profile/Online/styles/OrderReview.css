@@ -1,13 +1,12 @@
 .order-review-container {
-    padding: 20px;
-    background: #F8F8F8;
     min-height: 100vh;
     font-family: sans-serif;
+    padding: 20px; /* Добавлен отступ для всего контейнера */
 }
 
 .review-main-title {
-    font-size: 24px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 500;
     margin: 24px 0;
 }
 
@@ -18,8 +17,8 @@
 }
 
 .review-card-item {
-    background: #FFFFFF;
-    border-radius: 16px;
+    background: #F5F5F5;
+    border-radius: 24px;
     padding: 20px;
     display: flex;
     justify-content: space-between;
@@ -47,23 +46,35 @@
 .star-rating-row {
     display: flex;
     gap: 8px;
-    background: #F8F8F8;
+    background: #FBFBFB;
     padding: 8px 16px;
     border-radius: 24px;
 }
 
+/* Обновленные стили для звезд */
 .star-icon {
-    font-size: 28px;
-    color: #FFFFFF;
-    stroke: #902067;
-    stroke-width: 1px;
-    paint-order: stroke;
     cursor: pointer;
-    -webkit-text-stroke: 1.5px #902067;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s ease;
 }
 
-.star-icon.filled {
-    color: #902067;
+.star-icon:active {
+    transform: scale(0.9); /* Эффект нажатия */
+}
+
+/* Управляем path напрямую */
+.star-icon svg path {
+    stroke: #902067;
+    stroke-width: 1.5px;
+    transition: fill 0.2s ease;
+    fill: #FBFBFB; /* Цвет пустой звезды внутри */
+}
+
+/* Состояние закрашенной звезды */
+.star-icon.filled svg path {
+    fill: #902067 !important;
 }
 
 .photo-upload-grid {
@@ -74,7 +85,7 @@
 .upload-placeholder {
     width: 60px;
     height: 60px;
-    border-radius: 8px;
+    border-radius: 12px; /* Чуть увеличил радиус для мягкости */
     background: #F0F0F0;
     display: flex;
     align-items: center;
@@ -82,19 +93,25 @@
 }
 
 .upload-placeholder.main-upload {
-    background: #B04B8A;
+    background: #902067; /* Привел к общему брендовому цвету */
     cursor: pointer;
 }
 
 .review-textarea {
     width: 100%;
     min-height: 120px;
-    border: none;
-    background: #F8F8F8;
-    border-radius: 12px;
+    border: 1px solid transparent; /* Добавил невидимую рамку для фокуса */
+    background: #FFFFFF; /* Сделал белым для контраста на сером фоне */
+    border-radius: 16px;
     padding: 16px;
     resize: none;
     font-size: 16px;
+    box-sizing: border-box;
+}
+
+.review-textarea:focus {
+    outline: none;
+    border-color: #902067;
 }
 
 .submit-review-btn {
@@ -103,9 +120,19 @@
     color: white;
     border: none;
     padding: 18px;
-    border-radius: 16px;
+    border-radius: 32px; /* Как на макете */
     font-size: 18px;
     font-weight: 600;
     margin-top: 32px;
     cursor: pointer;
+    transition: background 0.3s ease, opacity 0.3s ease;
+}
+
+.submit-review-btn:hover {
+    background: #771854;
+}
+
+.submit-review-btn:disabled {
+    background: #DBDBDB;
+    cursor: not-allowed;
 }

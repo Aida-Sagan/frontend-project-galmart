@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
+import { orderReturn } from '../../../api/services/ordersService.js';
 import './styles/ReturnOrderModal.css';
 
-const ReturnOrderModal = ({ orderNumber, items, onClose }) => {
+const ReturnOrderModal = ({ orderNumber, items, onClose, orderId }) => {
     const [requestType, setRequestType] = useState('return'); // 'return' | 'replace'
     const [selectedItems, setSelectedItems] = useState({});
     const [comment, setComment] = useState('');
     const [photos, setPhotos] = useState([]);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
 
-    const displayItems = items || [
-        { id: 1, name: 'Абрикосы, вес', weight: '1 кг', type: 'weight', img: '🍎' },
-        { id: 2, name: 'Айран домашний 3,2%', weight: '1 шт', type: 'unit', img: '🥛' }
-    ];
+    const displayItems = items || [];
 
     const toggleItem = (id) => {
         const newSelected = { ...selectedItems };
@@ -25,8 +24,16 @@ const ReturnOrderModal = ({ orderNumber, items, onClose }) => {
 
     const updateQuantity = (id, delta, type) => {
         if (type === 'weight' || !selectedItems[id]) return;
-        const newQty = Math.max(1, (selectedItems[id] || 1) + delta);
-        setSelectedItems({ ...selectedItems, [id]: newQty });
+
+        const originalItem = displayItems.find(item => item.id === id);
+        const maxAvailable = originalItem ? originalItem.quantity : 1;
+
+        const currentQty = selectedItems[id] || 1;
+        const newQty = currentQty + delta;
+
+        if (newQty >= 1 && newQty <= maxAvailable) {
+            setSelectedItems({ ...selectedItems, [id]: newQty });
+        }
     };
 
     const words = comment.trim().split(/\s+/).filter(word => word.length > 0);
@@ -34,13 +41,48 @@ const ReturnOrderModal = ({ orderNumber, items, onClose }) => {
         Object.keys(selectedItems).length > 0 &&
         words.length >= 4 &&
         photos.length > 0 &&
-        !isSubmitted;
+        !isSubmitted &&
+        !isSuccess;
 
     const handlePhotoUpload = (e) => {
         if (e.target.files && e.target.files[0] && photos.length < 3) {
             setPhotos([...photos, URL.createObjectURL(e.target.files[0])]);
         }
     };
+
+    const handleSubmit = async () => {
+        if (!isFormValid) return;
+
+        setIsSubmitted(true);
+
+        // Формируем массив товаров для API
+        const formattedItems = Object.keys(selectedItems).map(id => ({
+            id: parseInt(id),
+            quantity: selectedItems[id]
+        }));
+
+        const payload = {
+            type: requestType,
+            items: formattedItems,
+            comment: comment,
+            photos: photos
+        };
+
+        try {
+            await orderReturn(orderId, payload);
+            setIsSuccess(true);
+
+            setTimeout(() => {
+                onClose();
+            }, 2000);
+        } catch (error) {
+            console.error("Ошибка при отправке заявки:", error);
+            alert("Не удалось отправить заявку. Попробуйте позже.");
+        } finally {
+            setIsSubmitted(false);
+        }
+    };
+
 
     return (
         <div className="modal-overlay">
@@ -79,18 +121,20 @@ const ReturnOrderModal = ({ orderNumber, items, onClose }) => {
                                     <div className="checkbox-wrapper" onClick={() => toggleItem(item.id)}>
                                         <div className={`custom-checkbox ${isSelected ? 'checked' : ''}`}></div>
                                     </div>
-                                    <div className="item-img-box">{item.img}</div>
+                                    <div className="item-img-box">
+                                        <img src={item.photos?.[0]} alt={item.title} style={{width: '100%', borderRadius: '4px'}} />
+                                    </div>
                                     <div className="item-info-main">
-                                        <p>{item.name}</p>
+                                        <p>{item.title}</p>
                                         <div className="quantity-controls">
                                             <button
-                                                disabled={item.type === 'weight' || !isSelected}
-                                                onClick={() => updateQuantity(item.id, -1, item.type)}
+                                                disabled={item.unit_code === 'kg' || !isSelected}
+                                                onClick={() => updateQuantity(item.id, -1, item.unit_code === 'kg' ? 'weight' : 'unit')}
                                             >−</button>
-                                            <span>{isSelected ? selectedItems[item.id] : 1} {item.type === 'weight' ? 'кг' : 'шт'}</span>
+                                            <span>{isSelected ? selectedItems[item.id] : 1} {item.unit}</span>
                                             <button
-                                                disabled={item.type === 'weight' || !isSelected}
-                                                onClick={() => updateQuantity(item.id, 1, item.type)}
+                                                disabled={item.unit_code === 'kg' || !isSelected}
+                                                onClick={() => updateQuantity(item.id, 1, item.unit_code === 'kg' ? 'weight' : 'unit')}
                                             >+</button>
                                         </div>
                                     </div>
@@ -138,10 +182,10 @@ const ReturnOrderModal = ({ orderNumber, items, onClose }) => {
                     <button
                         className="btn-submit-request"
                         disabled={!isFormValid}
-                        onClick={() => setIsSubmitted(true)}
+                        onClick={handleSubmit}
                         style={{ backgroundColor: isFormValid ? '#902067' : '#DBDBDB' }}
                     >
-                        {isSubmitted ? 'Заявка отправлена' : 'Отправить заявку'}
+                        {isSubmitted ? 'Отправка...' : isSuccess ? 'Заявка отправлена' : 'Отправить заявку'}
                     </button>
                 </div>
             </div>

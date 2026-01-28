@@ -15,6 +15,8 @@ import DeliveryPreferencesModal from './DeliveryPreferencesModal/DeliveryPrefere
 import ReplacementModal from './ReplacementModal/ReplacementModal';
 import PaymentMethodModal from './PaymentMethodModal/PaymentMethodModal';
 import OrderFailureModal from './OrderFailureModal';
+import OrderSuccessModal from './OrderSuccessModal';
+
 
 import { ReactComponent as VisaIcon } from '../../assets/svg/visa.svg';
 import { ReactComponent as MastercardIcon } from '../../assets/svg/mastercard.svg';
@@ -101,6 +103,7 @@ const CartContent = () => {
 
     const { city, loading: isLocationLoading, selectedAddress } = useLocation();
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isUnavailableModalOpen, setIsUnavailableModalOpen] = useState(false);
     const [isClearCartModalOpen, setIsClearCartModalOpen] = useState(false);
     const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
@@ -111,6 +114,8 @@ const CartContent = () => {
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [isOrderFailureModalOpen, setIsOrderFailureModalOpen] = useState(false);
     const [orderFailureMessage, setOrderFailureMessage] = useState('');
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
 
     const [checkoutDetails, setCheckoutDetails] = useState({
         useBonuses: false,
@@ -176,8 +181,10 @@ const CartContent = () => {
         return checkoutDetails.leaveAtDoor ? `${timeText}, оставить у двери` : timeText;
     };
 
-    const handleOrderSubmit = () => {
-        if (!isCheckoutReady) return;
+    const handleOrderSubmit = async () => {
+        if (isSubmitting || !isCheckoutReady) return;
+
+        setIsSubmitting(true);
 
         let replaceActionKey = 'call';
         if (checkoutDetails.replaceItemsAction === 'Не звонить и заменить') replaceActionKey = 'replace';
@@ -192,11 +199,20 @@ const CartContent = () => {
             paymentMethodId: selectedPaymentMethodId,
         };
 
-        setOrderApi(orderDetails).catch(error => {
+        try {
+            await setOrderApi(orderDetails);
+
+            setIsSuccessModalOpen(true);
+
+            await clearCart();
+
+        } catch (error) {
             const message = error?.response?.data?.message || error.message || "Произошла ошибка при оплате заказа.";
             setOrderFailureMessage(message);
             setIsOrderFailureModalOpen(true);
-        });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleAddNewCard = async () => {
@@ -394,7 +410,10 @@ const CartContent = () => {
                     </div>
                 </div>
             </div>
-
+            <OrderSuccessModal
+                isOpen={isSuccessModalOpen}
+                onClose={() => setIsSuccessModalOpen(false)}
+            />
             <OrderFailureModal isOpen={isOrderFailureModalOpen} onClose={() => setIsOrderFailureModalOpen(false)} errorMessage={orderFailureMessage} />
             <PaymentMethodModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} selectedMethodId={selectedPaymentMethodId} onSelect={setSelectedPaymentMethodId} cards={savedCards} onDeleteCard={deleteCard} onAddCard={handleAddNewCard} />
             <ReplacementModal isOpen={isReplacementModalOpen} onClose={() => setIsReplacementModalOpen(false)} initialValue={checkoutDetails.replaceItemsAction} onSave={handleSaveReplacementAction} />

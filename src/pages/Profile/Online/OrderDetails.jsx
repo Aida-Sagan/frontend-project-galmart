@@ -5,9 +5,10 @@ import PaymentMethodModal from '../../../pages/CartPage/PaymentMethodModal/Payme
 import ReturnOrderModal from './ReturnOrderModal.jsx';
 import OrderReview from './OrderReview.jsx';
 import OrderFailureModal from '../../CartPage/OrderFailureModal';
-import { getOrderDetails, changeOrder } from '../../../api/services/ordersService.js';
+import { getOrderDetails, changeOrder, sendOrderReview } from '../../../api/services/ordersService.js';
 import { useCart } from '../../../context/CartContext';
 import ManagerChatContent from '../ManagerChat/ManagerChatContent.jsx';
+
 import './styles/OrderDetails.css';
 
 const STATUS_MAP = {
@@ -142,14 +143,21 @@ const OrderDetails = ({ order, config, onBack }) => {
 
     const handleReviewSubmit = async (reviewData) => {
         try {
-            console.log("Отзыв отправлен:", reviewData);
+            await sendOrderReview(displayData.id, reviewData);
+
             setIsShowReview(false);
-            // eslint-disable-next-line no-unused-vars
+            alert("Спасибо! Ваш отзыв отправлен.");
+
+            const updatedData = await getOrderDetails(order.id);
+            setFullOrderData(updatedData);
+
         } catch (e) {
-            alert("Ошибка при отправке отзыва");
+            console.error("Ошибка при отправке отзыва:", e);
+            const errorMsg = e?.response?.data?.message || "Не удалось отправить отзыв";
+            alert(errorMsg);
+            throw e;
         }
     };
-
 
     // const getStatusInfo = () => {
     //     if (isCanceled || displayData.status === 'Отменен') {
@@ -174,6 +182,18 @@ const OrderDetails = ({ order, config, onBack }) => {
 
         if (status === 'Завершен') {
             info.desc = 'Ваш заказ завершен';
+
+            // Логика для отображения состояния заявки на возврат/замену
+            if (displayData.return_request) {
+                const returnStatus = displayData.return_request.status;
+                if (returnStatus === 'pending') {
+                    info.desc = 'Ваша заявка на возврат/замену в обработке';
+                } else if (returnStatus === 'approved') {
+                    info.desc = 'Ваша заявка на возврат/замену одобрена';
+                } else if (returnStatus === 'rejected') {
+                    info.desc = 'Ваша заявка на возврат/замену отклонена';
+                }
+            }
         } else if (status === 'Отменен') {
             info.desc = 'Ваш заказ отменен';
             info.color = '#222222';
@@ -307,7 +327,7 @@ const OrderDetails = ({ order, config, onBack }) => {
 
         if (status === 'Ожидает оценки') {
             return (
-                <div style={{ display: 'flex', gap: '12px', width: '100%' }}>
+                <div style={{ display: 'flex', gap: '12px', width: '100%', flexDirection: 'column' }}>
                     <button className="btn-outline-cancel" style={{ flex: 1, borderColor: '#902067', color: '#902067' }}
                             onClick={() => setIsReturnModalOpen(true)}>
                         Возврат/замену
@@ -558,6 +578,7 @@ const OrderDetails = ({ order, config, onBack }) => {
             {isReturnModalOpen && (
                 <ReturnOrderModal
                     orderNumber={displayData.order_number}
+                    orderId={displayData.id}
                     items={displayData.items}
                     onClose={() => setIsReturnModalOpen(false)}
                 />

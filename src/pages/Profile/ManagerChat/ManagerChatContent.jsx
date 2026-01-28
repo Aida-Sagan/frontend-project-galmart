@@ -88,21 +88,26 @@ const ManagerChatContent = ({ chatKey, orderNumber, onBack }) => {
 
             <div className="chat-window-container" ref={scrollRef}>
                 <div className="chat-window">
-                    {chatMessages.map((msg) => (
-                        <div key={msg.id} className={`message-row ${msg.type || (msg.is_my ? 'outgoing' : 'incoming')}`}>
-                            <div className="message-bubble">
-                                {msg.text && <p className="message-text">{msg.text}</p>}
-                                {msg.images && (
-                                    <div className="message-images">
-                                        {msg.images.map((img, idx) => (
-                                            <img key={idx} src={img} alt="attachment" className="chat-img" />
-                                        ))}
-                                    </div>
-                                )}
-                                <span className="message-time">{msg.time || msg.created_at}</span>
+                    {chatMessages.map((msg) => {
+
+                        const msgType = msg.type || (msg.is_my ? 'outgoing' : 'incoming');
+
+                        return (
+                            <div key={msg.id} className={`message-row ${msgType}`}>
+                                <div className="message-bubble">
+                                    {msg.text && <p className="message-text">{msg.text}</p>}
+                                    {msg.images && (
+                                        <div className="message-images">
+                                            {msg.images.map((img, idx) => (
+                                                <img key={idx} src={img} alt="attachment" className="chat-img" />
+                                            ))}
+                                        </div>
+                                    )}
+                                    <span className="message-time">{msg.time || msg.created_at}</span>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
 

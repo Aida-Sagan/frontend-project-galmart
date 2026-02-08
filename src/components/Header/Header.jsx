@@ -4,8 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import Container from '../Container/Container';
 import CatalogDropdown from '../Catalog/CatalogDropdown';
 import SearchHistoryDropdown from './SearchHistoryDropdown';
-
 import { useLocation } from '../../context/LocationContext';
+import { useSearch } from '../../context/SearchContext.jsx';
 
 import catalogIcon from '../../assets/svg/catalog.svg';
 import searchIcon from '../../assets/svg/search.svg';
@@ -26,9 +26,15 @@ const Header = () => {
     const [isMenuOpen, setMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+    const {
+        searchValue,
+        setSearchValue,
+        performSearch,
+        pageData,
+        isLoading
+    } = useSearch();
+
     const { selectedAddress, city, openLocationModal } = useLocation();
-
-
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,6 +42,24 @@ const Header = () => {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    useEffect(() => {
+        if (searchValue.trim().length >= 3) {
+            const debounceTimer = setTimeout(() => {
+                performSearch(searchValue);
+            }, 500);
+            return () => clearTimeout(debounceTimer);
+        }
+    }, [searchValue, performSearch]);
+
+    const handleSearchSubmit = async (e) => {
+        if (e.key === 'Enter' && searchValue.trim()) {
+            await performSearch(searchValue);
+            navigate(`/search?query=${encodeURIComponent(searchValue)}`);
+            setSearchFocused(false);
+            e.target.blur();
+        }
+    };
 
     const closeMenu = () => setMenuOpen(false);
 
@@ -63,9 +87,7 @@ const Header = () => {
                                 >
                                     <button
                                         className="header__catalog-btn"
-                                        onClick={() => {
-                                            navigate('/catalog');
-                                        }}
+                                        onClick={() => navigate('/catalog')}
                                     >
                                         <img src={catalogIcon} alt="Каталог" />
                                         <span>Каталог</span>
@@ -76,14 +98,23 @@ const Header = () => {
                                     type="text"
                                     className="header__search-input"
                                     placeholder="Поиск в galmart"
+                                    value={searchValue}
+                                    onChange={(e) => setSearchValue(e.target.value)}
+                                    onKeyDown={handleSearchSubmit}
                                     onFocus={() => setSearchFocused(true)}
                                     onBlur={() => {
-                                        setTimeout(() => setSearchFocused(false), 150);
+                                        setTimeout(() => setSearchFocused(false), 100);
                                     }}
                                 />
                                 <img src={searchIcon} alt="Поиск" className="header__search-icon" />
                             </div>
-                            {isSearchFocused && <SearchHistoryDropdown />}
+                            {isSearchFocused && (
+                                <SearchHistoryDropdown
+                                    results={pageData}
+                                    isLoading={isLoading}
+                                    searchValue={searchValue}
+                                />
+                            )}
                         </div>
                     </div>
                     <div className="header__right">
@@ -103,7 +134,7 @@ const Header = () => {
                             <img src={userIcon} alt="Профиль" />
                         </Link>
                         <div className="header__icon-button header__icon-button--desktop">
-                            <select>
+                            <select className="lang-select">
                                 <option>РУС</option>
                                 <option>ҚАЗ</option>
                             </select>
@@ -123,28 +154,20 @@ const Header = () => {
                     <div className="header__mobile-menu-item-wrapper">
                         <Link to="/favorites" className="header__mobile-menu-item" onClick={closeMenu}>
                             <img src={likeIcon} alt="Избранное" />
+                            <span>Избранное</span>
                         </Link>
-                        <span className="header__badge">99+</span>
                     </div>
                     <div className="header__mobile-menu-item-wrapper">
                         <Link to="/cart" className="header__mobile-menu-item" onClick={closeMenu}>
                             <img src={cartIcon} alt="Корзина" />
+                            <span>Корзина</span>
                         </Link>
-                        <span className="header__badge">99+</span>
                     </div>
                     <div className="header__mobile-menu-item-wrapper">
                         <Link to="/profile" className="header__mobile-menu-item" onClick={closeMenu}>
                             <img src={userIcon} alt="Профиль" />
+                            <span>Профиль</span>
                         </Link>
-                        <span className="header__badge">99+</span>
-                    </div>
-                    <div className="header__mobile-menu-item-wrapper">
-                        <div className="header__mobile-menu-item">
-                            <select>
-                                <option>РУС</option>
-                                <option>ҚАЗ</option>
-                            </select>
-                        </div>
                     </div>
                 </div>
             </div>

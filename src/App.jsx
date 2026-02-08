@@ -13,6 +13,7 @@ import ProductPage from './pages/Product/ProductPage';
 import CompilationPage from './pages/DetailCompilationPage/CompilationPage.jsx';
 import ProfilePage from './pages/Profile/ProfilePage';
 import CartPage from './pages/CartPage/CartPage.jsx';
+import SearchPage from './pages/SearchPage/SearchPage.jsx';
 
 import LegalPage from './pages/Legal/LegalPage.jsx';
 import OfertaContent from './pages/Legal/OfertaContent.jsx';
@@ -32,6 +33,7 @@ import { FavoritesProvider } from './context/FavoritesContext.jsx';
 import { LocationProvider } from './context/LocationContext';
 import { CartProvider } from './context/CartContext';
 import { ProfileProvider } from './context/ProfileContext';
+import { SearchProvider } from './context/SearchContext.jsx';
 
 import GlobalModals from '../src/GlobalModals.jsx';
 
@@ -53,6 +55,7 @@ function AppContent() {
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/search" element={<SearchPage />} />
                     <Route path="/verify" element={<EnterCode />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/catalog" element={<CatalogPage />} />
@@ -92,17 +95,19 @@ function AppContent() {
 function App() {
     return (
         <Router>
-            <ProfileProvider>
-                <AuthProvider>
-                    <FavoritesProvider>
-                        <LocationProvider>
-                            <CartProvider>
-                                    <AppContent />
-                            </CartProvider>
-                        </LocationProvider>
-                    </FavoritesProvider>
-                </AuthProvider>
-            </ProfileProvider>
+            <SearchProvider>
+                <ProfileProvider>
+                    <AuthProvider>
+                        <FavoritesProvider>
+                            <LocationProvider>
+                                <CartProvider>
+                                        <AppContent />
+                                </CartProvider>
+                            </LocationProvider>
+                        </FavoritesProvider>
+                    </AuthProvider>
+                </ProfileProvider>
+            </SearchProvider>
         </Router>
     );
 }

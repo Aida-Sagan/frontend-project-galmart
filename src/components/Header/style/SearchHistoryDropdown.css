@@ -57,3 +57,26 @@
 .search-history-item:not(:last-child) {
     border-bottom: 1px solid #DBDBDB;
 }
+
+.search-empty-img {
+    width: 120px;
+    margin-bottom: 20px;
+}
+
+.search-empty-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #222;
+}
+
+.search-empty-subtitle {
+    font-size: 14px;
+    color: #888;
+}
+
+.search-history-loading {
+    padding: 20px;
+    text-align: center;
+    color: #888;
+}

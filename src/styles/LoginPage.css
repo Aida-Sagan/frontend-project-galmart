@@ -16,11 +16,11 @@
 }
 
 .registration-title {
-    margin-bottom: 35px;
+    margin-bottom: 0;
     color: #292927;
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
-    font-size: 32px;
+    font-size: 30px;
     line-height: 140%;
     letter-spacing: 0%;
     text-align: center;
@@ -37,18 +37,19 @@
     display: flex;
     justify-content: center;
     margin-top: -10px;
+    width: 374px;
+    margin-bottom: 10px;
 }
 
 .registration-description {
-    font-family: Montserrat;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 400;
-    font-size: 19px;
+    font-size: 18px;
     line-height: 120%;
     text-align: center;
     vertical-align: middle;
     color: #292927;
-    margin-top: -10px;
-    width: 60%;
+    width: 100%;
 }
 
 .block-login {
@@ -56,7 +57,7 @@
     flex-direction: column;
 }
 .login-form-container{
-    width: 54%;
+    width: 64%;
 }
 
 .checkbox-container {
@@ -99,12 +100,14 @@ input[type="checkbox"]:checked + .custom-checkbox::after {
 }
 
 .text-public-checkbox {
-    font-family: Montserrat;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 500;
     font-size: 12px;
     line-height: 150%;
     color: #292927;
+    width: 343px;
 }
+
 .public-offer-link {
     font-family: Montserrat;
     font-weight: 500;
@@ -116,7 +119,8 @@ input[type="checkbox"]:checked + .custom-checkbox::after {
 }
 
 .checkboxes {
-    width: 51%;
+    width: 75%;
+    margin-top: 20px;
 }
 
 /* --- АДАПТИВНОСТЬ --- */

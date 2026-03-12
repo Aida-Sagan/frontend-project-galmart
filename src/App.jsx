@@ -69,11 +69,11 @@ function AppContent() {
                     {/* МАРШРУТЫ ДЛЯ СТРАНИЦЫ "УСЛОВИЯ ПОЛЬЗОВАНИЯ" С САЙДБАРОМ */}
                     <Route path="/legal" element={<LegalPage />}>
                         <Route index element={<Navigate to="oferta" replace />} />
-                        <Route path="oferta" element={<OfertaContent />} />             {/* 1 */}
-                        <Route path="agreement" element={<AgreementContent />} />     {/* 2 */}
-                        <Route path="privacy" element={<PrivacyContent />} />         {/* 3 */}
-                        <Route path="cookies" element={<CookiesContent />} />         {/* 4 */}
-                        <Route path="returns" element={<ReturnsContent />} />         {/* 5 */}
+                        <Route path="oferta" element={<OfertaContent />} />
+                        <Route path="agreement" element={<AgreementContent />} />
+                        <Route path="privacy" element={<PrivacyContent />} />
+                        <Route path="cookies" element={<CookiesContent />} />
+                        <Route path="returns" element={<ReturnsContent />} />
                     </Route>
                     {/* КОНЕЦ МАРШРУТОВ ДЛЯ САЙДБАРА */}
 

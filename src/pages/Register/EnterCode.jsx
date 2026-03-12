@@ -16,7 +16,6 @@ export default function EnterCode() {
                     <h2 className="registration-title">Введите код</h2>
                     <div className="block-registration-description">
                         <p className="sent-number-text">
-                            {/* 4. Отображаем полученный номер */}
                             Отправили на номер {phoneNumber}
                         </p>
                     </div>

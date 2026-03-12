@@ -10,7 +10,7 @@ const SearchHistoryDropdown = ({ results = [], isLoading = false, searchValue = 
     }, []);
 
     const handleR = (e, t) => {
-        e.preventDefault(); // Предотвращает onBlur у инпута
+        e.preventDefault();
         e.stopPropagation();
         const u = h.filter(i => i !== t);
         setH(u);

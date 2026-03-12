@@ -24,7 +24,6 @@ const SectionBlock = ({ title, products = [], compilationId, sectionId, showMore
 
     const visibleProducts = products.slice(0, visibleLimit);
 
-    // Determine the correct link based on the compilationId
     const moreLink = compilationId ? `/compilations/${compilationId}` : categoryLink;
 
     return (

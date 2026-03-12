@@ -10,10 +10,8 @@ export const useMediaQuery = (query) => {
         if (mediaQueryList.addEventListener) {
             mediaQueryList.addEventListener('change', listener);
         } else {
-            // Для старых браузеров
             mediaQueryList.addListener(listener);
         }
-
         return () => {
             if (mediaQueryList.removeEventListener) {
                 mediaQueryList.removeEventListener('change', listener);

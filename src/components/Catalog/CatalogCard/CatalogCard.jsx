@@ -11,10 +11,8 @@ const CatalogCard = ({ category, openAgeModal }) => {
 
     const handleCardClick = (e) => {
         if (isRestricted && !isVerified) {
-            // Если категория ограничена и возраст не подтвержден, открываем модальное окно
             openAgeModal(category);
         } else {
-            // В противном случае, выполняем навигацию вручную
             navigate(`/catalog/${category.id}`);
         }
     };

@@ -3,7 +3,6 @@ import { YMaps, Map, Placemark, SearchControl, Polygon } from '@pbe/react-yandex
 import customPinIcon from '../../assets/svg/vector.svg';
 import { getCityPolygons } from '../../api/services/addressService';
 
-// Фиолетовый цвет (purple800 в Dart): #902067.
 const PURPLE_STROKE_COLOR_RGBA = 'rgba(144, 32, 103, 0.3)';
 const PURPLE_FILL_COLOR_RGBA = 'rgba(144, 32, 103, 0.1)';
 
@@ -22,35 +21,30 @@ const YandexMap = ({ city, onAddressSelect, serviceToken }) => {
         setMapCenter(defaultCenter);
     }, [city]);
 
-    // Эффект 2: Загрузка полигонов доставки
+    // Загрузка полигонов доставки
     useEffect(() => {
         const fetchPolygons = async () => {
             if (city?.id) {
-                // Если API не требует serviceToken как аргумент, он берется из интерсептора.
-                const polygonsData = await getCityPolygons(serviceToken); // Передаем токен на всякий случай
-
-                // ВАЖНО: Проверьте, в каком порядке приходят координаты: [lat, lon] или [lon, lat]
-                // Если API возвращает [lon, lat], то нужно преобразование:
+                const polygonsData = await getCityPolygons(serviceToken);
 
                 /*
                 const transformedPolygons = polygonsData.map(polygon =>
                     polygon.map(ring =>
-                        ring.map(([lat, lon]) => [lat, lon]) // Оставьте эту строку, если порядок [lat, lon]
-                        // ring.map(([lon, lat]) => [lat, lon]) // Используйте эту строку, если порядок [lon, lat]
+                        ring.map(([lat, lon]) => [lat, lon])
+                        // ring.map(([lon, lat]) => [lat, lon])
                     )
                 );
                 setDeliveryPolygons(transformedPolygons);
                 */
 
-                setDeliveryPolygons(polygonsData); // Используем данные как есть (предполагая [lat, lon])
+                setDeliveryPolygons(polygonsData);
             } else {
                 setDeliveryPolygons([]);
             }
         };
         fetchPolygons();
-    }, [city, serviceToken]); // Добавлен serviceToken в зависимости
+    }, [city, serviceToken]);
 
-    // ... (handleMapMovement и handleResultSelect остаются без изменений)
     const handleMapMovement = (ymaps) => {
         if (mapRef.current) {
             const newCenter = mapRef.current.getCenter();
@@ -71,7 +65,7 @@ const YandexMap = ({ city, onAddressSelect, serviceToken }) => {
 
     return (
         <YMaps query={{
-            apikey: import.meta.env.VITE_YANDEX_API_KEY || "f5bf6e25-401c-46f6-bdd6-ec9ad60f3aab",
+            apikey: import.meta.env.VITE_YANDEX_API_KEY,
             lang: 'ru_RU',
             load: 'package.full'
         }}>
@@ -94,13 +88,11 @@ const YandexMap = ({ city, onAddressSelect, serviceToken }) => {
                                 geometry={polygon}
                                 properties={{ hintContent: `Зона доставки ${index + 1}` }}
                                 options={{
-                                    // Используем RGBA для точного соответствия прозрачности
                                     fillColor: PURPLE_FILL_COLOR_RGBA,
                                     strokeColor: PURPLE_STROKE_COLOR_RGBA,
-                                    fillOpacity: 1, // Прозрачность задается в RGBA
-                                    strokeOpacity: 1, // Прозрачность задается в RGBA
+                                    fillOpacity: 1,
+                                    strokeOpacity: 1,
                                     strokeWidth: 3,
-                                    // Высокий zIndex для гарантии видимости
                                     zIndex: 10
                                 }}
                             />

@@ -29,7 +29,6 @@ export const CartProvider = ({ children }) => {
         return localStorage.getItem('selectedPaymentMethodId') || 'apple_pay';
     });
 
-    // Синхронизируем выбор с localStorage при каждом изменении
     useEffect(() => {
         localStorage.setItem('selectedPaymentMethodId', selectedPaymentMethodId);
     }, [selectedPaymentMethodId]);

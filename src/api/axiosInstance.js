@@ -24,13 +24,13 @@ $api.interceptors.request.use(async (config) => {
         }
     }
 
-    if (cityName === 'Алматы') {
-        cityId = '1';
-    } else if (cityName === 'Ташкент') {
-        cityId = '3';
-    } else {
-        cityId = '2'; // Астана и все остальные случаи
-    }
+    // if (cityName === 'Алматы') {
+    //     cityId = '1';
+    // } else if (cityName === 'Ташкент') {
+    //     cityId = '3';
+    // } else {
+    //     cityId = '2'; // Астана
+    // }
 
     const locale = localStorage.getItem('locale') || 'ru';
     config.headers['Accept-Language'] = locale.toLowerCase();

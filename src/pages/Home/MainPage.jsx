@@ -3,7 +3,7 @@ import Container from '../../components/Container/Container.jsx';
 import MainBanner from '../../components/Banner/MainBanner.jsx';
 import SectionBlock from '../../components/Section/SectionBlock.jsx';
 import FilterableSectionBlock from '../../components/Section/FilterableSectionBlock';
-import SpecialOffersSlider from '../../components/Section/SpecialOffersSlider.jsx';
+import {SpecialOffersSlider} from '../../components/Section/SpecialOffersSlider.jsx';
 import QrPromo from '../../components/qrPromo/qrPromo';
 import { fetchHomePageData } from '../../api/services/homepageService';
 import Loader from '../../components/Loader/Loader.jsx';

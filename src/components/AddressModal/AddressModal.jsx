@@ -1,4 +1,3 @@
-// src/components/AddressModal/AddressModal.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import { X } from "lucide-react";
 import YandexMap from "./YandexMap";
@@ -7,16 +6,12 @@ import { useLocation } from "../../context/LocationContext";
 import { useAuth } from "../../context/AuthContext";
 import { getCoordsByString, getCityPolygons, getAddressByCoords } from "../../api/services/addressService";
 
-// --- Функция-заглушка для уведомлений ---
-// ЗАМЕНИТЕ ЭТУ ФУНКЦИЮ НА ВАШ РЕАЛЬНЫЙ КОМПОНЕНТ УВЕДОМЛЕНИЙ (Toast/Snackbar/Flushbar)
-const showNotification = (message) => {
-    // Временно используем console.warn для отслеживания, пока не будет реализован UI-компонент
-    console.warn("Уведомление для пользователя:", message);
-    // alert(message); // Удаляем alert
-};
-// ------------------------------------------
 
-// --- Вспомогательный хук для Debounce ---
+const showNotification = (message) => {
+    console.warn("Уведомление для пользователя:", message);
+
+};
+
 function useDebounce(value, delay) {
     const [debouncedValue, setDebouncedValue] = useState(value);
     useEffect(() => {
@@ -30,7 +25,6 @@ function useDebounce(value, delay) {
     return debouncedValue;
 }
 
-// --- Логика проверки нахождения точки в полигоне (Geo-Fencing) ---
 const isPointInAnyPolygon = (point, polygons) => {
     const isPointInPolygon = (p, poly) => {
         const x = p[1], y = p[0];
@@ -62,7 +56,6 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
         { id: 1, name: 'Алматы' },
     ];
 
-    // --- State: Аналоги TextEditingController и StateNotifier в Dart-коде ---
     const [addressString, setAddressString] = useState('');
     const [street, setStreet] = useState('');
     const [building, setBuilding] = useState('');
@@ -79,7 +72,6 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
 
     const debouncedAddressString = useDebounce(addressString, 500);
 
-    // 1. Загрузка полигонов (зон доставки)
     useEffect(() => {
         const fetchPolygons = async () => {
             if (city?.id) {
@@ -92,11 +84,9 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
         fetchPolygons();
     }, [city, serviceToken]);
 
-    // 2. Поиск координат по строке адреса (с Debounce, аналог getCoordinatesByString)
     useEffect(() => {
         if (isManualInput && serviceToken && debouncedAddressString && debouncedAddressString.length > 3 && city?.id) {
 
-            // setIsLoading(true); // Если хотите показать загрузку при поиске
 
             getCoordsByString(debouncedAddressString, city.id, serviceToken).then(result => {
                 if (result) {
@@ -108,7 +98,7 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
                     setCoords(null);
                     setStreet('');
                     setBuilding('');
-                    // showNotification("Не удалось найти адрес по введенной строке."); // Уведомление об ошибке поиска
+                    // showNotification("Не удалось найти адрес по введенной строке.");
                 }
                 // setIsLoading(false);
             });
@@ -130,14 +120,12 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
             return;
         }
 
-        // Повторная проверка нахождения в полигоне перед сохранением
         const pointInPolygonCheck = isPointInAnyPolygon(coords, deliveryPolygons);
         if (deliveryPolygons.length > 0 && !pointInPolygonCheck) {
             showNotification("Извините, выбранный адрес находится вне зоны доставки.");
             return;
         }
 
-        // ... (остальная логика сохранения адреса, соответствует Dart-коду)
         const finalBuilding = building;
         const finalApartment = isPrivateHouse ? "" : apartment;
         const finalEntrance = isPrivateHouse ? "" : entrance;
@@ -183,7 +171,7 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
         }
     };
 
-    // 3. Обработка выбора точки на карте (аналог searchAddressByCoordinated)
+    //  Обработка выбора точки на карте (аналог searchAddressByCoordinated)
     const handleMapSelect = useCallback(async ({ coords: mapCoords }) => {
         setIsManualInput(false);
         const [latitude, longitude] = mapCoords;
@@ -193,7 +181,7 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
             return;
         }
 
-        // 1. Проверка нахождения в полигоне (Geo-Fencing)
+        //  Проверка нахождения в полигоне (Geo-Fencing)
         if (!isPointInAnyPolygon(mapCoords, deliveryPolygons)) {
             showNotification("Извините, выбранный адрес находится вне зоны доставки.");
             setAddressString('');
@@ -201,7 +189,7 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
             return;
         }
 
-        // 2. Если в полигоне, ищем адрес по координатам
+        // Если в полигоне, ищем адрес по координатам
         setIsLoading(true);
 
         const result = await getAddressByCoords(latitude, longitude, serviceToken);
@@ -236,9 +224,7 @@ export default function AddressModal({ isOpen, onClose, onSave, tempAuthToken, i
                         city={city}
                         onAddressSelect={handleMapSelect}
                         serviceToken={serviceToken}
-                        // Передаем полигоны для отрисовки
                         deliveryPolygons={deliveryPolygons}
-                        // Передаем текущие координаты, чтобы карта могла центрироваться при поиске по строке
                         currentCoords={coords}
                     />
                 </div>

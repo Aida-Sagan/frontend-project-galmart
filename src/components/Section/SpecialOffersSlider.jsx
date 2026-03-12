@@ -10,7 +10,7 @@ function debounce(func, delay) {
     };
 }
 
-export default function SpecialOffersSlider({ title, banners }) {
+export function SpecialOffersSlider({title, banners}) {
     const [current, setCurrent] = useState(0);
     const trackRef = useRef(null);
 
@@ -67,7 +67,7 @@ export default function SpecialOffersSlider({ title, banners }) {
         if (trackRef.current) {
             const track = trackRef.current;
             const slideWidth = track.scrollWidth / totalBanners;
-            track.scrollTo({ left: index * slideWidth, behavior: 'smooth' });
+            track.scrollTo({left: index * slideWidth, behavior: 'smooth'});
         }
     };
 
@@ -77,10 +77,10 @@ export default function SpecialOffersSlider({ title, banners }) {
                 <h2 className="slider-title">{title}</h2>
                 <div className="slider-controls">
                     <button onClick={desktopPrev} className="slider-button">
-                        <ChevronLeft className="slider-icon" />
+                        <ChevronLeft className="slider-icon"/>
                     </button>
                     <button onClick={desktopNext} className="slider-button">
-                        <ChevronRight className="slider-icon" />
+                        <ChevronRight className="slider-icon"/>
                     </button>
                 </div>
             </div>

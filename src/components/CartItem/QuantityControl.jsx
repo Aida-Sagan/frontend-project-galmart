@@ -33,7 +33,7 @@ const QuantityControl = ({
                 onClick={handleAction}
                 className={`control-button minus ${isRemoveAction ? 'remove-button' : ''}`}
             >
-                {/* Если это действие удаления (1 шт), показываем мусорное ведро */}
+                {/* Если это действие удаления (1 шт), показываем мусорное ведро (иконка с дизайна) */}
                 {isRemoveAction ? (
                     <img src={deleteIcon} alt="Удалить" />
                 ) : (

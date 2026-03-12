@@ -31,7 +31,8 @@ const Header = () => {
         setSearchValue,
         performSearch,
         pageData,
-        isLoading
+        isLoading,
+        searchHistory
     } = useSearch();
 
     const { selectedAddress, city, openLocationModal } = useLocation();
@@ -44,17 +45,17 @@ const Header = () => {
     }, []);
 
     useEffect(() => {
-        if (searchValue.trim().length >= 3) {
-            const debounceTimer = setTimeout(() => {
+        const timer = setTimeout(() => {
+            if (searchValue.trim().length > 2) {
                 performSearch(searchValue);
-            }, 500);
-            return () => clearTimeout(debounceTimer);
-        }
+            }
+        }, 500);
+        return () => clearTimeout(timer);
     }, [searchValue, performSearch]);
 
-    const handleSearchSubmit = async (e) => {
-        if (e.key === 'Enter' && searchValue.trim()) {
-            await performSearch(searchValue);
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && searchValue.trim().length > 2) {
+            performSearch(searchValue);
             navigate(`/search?query=${encodeURIComponent(searchValue)}`);
             setSearchFocused(false);
             e.target.blur();
@@ -100,11 +101,9 @@ const Header = () => {
                                     placeholder="Поиск в galmart"
                                     value={searchValue}
                                     onChange={(e) => setSearchValue(e.target.value)}
-                                    onKeyDown={handleSearchSubmit}
+                                    onKeyDown={handleKeyDown}
                                     onFocus={() => setSearchFocused(true)}
-                                    onBlur={() => {
-                                        setTimeout(() => setSearchFocused(false), 100);
-                                    }}
+                                    onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
                                 />
                                 <img src={searchIcon} alt="Поиск" className="header__search-icon" />
                             </div>
@@ -113,6 +112,7 @@ const Header = () => {
                                     results={pageData}
                                     isLoading={isLoading}
                                     searchValue={searchValue}
+                                    history={searchHistory}
                                 />
                             )}
                         </div>

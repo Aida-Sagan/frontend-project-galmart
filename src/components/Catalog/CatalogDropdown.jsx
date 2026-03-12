@@ -170,7 +170,6 @@ const CatalogDropdown = () => {
                         {activeCategory.sections.length > 0 ? (
                             activeCategory.sections.map((section) => {
                                 const subCategoriesData = subCategoryCache[section.id];
-                                // ИСПРАВЛЕНО: Теперь берем массив 'categories' из объекта данных секции
                                 const subCategoriesList = subCategoriesData?.categories || [];
 
                                 return (

@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useSearch } from '../../context/SearchContext.jsx';
+import { useLocation } from 'react-router-dom';
 import Container from '../../components/Container/Container';
 import ProductCard from '../../components/Product/ProductCard.jsx';
 import SearchSortDropdown from './SearchSortDropdown.jsx';
 import searchEmptyIcon from '../../assets/search.png';
+
 import './styles/SearchPage.css';
 
 const SearchPage = () => {
-    const { pageData, isLoading, searchValue, performSearch } = useSearch();
+    const { pageData, isLoading, performSearch } = useSearch();
     const [sortBy, setSortBy] = useState('popularity');
-
+    const location = useLocation();
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams(location.search);
         const query = params.get('query');
         if (query) {
             performSearch(query, 1, sortBy);
         }
-    }, [sortBy]);
+    }, [sortBy, location.search]);
 
     if (isLoading) {
         return (
@@ -42,7 +44,7 @@ const SearchPage = () => {
                 {Array.isArray(pageData) && pageData.length > 0 ? (
                     <div className="search-page__grid">
                         {pageData.map((product) => (
-                            <ProductCard key={product.id} product={product} />
+                            <ProductCard key={product.id || Math.random()} product={product} />
                         ))}
                     </div>
                 ) : (

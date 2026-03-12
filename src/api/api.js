@@ -9,6 +9,7 @@ export const API_URLS = {
     COMPILATION_DETAILS: (id) => `/api/v2/catalog/compilations/${id}/`,
     FAVORITE: `/api/v2/catalog/favorite/`,
     FAVORITE_CLEAR: `/api/v2/catalog/favorite/clear/`,
+    SEARCH: `/api/v2/catalog/search/`,
 
     // Account
     SEND_CODE: `/api/v2/account/send_code/`,

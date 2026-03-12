@@ -77,7 +77,6 @@ const Footer = () => {
 
             </div>
 
-            {/* Копирайт */}
             <div className="footer__bottom">
                 {footerData.copyright}
             </div>

@@ -7,7 +7,6 @@ const FavoritesContext = createContext(null);
 export const FavoritesProvider = ({ children }) => {
     const [favoriteIds, setFavoriteIds] = useState(new Set());
     const [isLoading, setIsLoading] = useState(true);
-    // Токен нам тут больше не нужен для передачи, только флаг авторизации
     const { isAuthenticated } = useAuth();
 
     useEffect(() => {
@@ -20,7 +19,6 @@ export const FavoritesProvider = ({ children }) => {
         const loadFavoriteIds = async () => {
             setIsLoading(true);
             try {
-                // Axios сам подставит токен и город через интерсептор
                 const response = await fetchFavorites({ limit: 1000, ordering: 'descending' });
 
                 const goods = response.data?.data || [];

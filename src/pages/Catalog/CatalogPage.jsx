@@ -4,12 +4,11 @@ import { fetchCatalogData } from '../../api/services/catalogService';
 import { catalogLayoutMap } from '../../config/catalogLayout';
 import CatalogCard from '../../components/Catalog/CatalogCard/CatalogCard';
 import CatalogCardSkeleton from '../../components/Catalog/CatalogCard/CatalogCardSkeleton';
-import AgeVerificationModal from '../../components/Modals/AgeVerificationModal'; // Импорт модального окна
+import AgeVerificationModal from '../../components/Modals/AgeVerificationModal';
 import Container from '../../components/Container/Container.jsx';
 
 import './style/CatalogPage.css';
 
-const RESTRICTED_CATEGORY_TITLE = 'алкоголь';
 
 const skeletonLayout = Object.keys(catalogLayoutMap).map(id => ({
     id: `skeleton-${id}`,
@@ -83,7 +82,7 @@ const CatalogPage = () => {
                             <CatalogCard
                                 key={category.id}
                                 category={category}
-                                openAgeModal={openAgeModal} // Передача функции
+                                openAgeModal={openAgeModal}
                             />
                         ))
                     )}

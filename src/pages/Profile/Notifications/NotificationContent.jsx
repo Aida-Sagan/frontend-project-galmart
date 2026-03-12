@@ -18,13 +18,19 @@ const NotificationContent = ({ initialTab = 'orders', onOrderSelect }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Отслеживаем, какие табы были открыты в этой сессии
     const [viewedTabs, setViewedTabs] = useState(new Set());
 
     useEffect(() => {
         const loadCounts = async () => {
             try {
-                const counts = await fetchNotificationsCount();
+                const data = await fetchNotificationsCount();
+
+                const counts = {
+                    orders: data.find(item => item.notification_type === 'order')?.unreaded_count || 0,
+                    bonuses: data.find(item => item.notification_type === 'bonuses')?.unreaded_count || 0,
+                    news: data.find(item => item.notification_type === 'broadcast')?.unreaded_count || 0
+                };
+
                 setNotificationCounts(counts);
             } catch (err) {
                 console.error("Ошибка загрузки счетчиков:", err);

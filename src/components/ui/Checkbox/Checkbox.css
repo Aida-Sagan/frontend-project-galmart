@@ -1,0 +1,99 @@
+/* ================================================================
+   Galmart UI – Checkbox
+   Matches Figma: State=Unchecked|Checked|Hover|Disabled
+   ================================================================ */
+
+/* ── Wrapper ── */
+.galmart-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.galmart-checkbox--disabled {
+    cursor: not-allowed;
+}
+
+/* ── Hide native input ── */
+.galmart-checkbox__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ── Custom box ── */
+.galmart-checkbox__box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    border: 1px solid var(--color-brand-primary, #902067);
+    border-radius: 4px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    transition:
+        background-color var(--transition-fast, 0.2s ease),
+        border-color var(--transition-fast, 0.2s ease);
+}
+
+/* Checked state */
+.galmart-checkbox__input:checked + .galmart-checkbox__box {
+    background-color: var(--color-brand-primary, #902067);
+    border-color: var(--color-brand-primary, #902067);
+}
+
+/* Hover state (not checked, not disabled) */
+.galmart-checkbox:hover:not(.galmart-checkbox--disabled) .galmart-checkbox__input:not(:checked) + .galmart-checkbox__box {
+    border-color: var(--color-brand-primary, #902067);
+}
+
+.galmart-checkbox:hover:not(.galmart-checkbox--disabled) .galmart-checkbox__input:checked + .galmart-checkbox__box {
+    background-color: rgba(144, 32, 103, 0.8);
+    border-color: var(--color-brand-primary, #902067);
+}
+
+/* Disabled state */
+.galmart-checkbox--disabled .galmart-checkbox__box {
+    background-color: var(--color-disabled-bg, #DBDBDB);
+    border-color: var(--color-disabled-bg, #DBDBDB);
+}
+
+/* ── Check icon ── */
+.galmart-checkbox__icon {
+    display: none;
+    width: 12px;
+    height: 12px;
+}
+
+.galmart-checkbox__input:checked + .galmart-checkbox__box .galmart-checkbox__icon {
+    display: block;
+}
+
+.galmart-checkbox--disabled .galmart-checkbox__input:checked + .galmart-checkbox__box .galmart-checkbox__icon {
+    display: block;
+}
+
+/* ── Label text ── */
+.galmart-checkbox__label {
+    font-family: var(--font-family, 'Montserrat', sans-serif);
+    font-weight: var(--font-weight-medium, 500);
+    font-size: var(--font-size-small, 12px);
+    line-height: var(--line-height-normal, 1.5);
+    color: var(--color-text-primary, #222222);
+    letter-spacing: -0.2px;
+}
+
+.galmart-checkbox--disabled .galmart-checkbox__label {
+    color: var(--color-text-tertiary, #7A7A7A);
+}

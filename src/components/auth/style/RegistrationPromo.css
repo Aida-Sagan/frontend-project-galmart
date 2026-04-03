@@ -1,6 +1,6 @@
 .registration-promo-block {
     position: relative;
-    width: 50%;
+    width: 48%;
     height: 100%;
     /*background-color: #fcd5ce;*/
     background-image: url("../../../assets/reg_bg.jpg")!important ;
@@ -8,6 +8,7 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    margin-left: -32px;
 }
 
 

@@ -1,0 +1,70 @@
+/* ================================================================
+   GALMART DESIGN TOKENS
+   Extracted from Figma design system
+   ================================================================ */
+
+:root {
+  /* ── Colors: Background ── */
+  --color-bg-substrate-primary: #F5F5F5;
+  --color-bg-substrate-secondary: #E9E9E9;
+  --color-bg-surface: #FBFBFB;
+  --color-bg-page: #FAFAF9;
+
+  /* ── Colors: Text ── */
+  --color-text-primary: #222222;
+  --color-text-secondary: #292927;
+  --color-text-tertiary: #7A7A7A;
+
+  /* ── Colors: Brand ── */
+  --color-brand-primary: #902067;
+  --color-brand-primary-hover: #7d1c5d;
+
+  /* ── Colors: Border ── */
+  --color-border-primary: #902067;
+  --color-border-default: #F5F5F5;
+
+  /* ── Colors: Purpose ── */
+  --color-critical-primary: #FF6A6A;
+  --color-disabled-bg: #DBDBDB;
+  --color-disabled-text: #A0A0A0;
+
+  /* ── Spacing ── */
+  --spacing-0: 0px;
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+
+  /* ── Border Radius ── */
+  --radius-32: 32px;
+  --radius-64: 64px;
+  --radius-360: 360px;
+
+  /* ── Border Width ── */
+  --border-width-2: 2px;
+
+  /* ── Typography ── */
+  --font-family: 'Montserrat', sans-serif;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  --font-size-tiny: 10px;
+  --font-size-small: 12px;
+  --font-size-base: 16px;
+  --font-size-large: 18px;
+  --font-size-heading: 30px;
+
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+
+  /* ── Transitions ── */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+
+  /* ── Input Dimensions ── */
+  --input-height: 64px;
+}

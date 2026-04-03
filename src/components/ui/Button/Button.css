@@ -1,0 +1,78 @@
+/* ================================================================
+   Galmart UI – Button
+   Matches Figma: Style=Filled|Outlined, Size=Big, State=Default|Hover|Disabled
+   ================================================================ */
+
+/* ── Reset & Base ── */
+.galmart-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    height: var(--input-height, 64px);
+    padding: var(--spacing-16, 16px) var(--spacing-24, 24px);
+    border: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    text-decoration: none;
+    white-space: nowrap;
+
+    /* Typography */
+    font-family: var(--font-family, 'Montserrat', sans-serif);
+    font-weight: var(--font-weight-medium, 500);
+    font-size: var(--font-size-base, 16px);
+    line-height: var(--line-height-tight, 1.2);
+
+    /* Transitions */
+    transition:
+        background-color var(--transition-fast, 0.2s ease),
+        color var(--transition-fast, 0.2s ease),
+        border-color var(--transition-fast, 0.2s ease),
+        opacity var(--transition-fast, 0.2s ease);
+}
+
+/* ── Filled variant (default) ── */
+.galmart-btn--filled {
+    background-color: var(--color-brand-primary, #902067);
+    color: var(--color-bg-surface, #FBFBFB);
+    border-radius: var(--radius-64, 64px);
+    border: var(--border-width-2, 2px) solid var(--color-brand-primary, #902067);
+}
+
+.galmart-btn--filled:hover:not(:disabled) {
+    background-color: var(--color-bg-surface, #FBFBFB);
+    color: var(--color-brand-primary, #902067);
+    border-color: var(--color-brand-primary, #902067);
+}
+
+.galmart-btn--filled:disabled {
+    background-color: var(--color-disabled-bg, #DBDBDB);
+    color: var(--color-disabled-text, #A0A0A0);
+    border-color: var(--color-disabled-bg, #DBDBDB);
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* ── Outlined variant ── */
+.galmart-btn--outlined {
+    background-color: transparent;
+    color: var(--color-brand-primary, #902067);
+    border: var(--border-width-2, 2px) solid var(--color-brand-primary, #902067);
+    border-radius: var(--radius-360, 360px);
+}
+
+.galmart-btn--outlined:hover:not(:disabled) {
+    background-color: var(--color-brand-primary, #902067);
+    color: var(--color-bg-surface, #FBFBFB);
+}
+
+.galmart-btn--outlined:disabled {
+    color: var(--color-text-tertiary, #7A7A7A);
+    border-color: var(--color-text-tertiary, #7A7A7A);
+    cursor: not-allowed;
+}
+
+/* ── Full-width modifier ── */
+.galmart-btn--full-width {
+    width: 100%;
+}

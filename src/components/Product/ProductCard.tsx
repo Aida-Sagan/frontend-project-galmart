@@ -1,0 +1,183 @@
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ReactComponent as HeartIcon } from '../../assets/svg/like.svg';
+import { ReactComponent as HeartLikedIcon } from '../../assets/svg/liked.svg';
+import { ReactComponent as PlusIcon } from '../../assets/svg/plus.svg';
+import { ReactComponent as MinusIcon } from '../../assets/svg/minus.svg';
+import { ReactComponent as EcoIcon } from '../../assets/svg/eco.svg';
+import { ReactComponent as GalmIcon } from '../../assets/svg/galm_icon.svg';
+import { ReactComponent as BonusIcon } from '../../assets/svg/2_1.svg';
+import { observer } from 'mobx-react-lite';
+import { authStore } from '../../stores/authStore';
+import { favoritesStore } from '../../stores/favoritesStore';
+import { cartStore } from '../../stores/cartStore';
+import { toggleFavorite as toggleFavoriteApi } from '../../endpoint-service/services/authService';
+import './style/ProductCard.css';
+
+const ProductCard = observer(({ product, sectionId }: { product: any; sectionId?: any }) => {
+    const {
+        id,
+        title,
+        unit_price = 0,
+        old_unit_price = 0,
+        currency = '₸',
+        unit = 'шт.',
+        unit_value = 1,
+        photos = [],
+        inventory = 0,
+        flags = []
+    } = product;
+
+    const navigate = useNavigate();
+    const { isAuthenticated } = authStore;
+    const { favoriteIds, addFavoriteId, removeFavoriteId, isLoading: isLoadingFavorites } = favoritesStore;
+    const { items: cartItems, updateCartItemQuantity } = cartStore;
+
+    const cartItem = cartItems.find(item => item.id === id);
+    const contextQuantity = cartItem ? Number(cartItem.count) : 0;
+
+    const [localQuantity, setLocalQuantity] = useState(contextQuantity);
+
+    useEffect(() => {
+        setLocalQuantity(contextQuantity);
+    }, [contextQuantity]);
+
+    const isFavorite = favoriteIds.has(id);
+    const addedToCart = localQuantity > 0;
+    const isGalmart = flags.includes('galmart_production');
+    const isEco = flags.includes('eco');
+    const hasBonus = flags.includes('bonus');
+
+    const checkAuthAndRun = (callback, e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+        callback();
+    };
+
+    const handleToggleFavorite = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+
+        const willBeFavorite = !isFavorite;
+        if (willBeFavorite) {
+            addFavoriteId(id);
+        } else {
+            removeFavoriteId(id);
+        }
+
+        try {
+            await toggleFavoriteApi(id);
+        } catch (error) {
+            console.error("Ошибка при добавлении в избранное:", error);
+            if (willBeFavorite) {
+                removeFavoriteId(id);
+            } else {
+                addFavoriteId(id);
+            }
+        }
+    };
+
+    const handleAddToCart = (e) => {
+        checkAuthAndRun(() => {
+            if (localQuantity === 0) {
+                setLocalQuantity(1);
+                updateCartItemQuantity(id, 1);
+            }
+        }, e);
+    };
+
+    const handleIncrement = (e) => {
+        checkAuthAndRun(() => {
+            const newQuantity = localQuantity + 1;
+            if (newQuantity <= inventory) {
+                setLocalQuantity(newQuantity);
+                updateCartItemQuantity(id, newQuantity);
+            }
+        }, e);
+    };
+
+    const handleDecrement = (e) => {
+        checkAuthAndRun(() => {
+            if (localQuantity > 0) {
+                const newQuantity = localQuantity - 1;
+                setLocalQuantity(newQuantity);
+                updateCartItemQuantity(id, newQuantity);
+            }
+        }, e);
+    };
+
+    const getTotalPrice = () => {
+        return (unit_price * localQuantity).toLocaleString('ru-RU');
+    };
+
+    const imageUrl = photos[0];
+    const productUrl = `/product/${id}`;
+
+    return (
+        <Link to={productUrl} className="product-card">
+            <div className="product-labels">
+                {isGalmart && <span className="product-label galmart"><GalmIcon /></span>}
+                {isEco && <span className="product-label eco"><EcoIcon /></span>}
+                {hasBonus && <span className="product-label bonus"><BonusIcon /></span>}
+            </div>
+            <div className="image-container">
+                <img src={imageUrl} alt={title} />
+            </div>
+            <button
+                className={`favorite-btn ${isFavorite ? 'active' : ''}`}
+                onClick={handleToggleFavorite}
+                disabled={isLoadingFavorites}
+            >
+                {isFavorite ? <HeartLikedIcon /> : <HeartIcon />}
+            </button>
+            <div className="sub-description">
+                <div className="product-details-container">
+                    <p className="product-name">{title}</p>
+                    <p className="product-subprice">
+                        {old_unit_price > 0 && <span className="subprice-strike">{old_unit_price.toLocaleString('ru-RU')} {currency}</span>}
+                        <span className="price-descr">{unit_price.toLocaleString('ru-RU')} {currency} / {unit_value} {unit}</span>
+                    </p>
+                </div>
+                <div className="price-btn">
+                    {inventory > 0 ? (
+                        <>
+                            <p className="product-price">{unit_price.toLocaleString('ru-RU')} {currency}</p>
+                            <button
+                                className={`add-to-cart-btn ${addedToCart ? 'expanded' : ''}`}
+                                onClick={handleAddToCart}
+                            >
+                                {addedToCart ? (
+                                    <>
+                                        <span className="minus" onClick={handleDecrement}><MinusIcon /></span>
+                                        <div className="cart-info">
+                                            <span className="price-in-cart">{getTotalPrice()} {currency}</span>
+                                            <span className="quantity-in-cart">{localQuantity} {unit}</span>
+                                        </div>
+                                        <span className="plus" onClick={handleIncrement}><PlusIcon /></span>
+                                    </>
+                                ) : (
+                                    <div className="add-icon-in-price"><PlusIcon /></div>
+                                )}
+                            </button>
+                        </>
+                    ) : (
+                        <button className="out-of-stock-btn" disabled>
+                            Нет в наличии
+                        </button>
+                    )}
+                </div>
+            </div>
+        </Link>
+    );
+});
+
+export default ProductCard;

@@ -1,0 +1,142 @@
+/* ================================================================
+   InputText — Reusable Text Input Component
+   Matches Figma frame 2198:2942
+   ================================================================ */
+
+@import '../../../styles/variables.css';
+
+/* ── Wrapper ── */
+.galmart-input-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    width: 100%;
+}
+
+/* ── Input Container (the pill) ── */
+.galmart-input-text__container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: var(--input-height);
+    padding: var(--spacing-8) var(--spacing-16);
+    background: var(--color-bg-substrate-primary);
+    border-radius: var(--radius-32);
+    border: var(--border-width-2) solid transparent;
+    box-sizing: border-box;
+    cursor: text;
+    transition: border-color var(--transition-fast);
+}
+
+/* ── State variants for the container ── */
+.galmart-input-text--active-empty .galmart-input-text__container,
+.galmart-input-text--active-filled .galmart-input-text__container {
+    border-color: var(--color-border-primary);
+}
+
+.galmart-input-text--error .galmart-input-text__container {
+    border-color: var(--color-critical-primary);
+}
+
+.galmart-input-text--disabled .galmart-input-text__container {
+    background: var(--color-bg-substrate-secondary);
+    cursor: default;
+}
+
+/* ── Content area (label + input stacked) ── */
+.galmart-input-text__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    height: 42px;
+}
+
+/* ── Label ── */
+.galmart-input-text__label {
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-tight);
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.galmart-input-text__label--floating {
+    font-size: var(--font-size-small);
+}
+
+.galmart-input-text__label--placeholder {
+    font-size: var(--font-size-small);
+    letter-spacing: -0.24px;
+}
+
+/* ── Input field ── */
+.galmart-input-text__input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-tight);
+    color: var(--color-text-primary);
+    caret-color: var(--color-brand-primary);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.galmart-input-text__input::placeholder {
+    color: var(--color-text-tertiary);
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-base);
+}
+
+.galmart-input-text__input:disabled {
+    color: var(--color-text-tertiary);
+    cursor: default;
+    -webkit-text-fill-color: var(--color-text-tertiary);
+}
+
+/* When container is in empty state and no floating label */
+.galmart-input-text--empty .galmart-input-text__input {
+    color: var(--color-text-tertiary);
+}
+
+/* ── Trailing icon ── */
+.galmart-input-text__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.galmart-input-text__icon--disabled {
+    opacity: 0.5;
+}
+
+/* ── Helper text ── */
+.galmart-input-text__helper {
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-tiny);
+    line-height: var(--line-height-tight);
+    color: var(--color-text-tertiary);
+    padding-left: var(--spacing-16);
+    margin: 0;
+}
+
+.galmart-input-text__helper--error {
+    color: var(--color-critical-primary);
+}

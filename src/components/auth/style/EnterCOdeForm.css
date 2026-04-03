@@ -1,23 +1,43 @@
+/* ===== Enter Code Content Container ===== */
+.enter-code-content {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: flex-start;
+}
+
+/* ===== Code Wrapper ===== */
 .code-wrapper {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
+    gap: 32px;
+}
+
+/* ===== Number Input Section (code boxes + timer row) ===== */
+.code-number-input-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
 }
 
 .code-inputs {
     display: flex;
-    gap: 16px;
-    margin-bottom: 16px;
+    gap: 6px;
+    margin-bottom: 0;
 }
 
 .code-box {
-    width: 70px;
-    height: 70px;
+    width: 88px;
+    height: 100px;
     background: var(--color-background-substrate_primary, #F5F5F5);
-    border-radius: 20px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 32px 24px;
+    box-sizing: border-box;
 }
 
 .code-box input {
@@ -25,40 +45,76 @@
     height: 100%;
     border: none;
     text-align: center;
-    font-size: 28px;
-    font-weight: 600;
+    font-size: 24px;
+    font-weight: 500;
     background: transparent;
     outline: none;
     font-family: 'Montserrat', sans-serif;
     color: #222;
-    line-height: 70px;
     padding: 0;
 }
 
-.code-box input:focus  {
-    border-radius:20px;
+.code-box input:focus {
+    border-radius: 16px;
 }
 
 .code-box input::placeholder {
     color: #7a7a7a;
-    font-size: 18px;
-    letter-spacing: 2px;
+    font-size: 24px;
     font-weight: 500;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0;
 }
 
-.btn-group {
+/* ===== Timer Row ===== */
+.code-timer-row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.code-timer-label {
+    color: #7a7a7a;
+}
+
+.code-timer-countdown {
+    color: #222;
+}
+
+.code-timer-resend {
+    color: #902067;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.code-timer-resend:hover {
+    opacity: 0.8;
+}
+
+/* ===== Buttons ===== */
+.code-buttons {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
     width: 100%;
 }
 
-
+/* ===== Error Styles ===== */
 .code-error-message {
     color: #ff4d4f;
+    font-family: 'Montserrat', sans-serif;
     font-size: 14px;
-    margin-top: -10px;
-    margin-bottom: 20px;
+    margin: 0;
 }
 
 .code-box input.input-error-state {

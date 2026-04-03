@@ -1,24 +1,13 @@
-form {
+/* ================================================================
+   RegistrationForm — Scoped Styles
+   ================================================================ */
+
+.registration-form {
     display: flex;
     flex-direction: column;
     gap: 12px;
-
-}
-
-input{
-    background: #F5F5F5;
-    height: 63px;
-    border-radius: 32px;
-    border: none;
-    gap: 16px;
-    width: 374px;
-}
-
-input::placeholder {
-    padding: 12px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    font-size: 16px;
+    width: 100%;
+    max-width: 370px;
 }
 
 .helper-text {
@@ -31,13 +20,44 @@ input::placeholder {
     margin-left: 20px;
     margin-top: -5px;
 }
+
 .date-picker-wrapper {
     position: relative;
     width: 100%;
 }
+
+.date-picker-wrapper input {
+    background: #F5F5F5;
+    height: 64px;
+    border-radius: 32px;
+    border: 2px solid transparent;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.2;
+    color: #222222;
+    padding: 16px 48px 16px 16px;
+    outline: none;
+}
+
+.date-picker-wrapper input::placeholder {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: #7A7A7A;
+}
+
+.date-picker-wrapper input:focus {
+    border: 2px solid #902067;
+    outline: none;
+}
+
 .custom-date-input {
     padding: 16px 48px 16px 16px;
 }
+
 .calendar-icon {
     position: absolute;
     right: 16px;
@@ -47,8 +67,9 @@ input::placeholder {
     color: #222222;
     pointer-events: none;
     cursor: pointer;
-    z-index: 22222 !important;
+    z-index: 2;
 }
+
 .btn-register {
     width: 100%;
     padding: 16px;
@@ -69,7 +90,7 @@ input::placeholder {
 }
 
 .btn-register:not(:disabled) {
-    background:  #902067;
+    background: #902067;
     color: #FBFBFB;
     cursor: pointer;
 }
@@ -78,12 +99,11 @@ input::placeholder {
     background: #7d1c5d;
 }
 
-
-.btn-back-to-home {
+.registration-form .btn-back-to-home {
     height: 64px;
     border-radius: 64px;
     border: 2px solid #902067;
-    background: #ffffff;
+    background: transparent;
 
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
@@ -91,38 +111,24 @@ input::placeholder {
     line-height: 120%;
     color: #902067;
     width: 100%;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
-input[type="text"] {
-    text-align: start;
-    padding: 0px 0 0 20px;
-    color: #222222;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 120%;
-    vertical-align: middle;
-    border: 2px solid #FBFBFB;
+.registration-form .btn-back-to-home:hover {
+    background: #902067;
+    color: #ffffff;
 }
-
-@media (max-width: 768px) {
-    input[type="text"] {
-        font-size: 12px;
-        padding: 0;
-    }
-
-}
-
-input:focus,
-.react-datepicker__input-container input:focus {
-    border: 2px solid #902067;
-    outline: #902067;
-}
-
 
 .error-text {
     color: #FF6A6A;
     font-size: 14px;
     margin-top: 4px;
     margin-left: 12px;
+}
+
+@media (max-width: 768px) {
+    .date-picker-wrapper input {
+        font-size: 12px;
+    }
 }

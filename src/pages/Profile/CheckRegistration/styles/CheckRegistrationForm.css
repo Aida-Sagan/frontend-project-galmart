@@ -373,7 +373,7 @@
     display: flex;
     align-items: center;
     position: relative;
-    padding-left: 35px;
+    /* padding-left: 35px; */
     cursor: pointer;
     font-size: 14px;
     user-select: none;
@@ -454,7 +454,7 @@
     display: flex;
     align-items: center;
     position: relative;
-    padding-left: 35px;
+    /* padding-left: 35px; */
     cursor: pointer;
     font-size: 14px;
     color: #FBFBFB;

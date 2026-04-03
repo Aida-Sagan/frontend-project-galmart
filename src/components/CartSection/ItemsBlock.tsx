@@ -1,0 +1,15 @@
+
+import React from 'react';
+
+const ItemsBlock = ({ title, children, className }: { title: any; children: any; className?: string }) => {
+    return (
+        <div className={`items-block ${className || ''}`}>
+            <h2>{title}</h2>
+            <div className="items-list">
+                {children}
+            </div>
+        </div>
+    );
+};
+
+export default ItemsBlock;

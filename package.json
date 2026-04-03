@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc --noEmit && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@pbe/react-yandex-maps": "^1.2.5",
@@ -16,6 +17,8 @@
     "formik": "^2.4.6",
     "imask": "^7.6.1",
     "lucide-react": "^0.525.0",
+    "mobx": "^6.15.0",
+    "mobx-react-lite": "^4.1.1",
     "path": "^0.12.7",
     "react": "^18.3.1",
     "react-datepicker": "^8.4.0",
@@ -28,6 +31,7 @@
   "devDependencies": {
     "@eslint/js": "^9.25.0",
     "@svgr/rollup": "^8.1.0",
+    "@types/node": "^22.0.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
@@ -35,6 +39,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
+    "typescript": "^5.7.0",
     "vite": "^6.3.5"
   }
 }

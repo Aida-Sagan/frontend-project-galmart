@@ -1,59 +1,60 @@
 .login-promo-block {
     position: relative;
-    width: 50%;
+    width: 48%;
     height: 100%;
-    background-image: url("../../../assets/login_bg.jpg") ;
+    background-image: url("../../../assets/login_bg.jpg");
     overflow: hidden;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    margin-left: -32px;
 }
 
-
-.registration-overlay {
+.login-promo-block .registration-overlay {
     position: absolute;
     inset: 0;
     display: flex;
-    align-items: end;
-    justify-content: space-around;
+    align-items: flex-end;
+    justify-content: center;
     z-index: 2;
-    bottom: 2%;
 }
 
-
-.subtext {
-    margin-top: 0.5rem;
-    font-size: 0.875rem;
-}
-
-
-.registration-overlay-content {
+.login-promo-block .registration-overlay-content {
     text-align: center;
-    background-color: #902067CC;
-    color: white;
-    font-size: 1.25rem;
-    padding: 1.5rem;
-    border-radius: 1rem;
-    width: 70%;
-    margin-bottom: -31px;
+    background-color: rgba(144, 32, 103, 0.8);
+    color: #FBFBFB;
+    padding: 64px 44px;
+    border-top-left-radius: 32px;
+    border-top-right-radius: 32px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    width: auto;
+    min-width: 490px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0;
 }
-.registration-overlay-content p {
+
+.login-promo-block .registration-overlay-content p {
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
-    font-size: 30px;
-    line-height: 120%;
-    text-align: end;
-
+    font-size: 40px;
+    line-height: 1.2;
+    text-align: center;
+    margin: 0;
+    width: 490px;
 }
-.registration-overlay-content .subtext {
-    margin-top: -26px;
-    font-size: 20px;
+
+.login-promo-block .registration-overlay-content .subtext {
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
-    line-height: 150%;
-    width: 320px;
+    font-size: 26px;
+    line-height: 1.2;
     text-align: center;
-
+    margin: 0;
+    width: auto;
 }
 
 

@@ -1,12 +1,13 @@
 .enter-code-promo-block{
     position: relative;
-    width: 50%;
+    width: 48%;
     height: 100%;
     background-image: url("../../../assets/enter_bg.jpg") ;
     overflow: hidden;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    margin-left: -32px;
 }
 
 .registration-overlay {

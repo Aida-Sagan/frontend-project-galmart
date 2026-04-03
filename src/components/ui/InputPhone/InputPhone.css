@@ -1,0 +1,121 @@
+/* ================================================================
+   InputPhone — Reusable Phone Input Component
+   Matches Figma frame 2128:5873
+   ================================================================ */
+
+@import '../../../styles/variables.css';
+
+/* ── Wrapper ── */
+.galmart-input-phone {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    width: 100%;
+}
+
+/* ── Input Container (the pill) ── */
+.galmart-input-phone__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--input-height);
+    padding: var(--spacing-16);
+    background: var(--color-bg-substrate-primary);
+    border-radius: var(--radius-32);
+    border: var(--border-width-2) solid transparent;
+    box-sizing: border-box;
+    cursor: text;
+    transition: border-color var(--transition-fast);
+}
+
+/* Active state — purple border */
+.galmart-input-phone__container--active {
+    border-color: var(--color-border-primary);
+}
+
+/* Error state — red border */
+.galmart-input-phone__container--error {
+    border-color: var(--color-critical-primary);
+}
+
+/* ── Left content (prefix + mask input) ── */
+.galmart-input-phone__left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+    flex: 1;
+    min-width: 0;
+}
+
+/* ── Country code prefix ── */
+.galmart-input-phone__prefix {
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-tight);
+    color: var(--color-text-primary);
+    user-select: none;
+    flex-shrink: 0;
+}
+
+/* ── Masked input field ── */
+.galmart-input-phone__input {
+    width: 100%;
+    border: none !important;
+    outline: none;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0;
+    height: auto;
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-tight);
+    color: var(--color-text-primary);
+    caret-color: var(--color-brand-primary);
+    min-width: 0;
+}
+
+.galmart-input-phone__input::placeholder {
+    color: var(--color-text-tertiary);
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-base);
+}
+
+.galmart-input-phone__input:focus {
+    border: none !important;
+    outline: none;
+    box-shadow: none;
+}
+
+/* ── Clear button ── */
+.galmart-input-phone__clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: var(--spacing-4);
+    cursor: pointer;
+    color: var(--color-text-tertiary);
+    opacity: 0.47;
+    flex-shrink: 0;
+    transition: color var(--transition-fast), opacity var(--transition-fast);
+}
+
+.galmart-input-phone__clear:hover {
+    color: var(--color-text-primary);
+    opacity: 0.7;
+}
+
+/* ── Error text ── */
+.galmart-input-phone__error {
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-small);
+    line-height: var(--line-height-tight);
+    color: var(--color-critical-primary);
+    padding-left: var(--spacing-16);
+    margin: 0;
+}

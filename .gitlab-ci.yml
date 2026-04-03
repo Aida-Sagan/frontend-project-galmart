@@ -1,0 +1,15 @@
+image: node:20
+
+pages:
+  stage: deploy
+  script:
+    - npm ci
+    - npm run build
+    - rm -rf public
+    - cp -r dist public
+    - cp public/index.html public/404.html
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"

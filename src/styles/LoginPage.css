@@ -3,61 +3,98 @@
     height: 100vh;
     width: 100%;
     font-family: 'Inter', sans-serif;
+    background-color: #FAFAF9;
 }
 
 .registration-form-block {
-    width: 50%;
+    width: 52%;
+    min-width: 52%;
     background-color: #FBFBFB;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 0 3rem;
+    padding: 0;
+    border-top-right-radius: 32px;
+    border-bottom-right-radius: 32px;
+    position: relative;
+    z-index: 1;
+    overflow: clip;
 }
 
-.registration-title {
-    margin-bottom: 0;
-    color: #292927;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
-    font-size: 30px;
-    line-height: 140%;
-    letter-spacing: 0%;
+.login-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    width: 370px;
+}
+
+.block-login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 370px;
+    gap: 24px;
+}
+
+.block-login-text {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
     text-align: center;
-    margin-top: 2px;
+    color: #292927;
 }
 
 .registration-logo {
     width: 80px;
-    height: auto;
-    margin: 0 auto 16px auto;
+    height: 80px;
+    margin: 0 auto;
     display: block;
 }
+
+.registration-title {
+    margin: 0;
+    color: #292927;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 1.2;
+    letter-spacing: 0;
+    text-align: center;
+    width: 100%;
+}
+
 .block-registration-description {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    margin-top: -10px;
-    width: 374px;
-    margin-bottom: 10px;
+    margin: 0;
+    width: 100%;
 }
 
 .registration-description {
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
     font-size: 18px;
-    line-height: 120%;
+    line-height: 1.2;
     text-align: center;
-    vertical-align: middle;
     color: #292927;
     width: 100%;
+    margin: 0;
 }
 
-.block-login {
+.login-form-container {
+    width: 370px;
+}
+
+.checkboxes {
+    width: 369px;
+    margin-top: 0;
     display: flex;
     flex-direction: column;
-}
-.login-form-container{
-    width: 64%;
+    gap: 8px;
 }
 
 .checkbox-container {
@@ -65,81 +102,84 @@
     font-size: 14px;
     line-height: 1.4;
     align-items: center;
-    margin-bottom: -15px;
+    margin-bottom: 0;
+    gap: 8px;
 }
 
 .checkbox-container input[type="checkbox"] {
-    margin-right: 8px;
-    margin-top: 2px;
+    display: none;
 }
 
 .custom-checkbox {
     display: inline-block;
     width: 20px;
-    height: 16px;
-    border: 2px solid #8e2c71;
-    border-radius: 3px;
-    margin-right: 8px;
+    min-width: 20px;
+    height: 20px;
+    min-height: 20px;
+    border: 1px solid #902067;
+    border-radius: 4px;
     position: relative;
+    margin-right: 0;
+    margin-top: 0;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
 
+input[type="checkbox"]:checked + .custom-checkbox {
+    background-color: #902067;
+    border-color: #902067;
 }
 
 input[type="checkbox"]:checked + .custom-checkbox::after {
     content: '✔';
     color: white;
-    background-color: #8e2c71;
     display: block;
     text-align: center;
     font-size: 12px;
     position: absolute;
     width: 100%;
     height: 100%;
-}
-.checkbox-container input[type="checkbox"] {
-    display: none;
+    line-height: 18px;
 }
 
 .text-public-checkbox {
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
     font-size: 12px;
-    line-height: 150%;
+    line-height: 1.5;
     color: #292927;
     width: 343px;
+    margin: 0;
 }
 
 .public-offer-link {
-    font-family: Montserrat;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 500;
     font-size: 12px;
-    line-height: 150%;
-    vertical-align: middle;
+    line-height: 1.5;
     color: #902067;
     text-decoration: none;
 }
 
-.checkboxes {
-    width: 75%;
-    margin-top: 20px;
-}
-
 /* --- АДАПТИВНОСТЬ --- */
 @media (max-width: 768px) {
-    .registration-form-block{
-        width: 100%!important;
+    .registration-form-block {
+        width: 100% !important;
+        min-width: unset;
         padding: 0 1rem;
+        border-radius: 0;
     }
 
-    .registration-description{
+    .registration-description {
         font-size: 20px;
         width: 370px;
     }
 
-    .login-form-container{
+    .login-form-container {
         width: 92%;
     }
 
-    .checkboxes{
+    .checkboxes {
         width: 87%;
     }
 }
@@ -147,4 +187,3 @@ input[type="checkbox"]:checked + .custom-checkbox::after {
 @media (max-width: 393px) {
 
 }
-
